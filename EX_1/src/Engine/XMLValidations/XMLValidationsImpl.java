@@ -1,5 +1,7 @@
 package Engine.XMLValidations;
 
+import Engine.XMLLoading.XMLValidator;
+
 public class XMLValidationsImpl implements XMLValidator {
     private static final String VALID_XML_MESSAGE = "XML file was loaded to the system successfully";
     private String errorMessage;
