@@ -5,6 +5,8 @@ import Engine.XMLLoading.jaxb.schema.generated.TransPool;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.BufferedInputStream;
+import java.io.FileDescriptor;
 import java.io.InputStream;
 
 public class SchemaBasedJAXBMain {
@@ -13,7 +15,6 @@ public class SchemaBasedJAXBMain {
 
     public TransPool init() {
         InputStream inputStream = SchemaBasedJAXBMain.class.getResourceAsStream("/resources/master.xml");
-
         try {
             return deserializeFrom(inputStream);
         }
