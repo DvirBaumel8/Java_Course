@@ -13,15 +13,16 @@ public class SchemaBasedJAXBMain {
 
     public TransPool init() {
         InputStream inputStream = SchemaBasedJAXBMain.class.getResourceAsStream("/resources/master.xml");
+
         try {
             return deserializeFrom(inputStream);
-        } catch (JAXBException e) {
+        }
+        catch (JAXBException e) {
             e.printStackTrace();
         }
-        System.out.println("x");
         return null;
-
     }
+
     private TransPool deserializeFrom(InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
         Unmarshaller u = jc.createUnmarshaller();
