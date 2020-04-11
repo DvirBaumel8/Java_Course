@@ -12,7 +12,7 @@ public class SchemaBasedJAXBMain {
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "Engine.XMLLoading.jaxb.schema.generated";
 
     public TransPool init() {
-        InputStream inputStream = SchemaBasedJAXBMain.class.getResourceAsStream("/Users/db384r/Documents/Java/Excersices/Java_Course/EX_1/src/resources/master.xml");
+        InputStream inputStream = SchemaBasedJAXBMain.class.getResourceAsStream("/resources/master.xml");
         try {
             return deserializeFrom(inputStream);
         } catch (JAXBException e) {
