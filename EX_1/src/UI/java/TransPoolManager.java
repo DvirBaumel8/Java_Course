@@ -1,6 +1,7 @@
 package UI.java;
 
 import Engine.Manager.EngineManager;
+import Engine.XMLLoading.jaxb.schema.generated.TransPoolTrip;
 
 import java.util.Scanner;
 
@@ -26,25 +27,37 @@ public class TransPoolManager {
         switch(userChoice) {
             case 1: {
                 System.out.println(engineManager.LoadXML());
+                run();
                 break;
             }
 
             case 2: {
                 System.out.println(engineManager.getAllStationsName());
-                System.out.println("Please insert the following details:\n - Name of trip \n - Source station \n - Destination station \n - Starting time of trip \n ");
+                System.out.println("Please insert the following details separated with ,:\n - Name of owner \n - Source station \n - Destination station \n - Starting time of trip \n ");
                 String input = scanner.nextLine();
+                boolean isValidInput = false;
+
+                while(isValidInput == false) {
+                    System.out.println("Please insert the following details separated with ,:\n - Name of owner \n - Source station \n - Destination station \n - Starting time of trip \n ");
+                    input = scanner.nextLine();
+                    isValidInput = engineManager.validateTripRequestInput(input);
+                }
+                engineManager.createNewTripRequest(input);
+                run();
                 break;
             }
             case 3:{
-                System.out.println(engineManager.getAllTripOffers());
+                System.out.println(engineManager.getAllSuggestedTrips());
+                run();
                 break;
             }
             case 4: {
                 System.out.println(engineManager.getAllTripRequests());
+                run();
                 break;
             }
             case 5: {
-
+                run();
                 break;
             }
             case 6: {
@@ -56,7 +69,7 @@ public class TransPoolManager {
 
     private short displayMenu() {
         StringBuilder str = new StringBuilder();
-        str.append("Welcome to TransPool app \n");
+        str.append("Menu \n");
         str.append("1. Load XML file \n");
         str.append("2. New trip request \n");
         str.append("3. Display status of all trip offers \n");

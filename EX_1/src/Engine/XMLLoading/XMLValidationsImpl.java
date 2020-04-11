@@ -7,7 +7,7 @@ public class XMLValidationsImpl implements XMLValidator {
     private String errorMessage;
 
     @Override
-    public boolean validateFileExists(String fileName) {
+    public boolean validateFileExistsAndXmlFile(String fileName) {
         return fileName.contains(".xml");
     }
 
@@ -39,7 +39,7 @@ public class XMLValidationsImpl implements XMLValidator {
     public boolean validateXmlFile (File file) {
         boolean isValid = true;
 
-        if(!validateFileExists(file.getName())) {
+        if(!validateFileExistsAndXmlFile(file.getName())) {
             isValid = false;
         }
         if(validateMapSize()) {
