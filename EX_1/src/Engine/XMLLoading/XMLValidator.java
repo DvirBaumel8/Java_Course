@@ -1,4 +1,4 @@
-package Engine.XMLValidations;
+package Engine.XMLLoading;
 
 public interface XMLValidator {
     public boolean validateFileExists(String fileName);

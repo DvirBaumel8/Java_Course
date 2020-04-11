@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TransPool xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		   xsi:noNamespaceSchemaLocation="//Users/ohadbar/transPool/Java_Course/EX_1/src/Engine/XMLValidations/resources/master.xml">
+		   xsi:noNamespaceSchemaLocation="/Users/db384r/Documents/Java/Excersices/Java_Course/EX_1/src/resources/master.xml">
 	<MapDescriptor>
 		<MapBoundries length="10" width="10"/>
 		<Stops>
