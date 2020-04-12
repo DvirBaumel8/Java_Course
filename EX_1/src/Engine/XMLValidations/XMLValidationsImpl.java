@@ -1,12 +1,14 @@
 package Engine.XMLValidations;
 
+import java.io.File;
+
 public class XMLValidationsImpl implements XMLValidator {
     private static final String VALID_XML_MESSAGE = "XML file was loaded to the system successfully";
     private String errorMessage;
 
     @Override
-    public boolean validateFileExists(String fileName) {
-        return false;
+    public boolean validateFileExistsAndXmlFile(String fileName) {
+        return fileName.contains(".xml");
     }
 
     @Override
@@ -32,6 +34,38 @@ public class XMLValidationsImpl implements XMLValidator {
     @Override
     public boolean validateEachDrivePassThroughStations() {
         return false;
+    }
+
+    public boolean validateXmlFile (File file) {
+        boolean isValid = true;
+
+        if(!validateFileExistsAndXmlFile(file.getName())) {
+            isValid = false;
+        }
+        if(validateMapSize()) {
+            isValid = false;
+        }
+        if(validateUniqueStations()) {
+            isValid = false;
+        }
+        if(validateStationsBorders()) {
+            isValid = false;
+        }
+        if(validateStationsUniqueLocations()) {
+            isValid = false;
+        }
+        if(validateEachDrivePassThroughStations()) {
+            isValid = true;
+        }
+        return isValid;
+    }
+
+    public String getValidMessage() {
+        return VALID_XML_MESSAGE;
+    }
+
+    public String getErrorMessage () {
+        return errorMessage;
     }
 
 }
