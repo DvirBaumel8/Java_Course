@@ -1,4 +1,4 @@
-package Engine.XMLLoading;
+package Engine.XMLValidations;
 
 import Engine.XMLLoading.jaxb.schema.generated.Stop;
 

@@ -1,4 +1,4 @@
-package UI.java;
+package UI;
 
 import Engine.XMLLoading.jaxb.schema.SchemaBasedJAXBMain;
 import Engine.XMLLoading.jaxb.schema.generated.TransPool;

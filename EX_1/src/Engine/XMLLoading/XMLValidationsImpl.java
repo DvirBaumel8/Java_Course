@@ -2,6 +2,7 @@ package Engine.XMLLoading;
 
 import Engine.XMLLoading.jaxb.schema.generated.Stop;
 import Engine.XMLLoading.jaxb.schema.generated.TransPool;
+import Engine.XMLValidations.XMLValidator;
 
 import java.io.File;
 import java.io.IOException;

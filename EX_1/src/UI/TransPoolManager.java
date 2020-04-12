@@ -1,14 +1,13 @@
-package UI.java;
+package UI;
 
 import Engine.Manager.EngineManager;
-import Engine.XMLLoading.jaxb.schema.generated.TransPoolTrip;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class TransPoolManager {
-    private EngineManager engineManager = EngineManager.getEngineManagerInstance();
-    private static TransPoolManager transPoolManager;
+    private static EngineManager engineManager;
+    private static TransPoolManager transPoolManagerInstance;
     Scanner scanner = new Scanner(System.in);
 
     private TransPoolManager() {
@@ -16,10 +15,11 @@ public class TransPoolManager {
     }
 
     public static TransPoolManager getTransPoolManagerInstance() {
-        if(transPoolManager == null) {
-            transPoolManager = new TransPoolManager();
+        if(transPoolManagerInstance == null) {
+            transPoolManagerInstance = new TransPoolManager();
+            engineManager = EngineManager.getEngineManagerInstance();
         }
-        return transPoolManager;
+        return transPoolManagerInstance;
     }
 
     public void run() {
@@ -43,16 +43,23 @@ public class TransPoolManager {
 
             case 2: {
                 System.out.println(engineManager.getAllStationsName());
-                System.out.println("Please insert the following details separated with ,:\n - Name of owner \n - Source station \n - Destination station \n - Starting time of trip \n ");
-                String input = scanner.nextLine();
+                String input = null;
                 boolean isValidInput = false;
 
-                while(isValidInput == false) {
-                    System.out.println("Please insert the following details separated with ,:\n - Name of owner \n - Source station \n - Destination station \n - Starting time of trip \n ");
+                while(!isValidInput) {
+                    System.out.println("Please insert the following details separated with ,:\n - Name of owner \n - Source station \n - Destination station \n - Starting time of trip");
+                    scanner.nextLine();
                     input = scanner.nextLine();
                     isValidInput = engineManager.validateTripRequestInput(input);
+                    if(isValidInput) {
+                        System.out.println(engineManager.getRequestValidationSuccessMessage());
+                    }
+                    else {
+                        System.out.println(engineManager.getRequestValidationErrorMessage());
+                    }
                 }
-                engineManager.createNewTripRequest(input);
+                engineManager.addNewTripRequest(input);
+
                 run();
                 break;
             }
@@ -91,7 +98,7 @@ public class TransPoolManager {
         System.out.println(str);
         choice = scanner.nextShort();
 
-        while(choice >6 || choice < 0 ) {
+        while(choice > 6 || choice < 0 ) {
             System.out.println("Illegal choice, please choose a legal number");
             System.out.println(str);
             choice = scanner.nextShort();
