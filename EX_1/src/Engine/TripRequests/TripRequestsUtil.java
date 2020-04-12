@@ -10,11 +10,6 @@ public class TripRequestsUtil {
     private Map<TripRequest, Integer> requestTrips;
     private StringBuilder validationErrorMessage;
     private static final String validationSuccessMessage = "Trip request added successfully\n";
-
-    public Map<TripRequest, Integer> getRequestTrips() {
-        return requestTrips;
-    }
-
     private int nextRequestID;
 
     public TripRequestsUtil() {
@@ -24,14 +19,27 @@ public class TripRequestsUtil {
         this.validationErrorMessage.append("Sorry, your input was not valid. Errors: \n");
     }
 
+    public Map<TripRequest, Integer> getAllRequestTrips() {
+        return requestTrips;
+    }
+
     public void addRequestTrip(TripRequest requestTrip) {
+        requestTrip.setRequestID(nextRequestID);
         requestTrips.put(requestTrip, nextRequestID);
+        nextRequestID++;
     }
 
     public boolean validateTripRequestInput(String input) {
         String[] inputs = input.split(",");
         boolean isValid = true;
 
+        if(input.equals("b")) {
+            return true;
+        }
+        if(input.length() != 4) {
+            validationErrorMessage.append("Please insert 4 elements, try again.\n");
+            return false;
+        }
         if(validateOwnerName(inputs[0])) {
             validationErrorMessage.append("*Request owner name is empty\n");
             isValid = false;
@@ -86,5 +94,13 @@ public class TripRequestsUtil {
 
     public String getValidationSuccessMessage () {
         return validationSuccessMessage;
+    }
+
+    public void deleteErrorMessage() {
+        validationErrorMessage.setLength(0);
+    }
+
+    public boolean isRequestIDExist(Integer requestID) {
+        return requestTrips.containsValue(requestID);
     }
 }

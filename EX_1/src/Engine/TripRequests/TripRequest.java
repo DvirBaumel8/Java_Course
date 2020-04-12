@@ -1,14 +1,9 @@
 package Engine.TripRequests;
 
 public class TripRequest {
-    private String nameOfOwner;
+    private int RequestID;
     private String OwnerName;
     private String sourceStation;
-
-    public boolean isMatched() {
-        return isMatched;
-    }
-
     private String destinationStation;
     private int startingHour;
     private boolean isMatched;
@@ -25,6 +20,11 @@ public class TripRequest {
         return OwnerName;
     }
 
+
+    public boolean isMatched() {
+        return isMatched;
+    }
+
     public int getStartingHour() {
         return startingHour;
     }
@@ -35,5 +35,13 @@ public class TripRequest {
 
     public String getDestinationStation() {
         return destinationStation;
+    }
+
+    public int getRequestID() {
+        return RequestID;
+    }
+
+    public void setRequestID(int requestID) {
+        RequestID = requestID;
     }
 }

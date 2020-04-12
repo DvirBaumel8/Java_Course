@@ -93,12 +93,15 @@ public class Stop {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         Stop stop = (Stop) o;
-        return y == stop.y &&
-                x == stop.x &&
-                Objects.equals(name, stop.name);
+        return y == stop.y && x == stop.x && Objects.equals(name, stop.name);
     }
 
     @Override

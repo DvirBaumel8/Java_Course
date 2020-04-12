@@ -29,13 +29,11 @@ public class TransPoolManager {
             case 1: {
                 List<String> errors = null;
                 System.out.println("Please copy your full path to master.xml file here for checking");
-                Scanner sc = new Scanner(System.in);
-                String myPathToTheXMLFile = sc.nextLine();
-                System.out.println(engineManager.LoadXML(myPathToTheXMLFile,errors));
+                String myPathToTheXMLFile = scanner.nextLine();
+                System.out.println(engineManager.LoadXML(myPathToTheXMLFile, errors));
+
                 if(errors != null) {
-                    errors.forEach((error)-> {
-                        System.out.println(error+'\n');
-                    });
+                    errors.forEach((error)-> { System.out.println(error+'\n'); });
                 }
                 run();
                 break;
@@ -47,11 +45,14 @@ public class TransPoolManager {
                 boolean isValidInput = false;
 
                 while(!isValidInput) {
-                    System.out.println("Please insert the following details separated with ,:\n - Name of owner \n - Source station \n - Destination station \n - Starting time of trip");
-                    scanner.nextLine();
+                    System.out.println("Please insert the following details separated with ,   (Insert 'b' to go back to the main menu):\n - Name of owner \n - Source station \n - Destination station \n - Starting time of trip.");
                     input = scanner.nextLine();
                     isValidInput = engineManager.validateTripRequestInput(input);
                     if(isValidInput) {
+                        if(input.equals("b")) {
+                            run();
+                            break;
+                        }
                         System.out.println(engineManager.getRequestValidationSuccessMessage());
                     }
                     else {
@@ -59,6 +60,7 @@ public class TransPoolManager {
                     }
                 }
                 engineManager.addNewTripRequest(input);
+                engineManager.deleteNewTripRequestErrorMessage();
 
                 run();
                 break;
@@ -74,6 +76,27 @@ public class TransPoolManager {
                 break;
             }
             case 5: {
+                System.out.println(engineManager.getAllNotMatchedRequestsTrip());
+                boolean isValidInput = true;
+                String input;
+
+                while(isValidInput) {
+                    System.out.println("Please choose one of the requests to get match, in addition choose the amount of suggested trips you want to be displayed separated with ','  For example: 1(request ID) ,4 (amount of suggested trips). Insert 'b' to go back to the main menu");
+                    input = scanner.nextLine();
+                    isValidInput = engineManager.validateChooseRequestAndAmountOfSuggestedTripsInput(input);
+                    if(!isValidInput) {
+                        System.out.println(engineManager.getChooseRequestAndAmountOfSuggestedTripsErrorMessage());
+                    }
+                    else {
+                        if(input.equals("b")) {
+                            run();
+                            break;
+                        }
+                        else {
+                            String potentialMatches = ￿engineManager.FindPotentialMatchToRequestTrip(input);
+                        }
+                    }
+                }
                 run();
                 break;
             }
@@ -86,24 +109,27 @@ public class TransPoolManager {
 
     private short displayMenu() {
         StringBuilder str = new StringBuilder();
-        str.append("Menu \n");
+        str.append("\nMenu \n");
         str.append("1. Load XML file \n");
         str.append("2. New trip request \n");
         str.append("3. Display status of all trip offers \n");
-        str.append("4. Display status od all trip requests \n");
+        str.append("4. Display status of all trip requests \n");
         str.append("5. Match trip request to trip offer \n");
         str.append("6. Exit \n");
 
+        String input = null;
         short choice;
-        System.out.println(str);
-        choice = scanner.nextShort();
+        boolean isValidInput = false;
 
-        while(choice > 6 || choice < 0 ) {
-            System.out.println("Illegal choice, please choose a legal number");
+        while(!isValidInput) {
             System.out.println(str);
-            choice = scanner.nextShort();
+            input = scanner.nextLine();
+            isValidInput = engineManager.validateMenuInput(input);
+            if(!isValidInput) {
+                System.out.println(engineManager.getMenuErrorMessage());
+            }
         }
 
-        return choice;
+        return Short.parseShort(input);
     }
 }

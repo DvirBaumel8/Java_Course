@@ -138,14 +138,12 @@ public class XMLValidationsImpl implements XMLValidator {
     public boolean validateEachWayDefinedFromDefinedStations(List<Stop> stops) {
         boolean isValidateUniqueLocation = true;
 
-
         return isValidateUniqueLocation;
     }
 
     @Override
     public boolean validateEachRoutePassesOnlyThroughDefinedStations() {
         boolean isRoutePassesOnlyThroughDefinedStations = true;
-
 
         return isRoutePassesOnlyThroughDefinedStations;
     }
