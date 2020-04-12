@@ -1,7 +1,7 @@
 package Engine.TripRequests;
 
 public class TripRequest {
-    ￿private String nameOfOwner;
+    private String nameOfOwner;
     private String sourceStation;
     private String destinationStation;
     private int startingHour;

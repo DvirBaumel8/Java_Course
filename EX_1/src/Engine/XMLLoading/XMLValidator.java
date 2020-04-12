@@ -1,15 +1,24 @@
 package Engine.XMLLoading;
 
+import Engine.XMLLoading.jaxb.schema.generated.Stop;
+
+import java.util.List;
+
 public interface XMLValidator {
-    public boolean validateFileExistsAndXmlFile(String fileName);
 
-    public boolean validateMapSize();
+    static final Integer[] MAP_BOUNDRIES = {6,100};
 
-    public boolean validateUniqueStations();
+    public boolean validateFileExistsAndXmlFile(String myPathToTheXMLFile);
 
-    public boolean validateStationsBorders();
+    public boolean validateMapSize(int mapLength, int mapWidth);
 
-    public boolean validateStationsUniqueLocations();
+    public boolean validateUniqueNameStations(List<Stop> stops, int mapLength, int mapWidth);
 
-    public boolean validateEachDrivePassThroughStations();
+    public boolean validateStationsBorders(List<Stop> stops, int mapLength, int mapWidth);
+
+    public boolean validateStationsUniqueLocations(List<Stop> stops);
+
+    public boolean validateEachWayDefinedFromDefinedStations(List<Stop> stops);
+
+    public boolean validateEachRoutePassesOnlyThroughDefinedStations();
 }

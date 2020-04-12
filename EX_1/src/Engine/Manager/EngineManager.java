@@ -10,6 +10,7 @@ import Engine.XMLLoading.jaxb.schema.generated.TransPool;
 import Engine.XMLLoading.jaxb.schema.generated.TransPoolTrip;
 
 import java.io.File;
+import java.util.List;
 
 public class EngineManager {
     private static EngineManager engineManager;
@@ -26,17 +27,16 @@ public class EngineManager {
         return engineManager;
     }
 
-    public String LoadXML() {
+    public String LoadXML(String myPathToTheXMLFile, List<String> errors) {
         SchemaBasedJAXBMain jax = new SchemaBasedJAXBMain();
         transPool = jax.init();
 
-        XMLValidationsImpl xmlValidator = new XMLValidationsImpl();
-//        if (xmlValidator.validateXmlFile(null)) {
-//            return xmlValidator.getValidMessage();
-//        } else {
-//            return xmlValidator.getErrorMessage();
-//        }
-        return "OK";
+        XMLValidationsImpl xmlValidator = new XMLValidationsImpl(transPool);
+        if (xmlValidator.validateXmlFile(myPathToTheXMLFile, errors)) {
+            return xmlValidator.getValidMessage();
+        } else {
+           return xmlValidator.getErrorMessage();
+        }
     }
 
     public String getAllStationsName () {

@@ -3,6 +3,7 @@ package UI.java;
 import Engine.Manager.EngineManager;
 import Engine.XMLLoading.jaxb.schema.generated.TransPoolTrip;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class TransPoolManager {
@@ -26,7 +27,16 @@ public class TransPoolManager {
 
         switch(userChoice) {
             case 1: {
-                System.out.println(engineManager.LoadXML());
+                List<String> errors = null;
+                System.out.println("Please copy your full path to master.xml file here for checking");
+                Scanner sc = new Scanner(System.in);
+                String myPathToTheXMLFile = sc.nextLine();
+                System.out.println(engineManager.LoadXML(myPathToTheXMLFile,errors));
+                if(errors != null) {
+                    errors.forEach((error)-> {
+                        System.out.println(error+'\n');
+                    });
+                }
                 run();
                 break;
             }
