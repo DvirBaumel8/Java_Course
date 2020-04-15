@@ -1,16 +1,16 @@
 package Engine.Manager;
 
+import Engine.InputValidations.Validator;
 import Engine.MatchingUtil.MatchingUtil;
 import Engine.TripRequests.TripRequest;
 import Engine.TripRequests.TripRequestsUtil;
 import Engine.TripSuggestUtil.TripSuggest;
 import Engine.TripSuggestUtil.TripSuggestUtil;
-import Engine.XMLLoading.XMLValidationsImpl;
+import Engine.XMLValidations.XMLValidationsImpl;
 import Engine.XMLLoading.jaxb.schema.SchemaBasedJAXBMain;
 import Engine.XMLLoading.jaxb.schema.generated.Path;
 import Engine.XMLLoading.jaxb.schema.generated.Stop;
 import Engine.XMLLoading.jaxb.schema.generated.TransPool;
-
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +20,9 @@ public class EngineManager {
     private static TripRequestsUtil tripRequestUtil;
     private static TripSuggestUtil tripSuggestUtil;
     private static MatchingUtil matchingUtil;
-    private String menuErrorMessage;
-    private StringBuilder chooseRequestAndAmountOfSuggestedTripsErrorMessage;
+    private static Validator validator;
+    private static boolean isXMLFileLoaded;
+    private String menuOrderErrorMessage;
 
     private EngineManager() {
     }
@@ -32,6 +33,8 @@ public class EngineManager {
             tripSuggestUtil = new TripSuggestUtil();
             tripRequestUtil = new TripRequestsUtil();
             matchingUtil = new MatchingUtil();
+            validator = new Validator();
+            isXMLFileLoaded = false;
         }
         return engineManagerInstance;
     }
@@ -41,13 +44,13 @@ public class EngineManager {
         transPool = jax.init();
 
         XMLValidationsImpl xmlValidator = new XMLValidationsImpl(transPool);
-        if (xmlValidator.validateXmlFile(myPathToTheXMLFile, errors)) {
+//        if (xmlValidator.validateXmlFile(myPathToTheXMLFile, errors)) {
             tripSuggestUtil.convertPlannedTripsToSuggestedTrips(transPool.getPlannedTrips().getTransPoolTrip());
-            chooseRequestAndAmountOfSuggestedTripsErrorMessage = new StringBuilder();
+            isXMLFileLoaded = true;
             return xmlValidator.getValidMessage();
-        } else {
-           return xmlValidator.getErrorMessage();
-        }
+////        } else {
+//           return xmlValidator.getErrorMessage();
+//        }
     }
 
     public String getAllStationsName () {
@@ -79,11 +82,11 @@ public class EngineManager {
             str.append(String.format("Trip Owner - %s\n", trip.getKey().getTripOwnerName()));
             str.append(String.format("Trip Route - %s\n", trip.getKey().getTripRoute()));
             str.append(String.format("Trip Price - %s\n", trip.getKey().getTripPrice()));
-            str.append(String.format("Trip starting hour - %s, Trip arrival hour - %s\n", trip.getKey().getStartingHour(), trip.getKey().getArrivalHour()));
+            str.append(String.format("Trip starting hour - %s\nTrip arrival hour - %s\n", trip.getKey().getStartingHour(), trip.getKey().getArrivalHour()));
             str.append(String.format("Trip available sits - %s\n", trip.getKey().getRemainingCapacity()));
             str.append(String.format("Exists passengers trip - %s\n", getListOfAllTripPassengersID(trip.getKey())));
-            str.append(String.format("Trip ID - %s\n", null)); // have to fix
-            str.append(String.format("Required fuel to trip - %sL\n", trip.getKey().getRequiredFuel()));
+            str.append(String.format("Required fuel to trip - %s.L\n", trip.getKey().getRequiredFuel()));
+            str.append(String.format("￿Stations to stop -  - %s\n", trip.getKey().getStationsDetailsAsString()));
         }
         return str.toString();
     }
@@ -93,7 +96,7 @@ public class EngineManager {
         int index = 1;
 
         for(Integer id : trip.getPassengers()) {
-            str.append(String.format("%d: Passenger - %d",index, id));
+            str.append(String.format("%d: Passenger ID - %d",index, id));
             index++;
         }
 
@@ -117,22 +120,27 @@ public class EngineManager {
         for(Map.Entry<TripRequest, Integer> trip : tripRequestUtil.getAllRequestTrips().entrySet()) {
             str.append(String.format("Trip ID - %d\n", getRequestTripID(trip.getKey())));
             str.append(String.format("Trip requester - %s\n", trip.getKey().getNameOfOwner()));
-            str.append(String.format("Trip source station - %s\n Trip destination station - %s\n", trip.getKey().getSourceStation(), trip.getKey().getDestinationStation()));
+            str.append(String.format("Trip source station - %s\nTrip destination station - %s\n", trip.getKey().getSourceStation(), trip.getKey().getDestinationStation()));
             str.append(String.format("Trip starting hour - %d\n", trip.getKey().getStartingHour()));
 
             if(trip.getKey().isMatched()) {
                 str.append("This request is already match to suggested trip, here are the details of the trip: \n");
-                str.append(String.format("Trip Match ID - %d\n", null)); // have to fix
-                str.append(String.format("Trip Match ID - %d\n", null));
-                str.append(String.format("Trip Match ID - %d\n", null));
-                str.append(String.format("Trip Match ID - %d\n", null));
-                str.append(String.format("Trip Match ID - %d\n", null));
+                str.append(String.format("Trip Match ID - %d\n", trip.getKey().getMatchTrip().getSuggestID()));
+                str.append(String.format("Trip Match owner name - %s\n", trip.getKey().getMatchTrip().getTripOwnerName()));
+                str.append(String.format("Trip Match price - %d\n", trip.getKey().getMatchTrip().getTripPrice()));
+                str.append(String.format("Trip Match estimate arrival hour - %d\n", trip.getKey().getMatchTrip().getArrivalHour()));
+                str.append(String.format("Required fuel for request - %d\n", calcRequiredFuelToRequest(trip.getKey())));
             }
             else {
-                str.append("This trip request isn't matched yet\n");
+                str.append("This trip request isn't matched yet\n\n");
             }
         }
         return str.toString();
+    }
+
+    //have to fix
+    private int calcRequiredFuelToRequest(TripRequest tripRequest) {
+        return 1;
     }
 
     private Integer getRequestTripID(TripRequest trip) {
@@ -141,17 +149,16 @@ public class EngineManager {
 
     public void addNewTripRequest(String input) {
         String[] inputs = input.split(",");
-        TripRequest newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], 12); // have to fix startingHour (parse to int somehow)
+        TripRequest newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], 10); // have to fix startingHour (parse to int somehow)
         tripRequestUtil.addRequestTrip(newRequest);
     }
 
-
     public boolean validateTripRequestInput(String input) {
-        return tripRequestUtil.validateTripRequestInput(input);
+        return validator.validateTripRequestInput(input);
     }
 
     public String getRequestValidationErrorMessage () {
-        return tripRequestUtil.getValidationErrorMessage();
+        return validator.getAddNewTripRequestErrorMessage();
     }
 
     public String getRequestValidationSuccessMessage () {
@@ -191,115 +198,129 @@ public class EngineManager {
 
     }
 
-    public boolean validateMenuInput(String choice) {
-        short input = 0;
-        try {
-            input = Short.parseShort(choice);
-        }
-        catch(Exception e) {
-            try {
-                Double.parseDouble(choice);
-                menuErrorMessage = "Your choice was fraction (double) please choose Integer, try again";
-                return false;
-            }
-            catch(Exception ex) {
-
-            }
-            menuErrorMessage = "Your choice isn't a number, please try again\n";
-            return false;
-        }
-        if(input > 6 || input < 0 ) {
-            menuErrorMessage = "Your choice isn't a number between 1-6, please try again\n";
-            return false;
-        }
-        return true;
-    }
-
-
-    public String getMenuErrorMessage() {
-        return menuErrorMessage;
-    }
-
     public String getAllNotMatchedRequestsTrip() {
         StringBuilder str = new StringBuilder();
-        int index = 1;
 
         if(tripRequestUtil.getAllRequestTrips().size() > 0) {
-            str.append("Here are all the requests trip that didn't match yet");
+            str.append("Here are all the requests trip that didn't match yet\n");
         }
         else {
-            str.append("There are no requests trip that didn't match yet");
+            str.append("There are no requests trip that didn't match yet\n");
             return str.toString();
         }
 
         for(Map.Entry<TripRequest, Integer> trip : tripRequestUtil.getAllRequestTrips().entrySet()) {
             if(!trip.getKey().isMatched()) {
-                str.append(String.format("Request ID - %d\n", index, trip.getKey().getRequestID()));
+                str.append(String.format("Request ID - %d\n", trip.getKey().getRequestID()));
                 str.append(String.format("Name of requester - %s\n", trip.getKey().getNameOfOwner()));
                 str.append(String.format("Source stations - %s\n", trip.getKey().getSourceStation()));
                 str.append(String.format("Destination stations - %s\n", trip.getKey().getDestinationStation()));
                 str.append(String.format("Starting hour - %s\n\n", trip.getKey().getStartingHour()));
-                index++;
             }
         }
         return str.toString();
     }
 
     public boolean validateChooseRequestAndAmountOfSuggestedTripsInput(String input) {
-        if(input.equals("b")) {
-            return true;
-        }
-        else {
-            String[] inputs = input.split(",");
-            if(inputs.length != 2) {
-                chooseRequestAndAmountOfSuggestedTripsErrorMessage.append("Please insert 2 elements, try again.\n");
-            }
-            if(checkIfStringIsInt(inputs[0]) && checkIfStringIsInt(inputs[1])) {
-                if(validateRequestIDIsExist(inputs[0])) {
-                    return true;
-                }
-                else {
-                    chooseRequestAndAmountOfSuggestedTripsErrorMessage.append(String.format("Request Trip ID - %s isn't exist in the system, please try again\n", inputs[0]));
-                    return false;
-                }
-            }
-            else {
-                chooseRequestAndAmountOfSuggestedTripsErrorMessage.append("Please insert two numbers (Integer), try again\n");
-                return false;
-            }
-        }
+       return validator.validateChooseRequestAndAmountOfSuggestedTripsInput(input);
     }
 
-    private boolean validateRequestIDIsExist(String input) {
+    public boolean validateRequestIDIsExist(String input) {
         Integer requestID = Integer.parseInt(input);
         return tripRequestUtil.isRequestIDExist(requestID);
     }
 
     public String getChooseRequestAndAmountOfSuggestedTripsErrorMessage() {
-        return chooseRequestAndAmountOfSuggestedTripsErrorMessage.toString();
+        return validator.getChooseRequestAndAmountOfSuggestedTripsErrorMessage();
     }
 
     public void deleteNewTripRequestErrorMessage() {
-        tripRequestUtil.deleteErrorMessage();
+        validator.deleteErrorMessageOfAddNewTripRequest();
     }
 
-    private boolean checkIfStringIsInt(String input) {
-        try {
-            Integer.parseInt(input);
-            return true;
+    public TripSuggest[] findPotentialMatchToRequestTrip(String input) {
+        TripSuggest[] suggestedTrips = matchingUtil.findPotentialMatchToRequestTrip(input);
+        for(int i = 0; i < suggestedTrips.length; i++) {
+            if(suggestedTrips[i] != null) {
+                return suggestedTrips;
+            }
         }
-        catch(Exception e) {
+        return null;
+    }
+
+    public String convertPotentialSuggestedTripsToString(TripSuggest[] potentialSuggestedTrips) {
+        StringBuilder str = new StringBuilder();
+        str.append("\nPotential suggested trips:\n");
+        int index = 1;
+
+        if(potentialSuggestedTrips.length == 0) {
+            str.append("The system couldn't found suggested trips to you trip request, sorry.\n");
+            return str.toString();
+        }
+
+        for(TripSuggest trip : potentialSuggestedTrips) {
+            str.append(String.format("Trip ID - %d\n", trip.getSuggestID()));
+            str.append(String.format("Trip owner name - %s\n", trip.getTripOwnerName()));
+            str.append(String.format("Trip price - %d\n", trip.getTripPrice()));
+            str.append(String.format("Trip estimate time to arrival - %d\n", trip.getArrivalHour()));
+            str.append(String.format("Required fuel to your trip - %d\n\n", null));//have to fix
+            index++;
+        }
+        return str.toString();
+    }
+
+    public TripRequest getTripRequestByID(int requestID) {
+        return tripRequestUtil.getTripRequestByID(requestID);
+    }
+
+    public Map<TripSuggest, Integer> getAllSuggestedTripsMap() {
+        return tripSuggestUtil.getAllSuggestedTrips();
+    }
+
+    public String getChoosePotentialTripInputErrorMessage() {
+        return validator.getChoosePotentialTripInputErrorMessage();
+    }
+
+    public boolean validateChoosePotentialTripInput(String input, TripSuggest[] potentialSuggestedTrips) {
+        return validator.validateChoosePotentialTripInput(input, potentialSuggestedTrips);
+    }
+
+    public boolean validateMenuInput(String input) {
+        if(validateMenuOrder(input)) {
+            return validator.validateMenuInput(input);
+        }
+        else {
+            menuOrderErrorMessage = "XML file didn't load yet, please load the file and try again.\n";
             return false;
         }
+
     }
 
-    public String FindPotentialMatchToRequestTrip(String input) {
-        StringBuilder str =  new StringBuilder();
-        String[] inputs = input.split(",");
-        int requestID = Integer.parseInt(inputs[0]);
-        int suggestedAmountTrips = Integer.parseInt(inputs[1]);
+    private boolean validateMenuOrder(String input) {
+        return true;
+    }
 
-        return "";
+    public String getMenuErrorMessage() {
+        return validator.getMenuErrorMessage();
+    }
+
+    public void deleteChooseRequestAndAmountErrorMessage () {
+        validator.deleteChooseRequestAndAmountErrorMessage();
+    }
+
+    public String matchRequestToSuggest(String input, TripSuggest[] potentialSuggestedTrips, String requestIDAndAmountToMatch) {
+        String[] inputs = requestIDAndAmountToMatch.split(",");
+        int requestID = Integer.parseInt(inputs[0]);
+        int suggestedTripID = Integer.parseInt(input);
+        TripSuggest tripSuggest = null;
+        for(int i = 0; i < potentialSuggestedTrips.length; i++) {
+            if(potentialSuggestedTrips[i].getSuggestID() == suggestedTripID) {
+                tripSuggest = potentialSuggestedTrips[i];
+                break;
+            }
+        }
+        TripRequest tripRequest = tripRequestUtil.getTripRequestByID(requestID);
+        return matchingUtil.matchRequestToSuggest(tripSuggest, tripRequest);
     }
 }
 

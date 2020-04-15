@@ -1,5 +1,7 @@
 package Engine.TripRequests;
 
+import Engine.TripSuggestUtil.TripSuggest;
+
 public class TripRequest {
     private int RequestID;
     private String OwnerName;
@@ -7,6 +9,7 @@ public class TripRequest {
     private String destinationStation;
     private int startingHour;
     private boolean isMatched;
+    private TripSuggest matchTrip;
 
     public TripRequest(String name, String sourceStation, String destinationStation, int startingHour) {
         this.OwnerName = name;
@@ -14,6 +17,7 @@ public class TripRequest {
         this.destinationStation = destinationStation;
         this.startingHour = startingHour;
         this.isMatched = false;
+        this.matchTrip = null;
     }
 
     public String getNameOfOwner() {
@@ -43,5 +47,22 @@ public class TripRequest {
 
     public void setRequestID(int requestID) {
         RequestID = requestID;
+    }
+
+    public TripSuggest getMatchTrip () {
+        return matchTrip;
+    }
+
+    public void matchRequestToTrip (TripSuggest tripSuggest) {
+        isMatched = true;
+        matchTrip = tripSuggest;
+    }
+
+    public void setMatched(boolean matched) {
+        isMatched = matched;
+    }
+
+    public void setMatchTrip(TripSuggest matchTrip) {
+        this.matchTrip = matchTrip;
     }
 }

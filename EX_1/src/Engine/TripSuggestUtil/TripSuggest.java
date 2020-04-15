@@ -1,6 +1,7 @@
 package Engine.TripSuggestUtil;
 
 import Engine.Manager.EngineManager;
+import Engine.TripRequests.TripRequest;
 import Engine.XMLLoading.jaxb.schema.generated.Route;
 import Engine.XMLLoading.jaxb.schema.generated.Scheduling;
 
@@ -27,7 +28,7 @@ public class TripSuggest {
         this.startingHour = scheduling.getHourStart();
         this.arrivalHour = calcArrivalHour(route);
         this.passengers = new ArrayList<>();
-        this.stopStationsDetails = null; // have to fix
+        this.stopStationsDetails = new ArrayList<>();
         this.requiredFuel = calcRequiredFuel(route);
         this.suggestID = ID;
     }
@@ -73,14 +74,13 @@ public class TripSuggest {
         return passengers;
     }
 
-    public double getTripPrice() {
+    public int getTripPrice() {
         return tripPrice;
     }
 
     public int getStartingHour() {
         return startingHour;
     }
-
 
     public String getTripOwnerName() {
         return TripOwnerName;
@@ -100,5 +100,34 @@ public class TripSuggest {
 
     public int getSuggestID() {
         return suggestID;
+    }
+
+    public String getStationsDetailsAsString () {
+        StringBuilder str = new StringBuilder();
+        str.append("All stop stations for passengers:\n");
+        int index = 1;
+
+        for(StopStationDetails stopDetails : stopStationsDetails) {
+            str.append(String.format("%d:\n", index));
+            str.append(String.format("Station name - %s\n", stopDetails.getStationName()));
+            str.append(String.format("Passenger name - %s\n", stopDetails.getStopStationOwner()));
+            if(stopDetails.isUp()) {
+                str.append("Passenger is going up on this station\n\n");
+            }
+            else {
+                str.append("Passenger is going down on this station\n\n");
+            }
+        }
+
+        return str.toString();
+    }
+
+    public void addNewPassengerToTrip (TripRequest tripRequest) {
+        remainingCapacity--;
+        passengers.add(tripRequest.getRequestID());
+        StopStationDetails sourceStationDetails = new StopStationDetails(tripRequest.getSourceStation(), tripRequest.getNameOfOwner(), true);
+        StopStationDetails destinationStationDetails = new StopStationDetails(tripRequest.getDestinationStation(), tripRequest.getNameOfOwner(), false);
+        stopStationsDetails.add(sourceStationDetails);
+        stopStationsDetails.add(destinationStationDetails);
     }
 }

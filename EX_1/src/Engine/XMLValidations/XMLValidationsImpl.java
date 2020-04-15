@@ -1,11 +1,9 @@
-package Engine.XMLLoading;
+package Engine.XMLValidations;
 
 import Engine.XMLLoading.jaxb.schema.generated.Stop;
 import Engine.XMLLoading.jaxb.schema.generated.TransPool;
-import Engine.XMLValidations.XMLValidator;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 public class XMLValidationsImpl implements XMLValidator {
