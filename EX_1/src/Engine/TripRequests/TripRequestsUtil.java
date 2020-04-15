@@ -1,90 +1,47 @@
 package Engine.TripRequests;
 
-import Engine.Manager.EngineManager;
-import Engine.XMLLoading.jaxb.schema.generated.Stop;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class TripRequestsUtil {
     private Map<TripRequest, Integer> requestTrips;
-    private StringBuilder validationErrorMessage;
+
     private static final String validationSuccessMessage = "Trip request added successfully\n";
-
-    public Map<TripRequest, Integer> getRequestTrips() {
-        return requestTrips;
-    }
-
     private int nextRequestID;
 
     public TripRequestsUtil() {
         this.requestTrips = new HashMap<>();
         this.nextRequestID = 1;
-        this.validationErrorMessage = new StringBuilder();
-        this.validationErrorMessage.append("Sorry, your input was not valid. Errors: \n");
+    }
+
+    public Map<TripRequest, Integer> getAllRequestTrips() {
+        return requestTrips;
     }
 
     public void addRequestTrip(TripRequest requestTrip) {
+        requestTrip.setRequestID(nextRequestID);
         requestTrips.put(requestTrip, nextRequestID);
-    }
-
-    public boolean validateTripRequestInput(String input) {
-        String[] inputs = input.split(",");
-        boolean isValid = true;
-
-        if(validateOwnerName(inputs[0])) {
-            validationErrorMessage.append("*Request owner name is empty\n");
-            isValid = false;
-        }
-        if(!validateSource(inputs[1])) {
-            validationErrorMessage.append("*Source isn't exist in the system\n");
-            isValid = false;
-        }
-        if(!validateDestination(inputs[2])) {
-            validationErrorMessage.append("*Destination isn't exist in the system\n");
-            isValid = false;
-        }
-        if(!validateStartingTime(inputs[3])) {
-            validationErrorMessage.append("*Starting time isn't valid\n");
-            isValid = false;
-        }
-        return isValid;
-    }
-
-    private boolean validateStartingTime (String input) {
-        return true;
-    }
-
-    private boolean validateSource(String input) {
-      return checkIFStationsIsExist(input);
-    }
-
-    private boolean validateOwnerName(String input) {
-        return input == null || input.isEmpty();
-    }
-
-    private boolean validateDestination (String input) {
-        return checkIFStationsIsExist(input);
-    }
-
-    private boolean checkIFStationsIsExist(String stationName) {
-        for(Stop stop : EngineManager.getEngineManagerInstance().getTransPool().getMapDescriptor().getStops().getStop()) {
-            if(stop.getName().equals(stationName)) {
-                return true;
-            }
-        }
-        return false;
+        nextRequestID++;
     }
 
     public Integer getTripID(TripRequest trip) {
         return requestTrips.get(trip);
     }
 
-    public String getValidationErrorMessage () {
-        return validationErrorMessage.toString();
-    }
-
     public String getValidationSuccessMessage () {
         return validationSuccessMessage;
+    }
+
+    public boolean isRequestIDExist(Integer requestID) {
+        return requestTrips.containsValue(requestID);
+    }
+
+    public TripRequest getTripRequestByID(int requestID) {
+        for(Map.Entry<TripRequest, Integer> trip : requestTrips.entrySet()) {
+            if(trip.getValue() == requestID) {
+                return trip.getKey();
+            }
+        }
+        return null;
     }
 }

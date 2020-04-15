@@ -1,11 +1,9 @@
-package Engine.XMLLoading;
+package Engine.XMLValidations;
 
 import Engine.XMLLoading.jaxb.schema.generated.Stop;
 import Engine.XMLLoading.jaxb.schema.generated.TransPool;
-import Engine.XMLValidations.XMLValidator;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 public class XMLValidationsImpl implements XMLValidator {
@@ -138,14 +136,12 @@ public class XMLValidationsImpl implements XMLValidator {
     public boolean validateEachWayDefinedFromDefinedStations(List<Stop> stops) {
         boolean isValidateUniqueLocation = true;
 
-
         return isValidateUniqueLocation;
     }
 
     @Override
     public boolean validateEachRoutePassesOnlyThroughDefinedStations() {
         boolean isRoutePassesOnlyThroughDefinedStations = true;
-
 
         return isRoutePassesOnlyThroughDefinedStations;
     }
