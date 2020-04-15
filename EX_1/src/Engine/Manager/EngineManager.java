@@ -149,7 +149,8 @@ public class EngineManager {
 
     public void addNewTripRequest(String input) {
         String[] inputs = input.split(",");
-        TripRequest newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], 10); // have to fix startingHour (parse to int somehow)
+        int startHour = Integer.parseInt(inputs[3].split(":")[0]);
+        TripRequest newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], startHour);
         tripRequestUtil.addRequestTrip(newRequest);
     }
 
@@ -259,6 +260,7 @@ public class EngineManager {
         }
 
         for(TripSuggest trip : potentialSuggestedTrips) {
+            str.append(String.format("Trip ID - %d\n", trip.getSuggestID()));
             str.append(String.format("Trip ID - %d\n", trip.getSuggestID()));
             str.append(String.format("Trip owner name - %s\n", trip.getTripOwnerName()));
             str.append(String.format("Trip price - %d\n", trip.getTripPrice()));
