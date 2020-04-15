@@ -53,7 +53,7 @@ public class XMLValidationsImpl implements XMLValidator {
             checkIfErrorListNullableAndInitialize(errors);
             errors.add("ERROR TYPE:Each route is NOT defined as a route" +
                     " that passes only through defined stations and routes");
-            isValid = true;
+            isValid = false;
         }
         if(validateEachRoutePassesOnlyThroughDefinedStations()) {
             checkIfErrorListNullableAndInitialize(errors);
