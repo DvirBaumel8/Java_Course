@@ -1,18 +1,18 @@
 package Engine.Manager;
 
-import Engine.InputValidations.Validator;
+import Engine.ValidationManager.Validator;
 import Engine.MatchingUtil.MatchingUtil;
 import Engine.TripRequests.TripRequest;
 import Engine.TripRequests.TripRequestsUtil;
 import Engine.TripSuggestUtil.TripSuggest;
 import Engine.TripSuggestUtil.TripSuggestUtil;
+import Engine.XMLLoading.jaxb.schema.generated.*;
 import Engine.XMLValidations.XMLValidationsImpl;
 import Engine.XMLLoading.jaxb.schema.SchemaBasedJAXBMain;
-import Engine.XMLLoading.jaxb.schema.generated.Path;
-import Engine.XMLLoading.jaxb.schema.generated.Stop;
-import Engine.XMLLoading.jaxb.schema.generated.TransPool;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
+import static UI.TransPoolManager.addAndValidErrorList;
 
 public class EngineManager {
     private static EngineManager engineManagerInstance;
@@ -21,8 +21,8 @@ public class EngineManager {
     private static TripSuggestUtil tripSuggestUtil;
     private static MatchingUtil matchingUtil;
     private static Validator validator;
-    private static boolean isXMLFileLoaded;
-    private String menuOrderErrorMessage;
+
+    private List<String> menuOrderErrorMessage;
 
     private EngineManager() {
     }
@@ -34,24 +34,33 @@ public class EngineManager {
             tripRequestUtil = new TripRequestsUtil();
             matchingUtil = new MatchingUtil();
             validator = new Validator();
-            isXMLFileLoaded = false;
         }
         return engineManagerInstance;
     }
 
-    public String LoadXML(String myPathToTheXMLFile, List<String> errors) {
+    public List<String> LoadXML(String myPathToTheXMLFile) {
+        List<String> errors = new LinkedList<>();
         SchemaBasedJAXBMain jax = new SchemaBasedJAXBMain();
-        transPool = jax.init();
-
+        transPool = jax.init(errors);
+        if(!errors.isEmpty()) {
+            errors = null;
+        }
         XMLValidationsImpl xmlValidator = new XMLValidationsImpl(transPool);
-//        if (xmlValidator.validateXmlFile(myPathToTheXMLFile, errors)) {
-            tripSuggestUtil.convertPlannedTripsToSuggestedTrips(transPool.getPlannedTrips().getTransPoolTrip());
-            isXMLFileLoaded = true;
-            return xmlValidator.getValidMessage();
-////        } else {
-//           return xmlValidator.getErrorMessage();
-//        }
+
+        try {
+            errors = xmlValidator.validateXmlFile(myPathToTheXMLFile);
+            if(errors == null) {
+                tripSuggestUtil.convertPlannedTripsToSuggestedTrips(transPool.getPlannedTrips().getTransPoolTrip());
+            }
+        }
+        catch (Exception e) {
+            errors = addAndValidErrorList(errors, e.getMessage());
+        }
+        finally {
+            return errors;
+        }
     }
+
 
     public String getAllStationsName () {
         StringBuilder str = new StringBuilder();
@@ -89,6 +98,15 @@ public class EngineManager {
             str.append(String.format("￿Stations to stop -  - %s\n", trip.getKey().getStationsDetailsAsString()));
         }
         return str.toString();
+    }
+
+    public HashSet<String> getAllLogicStationsName () {
+        HashSet<String> hashSet = new HashSet<>();
+        List<Stop> stops = transPool.getMapDescriptor().getStops().getStop();
+        for(Stop stop : stops) {
+            hashSet.add(stop.getName());
+        }
+        return hashSet;
     }
 
     private String getListOfAllTripPassengersID(TripSuggest trip) {
@@ -154,12 +172,30 @@ public class EngineManager {
         tripRequestUtil.addRequestTrip(newRequest);
     }
 
-    public boolean validateTripRequestInput(String input) {
-        return validator.validateTripRequestInput(input);
-    }
+    public void addNewTripSuggest(String input) {
+        String[] inputs = input.split(",");
+        int startHour = Integer.parseInt(inputs[3].split(":")[0]);
+        Route newTripSuggestRoute = new Route();
+        String stringPath = setInputPathToSystemStylePath(inputs[1]);
+        newTripSuggestRoute.setPath(stringPath);
+        int departureDayNumber = 0;
+        int ppk = 0;
+        int tripScheduleTypeInt = 0;
+        int driverCapacity = 0;
 
-    public String getRequestValidationErrorMessage () {
-        return validator.getAddNewTripRequestErrorMessage();
+        try {
+            departureDayNumber = Integer.valueOf(inputs[2]);
+            tripScheduleTypeInt = Integer.valueOf(inputs[4]);
+            ppk = Integer.valueOf(inputs[5]);
+            driverCapacity = Integer.valueOf(inputs[6]);
+        }
+        catch (NumberFormatException e) {
+            addErrorMessageToMenuOrder("NumberFormatException occur ");
+        }
+        TripSuggest newSuggest = new TripSuggest(inputs[0], newTripSuggestRoute, departureDayNumber, startHour,
+                tripScheduleTypeInt , ppk, driverCapacity);
+
+        tripSuggestUtil.addSuggestTrip(newSuggest);
     }
 
     public String getRequestValidationSuccessMessage () {
@@ -222,21 +258,9 @@ public class EngineManager {
         return str.toString();
     }
 
-    public boolean validateChooseRequestAndAmountOfSuggestedTripsInput(String input) {
-       return validator.validateChooseRequestAndAmountOfSuggestedTripsInput(input);
-    }
-
     public boolean validateRequestIDIsExist(String input) {
         Integer requestID = Integer.parseInt(input);
         return tripRequestUtil.isRequestIDExist(requestID);
-    }
-
-    public String getChooseRequestAndAmountOfSuggestedTripsErrorMessage() {
-        return validator.getChooseRequestAndAmountOfSuggestedTripsErrorMessage();
-    }
-
-    public void deleteNewTripRequestErrorMessage() {
-        validator.deleteErrorMessageOfAddNewTripRequest();
     }
 
     public TripSuggest[] findPotentialMatchToRequestTrip(String input) {
@@ -279,35 +303,22 @@ public class EngineManager {
         return tripSuggestUtil.getAllSuggestedTrips();
     }
 
-    public String getChoosePotentialTripInputErrorMessage() {
-        return validator.getChoosePotentialTripInputErrorMessage();
-    }
-
-    public boolean validateChoosePotentialTripInput(String input, TripSuggest[] potentialSuggestedTrips) {
-        return validator.validateChoosePotentialTripInput(input, potentialSuggestedTrips);
-    }
-
     public boolean validateMenuInput(String input) {
         if(validateMenuOrder(input)) {
             return validator.validateMenuInput(input);
         }
         else {
-            menuOrderErrorMessage = "XML file didn't load yet, please load the file and try again.\n";
+            menuOrderErrorMessage.add( "XML file didn't load yet, please load the file and try again.\n");
             return false;
         }
-
     }
 
     private boolean validateMenuOrder(String input) {
         return true;
     }
 
-    public String getMenuErrorMessage() {
+    public StringBuilder getMenuErrorMessage() {
         return validator.getMenuErrorMessage();
-    }
-
-    public void deleteChooseRequestAndAmountErrorMessage () {
-        validator.deleteChooseRequestAndAmountErrorMessage();
     }
 
     public String matchRequestToSuggest(String input, TripSuggest[] potentialSuggestedTrips, String requestIDAndAmountToMatch) {
@@ -324,5 +335,75 @@ public class EngineManager {
         TripRequest tripRequest = tripRequestUtil.getTripRequestByID(requestID);
         return matchingUtil.matchRequestToSuggest(tripSuggest, tripRequest);
     }
-}
 
+    public void addErrorMessageToMenuOrder(String errorMessage) {
+        if(this.menuOrderErrorMessage == null) {
+            this.menuOrderErrorMessage = new LinkedList<>();
+        }
+        menuOrderErrorMessage.add(errorMessage);
+    }
+
+    public void setMenuOrderErrorMessage(List<String> menuOrderErrorMessage) {
+        this.menuOrderErrorMessage = menuOrderErrorMessage;
+    }
+
+    public List<String> getMenuOrderErrorMessage() {
+        return menuOrderErrorMessage;
+    }
+
+    public String setInputPathToSystemStylePath(String dotPath) {
+        return dotPath.replace('.',',');
+    }
+
+
+//---------------------------- RequestValidator Section ----------------------------
+
+    public boolean validateTripRequestInput(String input) {
+        return validator.getRequestValidator().validateTripRequestInput(input);
+    }
+
+    public String getRequestValidationErrorMessage () {
+        return validator.getRequestValidator().getAddNewTripRequestErrorMessage();
+    }
+
+    public boolean validateChooseRequestAndAmountOfSuggestedTripsInput(String input) {
+        return validator.getRequestValidator().validateChooseRequestAndAmountOfSuggestedTripsInput(input);
+    }
+
+    public String getChooseRequestAndAmountOfSuggestedTripsErrorMessage() {
+        return validator.getRequestValidator().getChooseRequestAndAmountOfSuggestedTripsErrorMessage();
+    }
+
+    public void deleteChooseRequestAndAmountErrorMessage () {
+        validator.getRequestValidator().deleteChooseRequestAndAmountErrorMessage();
+    }
+
+    public void deleteNewTripRequestErrorMessage() {
+        validator.getRequestValidator().deleteErrorMessageOfAddNewTripRequest();
+    }
+
+    public String getChoosePotentialTripInputErrorMessage() {
+        return validator.getRequestValidator().getChoosePotentialTripInputErrorMessage();
+    }
+
+    public boolean validateChoosePotentialTripInput(String input, TripSuggest[] potentialSuggestedTrips) {
+        return validator.getRequestValidator().validateChoosePotentialTripInput(input, potentialSuggestedTrips);
+    }
+
+//---------------------------- SuggestValidator Section ----------------------------
+    public boolean validateTripSuggestInput(String input, HashSet<String> allStationsLogicNames) {
+        return validator.getSuggestValidator().validateTripSuggestInput(input, allStationsLogicNames);
+    }
+
+    public StringBuilder getSuggestValidationErrorMessage () {
+        return validator.getSuggestValidator().getAddNewTripSuggestErrorMessage();
+    }
+
+    public void deleteNewTripSuggestErrorMessage() {
+        validator.getSuggestValidator().deleteErrorMessageOfAddNewTripSuggest();
+    }
+
+    public static TripSuggestUtil getTripSuggestUtil() {
+        return tripSuggestUtil;
+    }
+}

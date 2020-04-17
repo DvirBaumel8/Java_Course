@@ -21,13 +21,47 @@ public class TripSuggestUtil {
 
     public void convertPlannedTripsToSuggestedTrips (List<TransPoolTrip> plannedTrips) {
         for(TransPoolTrip trip : plannedTrips) {
-            TripSuggest tripSuggest = new TripSuggest(trip.getOwner(), trip.getCapacity(), trip.getPPK(), trip.getRoute(), trip.getScheduling(), nextSuggestID);
+            int ppk =  Integer.valueOf(trip.getPPK());
+            int tripScheduleTypeInt = getTripScheduleTypeInt(trip.getScheduling().getRecurrences());
+            TripSuggest tripSuggest = new TripSuggest(trip.getOwner(), trip.getRoute(),
+                    trip.getScheduling().getHourStart(), trip.getScheduling().getDayStart(), tripScheduleTypeInt, ppk,
+                    trip.getCapacity());
             suggestedTrips.put(tripSuggest, nextSuggestID);
             nextSuggestID++;
         }
     }
 
+    public void addSuggestTrip(TripSuggest suggestTrip) {
+        suggestTrip.setSuggestID(nextSuggestID);
+        suggestedTrips.put(suggestTrip, nextSuggestID);
+        nextSuggestID++;
+    }
+
     public Map<TripSuggest, Integer> getAllSuggestedTrips () {
         return suggestedTrips;
+    }
+
+    int getTripScheduleTypeInt (String tripScheduleType) {
+        int res = 0;
+        switch(tripScheduleType)
+        {//here need to change t
+            case "One time":
+                res = 1;
+                break;
+            case "Daily":
+                res = 2;
+                break;
+            case "Bi day":
+                res = 3;
+                break;
+            case "Weekly":
+                res = 4;
+                break;
+            case "Monthly":
+                res = 5;
+                break;
+        }
+
+        return res;
     }
 }

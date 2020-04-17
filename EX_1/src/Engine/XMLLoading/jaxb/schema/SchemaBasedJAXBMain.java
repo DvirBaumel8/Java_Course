@@ -8,18 +8,19 @@ import javax.xml.bind.Unmarshaller;
 import java.io.BufferedInputStream;
 import java.io.FileDescriptor;
 import java.io.InputStream;
+import java.util.List;
 
 public class SchemaBasedJAXBMain {
 
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "Engine.XMLLoading.jaxb.schema.generated";
 
-    public TransPool init() {
+    public TransPool init(List<String> errors) {
         InputStream inputStream = SchemaBasedJAXBMain.class.getResourceAsStream("/resources/master.xml");
         try {
             return deserializeFrom(inputStream);
         }
         catch (JAXBException e) {
-            e.printStackTrace();
+            errors.add(e.getErrorCode());
         }
         return null;
     }

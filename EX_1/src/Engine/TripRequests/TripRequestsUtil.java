@@ -1,5 +1,7 @@
 package Engine.TripRequests;
 
+import Engine.TripSuggestUtil.TripSuggest;
+
 import java.util.HashMap;
 import java.util.Map;
 
