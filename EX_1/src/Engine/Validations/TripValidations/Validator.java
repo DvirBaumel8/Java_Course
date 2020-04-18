@@ -47,7 +47,30 @@ public class Validator {
             return false;
         }
         if(!isXMLLoaded) {
-
+            if(input > 1 && input < 7) {
+                switch(input) {
+                    case 2: {
+                        this.menuErrorMessage.append("Sorry, you can't add new trip request before loading xmk file to the system, please try again.");
+                        return false;
+                    }
+                    case 3:{
+                        this.menuErrorMessage.append("Sorry, you can't add new trip suggest before loading xmk file to the system, please try again.");
+                        return false;
+                    }
+                    case 4: {
+                        this.menuErrorMessage.append("Sorry, you can't choose to display statuses of all suggested trips before loading xmk file to the system, please try again.");
+                        return false;
+                    }
+                    case 5:{
+                        this.menuErrorMessage.append("Sorry, you can't choose to display statuses of all requests trips before loading xmk file to the system, please try again.");
+                        return false;
+                    }
+                    case 6: {
+                        this.menuErrorMessage.append("Sorry, match trip requests before loading xmk file to the system, please try again.");
+                        return false;
+                    }
+                }
+            }
         }
         return true;
     }
