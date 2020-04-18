@@ -1,15 +1,14 @@
-package Engine.ValidationManager;
+package Engine.Validations.TripValidations;
 
 import Engine.Manager.EngineManager;
 import Engine.TripSuggestUtil.TripSuggest;
 
 public class RequestValidator extends ActionValidator {
     private StringBuilder addNewTripRequestErrorMessage;
-    //add here the general errors in the end
     private StringBuilder chooseRequestAndAmountOfSuggestedTripsErrorMessage;
     private String choosePotentialTripInputErrorMessage;
 
-    public static int TRIP_REQUEST_INPUT_LIMIT = 4;
+    private static final int TRIP_REQUEST_INPUT_LIMIT = 5;
 
     public RequestValidator() {
         this.addNewTripRequestErrorMessage = new StringBuilder();
@@ -37,9 +36,13 @@ public class RequestValidator extends ActionValidator {
         if(!validateDestination(inputs[2])) {
             isValid = false;
         }
-        if(!super.validateStartingTime(inputs[3])) {
+        if(!super.validateTime(inputs[3])) {
             isValid = false;
         }
+        if(!super.validateTime(inputs[4])) {
+            isValid = false;
+        }
+
         return isValid;
     }
 

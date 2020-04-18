@@ -12,11 +12,9 @@ public class TransPoolManager {
     private Scanner scanner = new Scanner(System.in);
     private boolean isXMLLoaded = false;
     DateSystemManger dateSystemManger = null;
-    private static boolean isXMLFileLoaded;
 
     private TransPoolManager() {
         dateSystemManger = DateSystemManger.getInstance();
-        isXMLFileLoaded = false;
     }
 
     public static TransPoolManager getTransPoolManagerInstance() {
@@ -32,96 +30,71 @@ public class TransPoolManager {
 
         switch(userChoice) {
             case 1: {
-                List<String> errors = null;
-                System.out.println("Please copy your full path to master.xml file here for checking");
-                try {
-                    String myPathToTheXMLFile = scanner.nextLine();
-                    errors = engineManager.LoadXML(myPathToTheXMLFile);
-                    this.isXMLFileLoaded = true;
-                }
-                catch (InputMismatchException e) {
-                    errors = addAndValidErrorList(errors, e.getMessage());
-                }
-                catch (Exception e) {
-                    errors = addAndValidErrorList(errors, e.getMessage());
-                }
-                finally {
-                    printErrorList(errors);
-                    run();
-                }
-                break;
-            }
+                List<String> errors = new ArrayList<>();
 
-            case 2: {
-                if(this.isXMLLoaded) {
-                    String input = null;
-                    boolean isValidInput = false;
-                    String allStationsNames = engineManager.getAllStationsName();
+                System.out.println("Please copy your full path to master.xml file.");
 
-                    while(!isValidInput) {
-                        printAddNewTripRequestMenu(allStationsNames);
-                        input = scanner.nextLine();
-                        isValidInput = engineManager.validateTripRequestInput(input);
-                        if(isValidInput) {
-                            if(input.equals("b")) {
-                                run();
-                                break;
-                            }
-                            System.out.println(engineManager.getRequestValidationSuccessMessage());
-                        }
-                        else {
-                            System.out.println(engineManager.getRequestValidationErrorMessage());
-                            engineManager.deleteNewTripRequestErrorMessage();
-                        }
-                    }
-                    newTripRequestAddedSuccessfully();
+                String myPathToTheXMLFile = scanner.nextLine();
+                errors = engineManager.LoadXML(myPathToTheXMLFile, errors);
+                if(errors.size() == 0) {
+                    System.out.println(engineManager.getXMLValidationsSuccessMessage());
                 }
                 else {
-                    printFailedLoadXMLMessage();
+                    System.out.println(errors);
                 }
                 run();
                 break;
             }
 
-            case 3:{
-                if(this.isXMLLoaded) {
-                    try {
-                        String input = null;
-                        boolean isValidInput = false;
-                        String allStationsNames = engineManager.getAllStationsName();
-                        HashSet<String> allStationsLogicNames = engineManager.getAllLogicStationsName();
+            case 2: {
+                String input;
+                boolean isValidInput = false;
+                String allStationsNames = engineManager.getAllStationsName();
+                while(!isValidInput) {
+                    printAddNewTripRequestMenu(allStationsNames);
+                    input = scanner.nextLine();
+                    isValidInput = engineManager.validateTripRequestInput(input);
+                    if(isValidInput) {
+                        if(input.equals("b")) {
+                            run();
+                            break;
+                        }
+                        engineManager.addNewTripRequest(input);
+                        System.out.println(engineManager.getRequestValidationSuccessMessage());
+                    }
+                    else {
+                        System.out.println(engineManager.getRequestValidationErrorMessage());
+                        engineManager.deleteNewTripRequestErrorMessage();
+                    }
+                }
+                run();
+                break;
+            }
 
-                        while(!isValidInput) {
-                            printAddNewTripSuggestMenu(allStationsNames);
-                            input = scanner.nextLine();
-                            isValidInput = engineManager.validateTripSuggestInput(input, allStationsLogicNames);
-                            if(isValidInput) {
-                                if(input.equals("b")) {
-                                    run();
-                                    break;
-                                }
-                                System.out.println(engineManager.getSuggestValidationErrorMessage());
-                            }
-                            else {
-                                System.out.println(engineManager.getSuggestValidationErrorMessage());
-                                engineManager.deleteNewTripRequestErrorMessage();
-                            }
+            case 3: {
+                String input = null;
+                boolean isValidInput = false;
+                String allStationsNames = engineManager.getAllStationsName();
+                HashSet<String> allStationsLogicNames = engineManager.getAllLogicStationsName();
+
+                while(!isValidInput) {
+                    printAddNewTripSuggestMenu(allStationsNames);
+                    input = scanner.nextLine();
+                    isValidInput = engineManager.validateTripSuggestInput(input, allStationsLogicNames);
+                    if(isValidInput) {
+                        if(input.equals("b")) {
+                            run();
+                            break;
                         }
                         engineManager.addNewTripSuggest(input);
+                        System.out.println(engineManager.getSuggestValidationSuccesMessage());
                     }
-                    catch (Exception e) {
-                        printErrorList(engineManager.getMenuOrderErrorMessage());
+                    else {
+                        System.out.println(engineManager.getSuggestValidationErrorMessage());
+                        engineManager.deleteSuggestTripValidationErrorMessage();
                     }
-                    finally {
-                        engineManager.deleteNewTripRequestErrorMessage();
-                        engineManager.setMenuOrderErrorMessage(null);
-                        run();
-                    }
-                    }
-                else {
-                    printFailedLoadXMLMessage();
-                    run();
                 }
+                run();
                 break;
             }
 
@@ -138,7 +111,6 @@ public class TransPoolManager {
             }
 
             case 6: {
-                boolean isValidInput = false;
                 String input, requestIDAndAmountToMatch;
 
                 requestIDAndAmountToMatch = getValidRequestIDAndAmountToMatch();
@@ -167,9 +139,12 @@ public class TransPoolManager {
     }
 
 
-    private String getValidChooseOfSuggestedTrip(String input, TripSuggest[] potentialSuggestedTrips) {
+    private String getValidChooseOfSuggestedTrip(String requestIDAndAmount, TripSuggest[] potentialSuggestedTrips) {
         boolean isValid = false;
-        String potentialSuggestedTripsStr = engineManager.convertPotentialSuggestedTripsToString(potentialSuggestedTrips);
+        String input = null;
+        String[] inputs = requestIDAndAmount.split(",");
+
+        String potentialSuggestedTripsStr = engineManager.convertPotentialSuggestedTripsToString(potentialSuggestedTrips, inputs[0]);
 
         while(!isValid) {
             System.out.println(potentialSuggestedTripsStr);
@@ -259,34 +234,26 @@ public class TransPoolManager {
 
     public void printAddNewTripRequestMenu(String allStationsNames) {
         System.out.println(allStationsNames);
-        System.out.println("Please insert the following details separated with ',' (Insert 'b' to go back" +
-                " to the main menu):\n - Name of owner \n - Source station \n - Destination station \n " +
-                "- Starting time of trip.");
-    }
-
-    public void newTripRequestAddedSuccessfully() {
-        System.out.println(engineManager.getSuggestValidationErrorMessage());
-        engineManager.deleteNewTripSuggestErrorMessage();
+        System.out.println("Please insert the following details separated with ',' (Insert 'b' to go back to the main menu):\n - Name of owner \n - Source station \n - Destination station \n - Starting time of trip.\n- arrival time of the trip");
     }
 
     public void printAddNewTripSuggestMenu(String allStationsNames) {
         System.out.println(allStationsNames);
         System.out.println("Please insert the following details separated with ','" +
                 " (Insert 'b' to go back to the main menu):\n" +
-                "- Name of owner of suggested trip \n" +
-                "- Route of suggested trip separate each station by dot (.) -> Example A.B.C  \n" +
-                "- Departure Day Number \n" +
-                "- Departure Time: Hour at 24 (0-23) and minutes in multiples of 5 (0 - 55)\n" +
-                "-Trip schedule type: \n" +
-                "  *For one time only press 1 \n" +
-                "  *For daily press 2 \n" +
-                "  *For bi daily press 3 \n" +
-                "  *For weekly press 4 \n" +
-                "  *For monthly press 5 \n" +
-                "-PPK: Cost of travel per kilometer \n" +
-                "-Possible passenger capacity\n" +
-                "suggested trip input EXAMPLE:\n" +
-                "Ohad,A.C.B,3,13:25,4,30,2\n");
+                "- Suggest trip owner name \n" +
+                "- Route of suggested trip separate with '.') \n" +
+                "- Arrival Day Number \n" +
+                "- Arrival Time: Hour at 24 (0 - 23) and minutes in multiples of 5 (0 - 55)\n" +
+                "- Trip schedule type: \n" +
+                "  * insert 1 - one time \n" +
+                "  * insert 2 - daily \n" +
+                "  * press 3 - twice a week \n" +
+                "  * press 4 - weekly \n" +
+                "  * press 5 - monthly \n" +
+                "- PPK: cost of trip per kilometer \n" +
+                "- Passengers capacity\n" +
+                " EXAMPLE: Ohad,A.C.B,3,13:25,4,30,2\n");
     }
 
     public void printFailedLoadXMLMessage() {

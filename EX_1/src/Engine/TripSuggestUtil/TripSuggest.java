@@ -3,6 +3,7 @@ package Engine.TripSuggestUtil;
 import Engine.Manager.EngineManager;
 import Engine.TripRequests.TripRequest;
 import Engine.XMLLoading.jaxb.schema.generated.Route;
+import com.sun.xml.internal.ws.api.pipe.Engine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,46 +13,21 @@ public class TripSuggest {
     private int suggestID;
     private String TripOwnerName;
     private String tripRoute;
-    private int departureDayNumber;
+    private int arrivalDayNumber;
     private int startingHour;
     private TripScheduleType tripScheduleType;
-    int ppk;
-            //price for each km
+    private int ppk;
     private int remainingCapacity;
-
     private int tripPrice;
     private int arrivalHour;
     private List<Integer> passengers;
     private List<StopStationDetails> stopStationsDetails;
     private int requiredFuel;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TripSuggest that = (TripSuggest) o;
-        return suggestID == that.suggestID &&
-                tripPrice == that.tripPrice &&
-                startingHour == that.startingHour &&
-                arrivalHour == that.arrivalHour &&
-                remainingCapacity == that.remainingCapacity &&
-                requiredFuel == that.requiredFuel &&
-                TripOwnerName.equals(that.TripOwnerName) &&
-                tripRoute.equals(that.tripRoute) &&
-                passengers.equals(that.passengers) &&
-                stopStationsDetails.equals(that.stopStationsDetails);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(suggestID, TripOwnerName, tripRoute, tripPrice, startingHour, arrivalHour, remainingCapacity, passengers, stopStationsDetails, requiredFuel);
-    }
-
-    public TripSuggest(String ownerName, Route route, int departureDayNumber, int startingHour, int tripScheduleTypeInt,
-                       int ppk, int driverCapacity) {
+    public TripSuggest(String ownerName, Route route, int arrivalDayNumber, int startingHour, int tripScheduleTypeInt, int ppk, int driverCapacity) {
         this.TripOwnerName = ownerName;
         this.tripRoute = route.getPath();
-        this.departureDayNumber = departureDayNumber;
+        this.arrivalDayNumber = arrivalDayNumber;
         this.startingHour = startingHour;
         this.setTripScheduleTypeByInt(tripScheduleTypeInt);
         this.ppk = ppk;
@@ -147,6 +123,12 @@ public class TripSuggest {
             else {
                 str.append("Passenger is going down on this station\n\n");
             }
+            index++;
+        }
+
+        if (index == 1) {
+            str.setLength(0);
+            str.append("No passengers\n");
         }
 
         return str.toString();
@@ -170,14 +152,6 @@ public class TripSuggest {
         ONE_TIME_ONLY, DAILY, BI_DAILY, WEEKLY, MONTHLY;
     }
 
-    public TripScheduleType getTripScheduleType() {
-        return tripScheduleType;
-    }
-
-    public void setTripScheduleType(TripScheduleType tripScheduleType) {
-        this.tripScheduleType = tripScheduleType;
-    }
-
     public void setTripScheduleTypeByInt(int tripScheduleType) {
         switch (tripScheduleType) {
             case 1:
@@ -196,5 +170,38 @@ public class TripSuggest {
                 this.tripScheduleType = TripScheduleType.MONTHLY;
                 break;
         }
+    }
+
+    public int getArrivalHourToSpecificStation(String stationName) {
+        int arrivalHour = startingHour;
+        String[] paths = tripRoute.split(",");
+
+        for(int i = 0; i < paths.length - 1; i++) {
+            arrivalHour += EngineManager.getEngineManagerInstance().calcArrivalHourToRoute(paths[i], paths[i+1], arrivalHour);
+        }
+
+        return arrivalHour;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TripSuggest that = (TripSuggest) o;
+        return suggestID == that.suggestID &&
+                tripPrice == that.tripPrice &&
+                startingHour == that.startingHour &&
+                arrivalHour == that.arrivalHour &&
+                remainingCapacity == that.remainingCapacity &&
+                requiredFuel == that.requiredFuel &&
+                TripOwnerName.equals(that.TripOwnerName) &&
+                tripRoute.equals(that.tripRoute) &&
+                passengers.equals(that.passengers) &&
+                stopStationsDetails.equals(that.stopStationsDetails);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(suggestID, TripOwnerName, tripRoute, tripPrice, startingHour, arrivalHour, remainingCapacity, passengers, stopStationsDetails, requiredFuel);
     }
 }

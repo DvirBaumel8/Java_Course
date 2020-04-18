@@ -13,23 +13,29 @@ import java.util.List;
 public class SchemaBasedJAXBMain {
 
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "Engine.XMLLoading.jaxb.schema.generated";
+    private String errorMessage;
 
-    public TransPool init(List<String> errors) {
+    public TransPool init(String pathToXMLFile) {
         InputStream inputStream = SchemaBasedJAXBMain.class.getResourceAsStream("/resources/master.xml");
-        try {
-            return deserializeFrom(inputStream);
-        }
-        catch (JAXBException e) {
-            errors.add(e.getErrorCode());
-        }
-        return null;
+        return deserializeFrom(inputStream);
     }
 
-    private TransPool deserializeFrom(InputStream in) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
-        Unmarshaller u = jc.createUnmarshaller();
-        TransPool transPool = (TransPool) u.unmarshal(in);
-        System.out.println(transPool);
+    private TransPool deserializeFrom(InputStream in)  {
+        JAXBContext jc = null;
+        TransPool transPool = null;
+        try {
+           jc  = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
+           Unmarshaller u = jc.createUnmarshaller();
+            transPool = (TransPool) u.unmarshal(in);
+        }
+        catch(Exception e) {
+            errorMessage = String.format("Failed to init system, please supply a valid path.\n");
+        }
+
         return transPool;
+    }
+
+    public String getErrorMessage(){
+        return errorMessage;
     }
 }

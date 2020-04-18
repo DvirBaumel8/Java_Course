@@ -1,4 +1,4 @@
-package Engine.ValidationManager;
+package Engine.Validations.TripValidations;
 
 import Engine.Manager.EngineManager;
 import Engine.XMLLoading.jaxb.schema.generated.Stop;
@@ -30,7 +30,7 @@ public class ActionValidator {
     }
 
 
-    public boolean validateStartingTime (String input) {
+    public boolean validateTime (String input) {
         Pattern p = Pattern.compile("[0-2][0-9]:[0-5][0-9]");
         Matcher matcher = p.matcher(input);
         if(matcher.matches()) {
