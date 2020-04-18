@@ -33,7 +33,7 @@ public class SuggestValidator extends ActionValidator {
         if (!validateDepartureDayNumber(inputs[2])) {
             isValid = false;
         }
-        if (!validateStartingTime(inputs[3])) {
+        if (!validateTime(inputs[3])) {
             //check if its : 24 (0-23) and minutes in multiples of 5 (0 - 55)
             isValid = false;
         }
