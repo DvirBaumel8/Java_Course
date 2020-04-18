@@ -45,6 +45,9 @@ public class MatchingUtil {
                 }
             }
         }
+        if(counter == 0) {
+            return null;
+        }
         return potentialSuggestedTrips;
     }
 

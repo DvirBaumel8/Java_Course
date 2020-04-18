@@ -24,7 +24,7 @@ public class RequestValidator extends ActionValidator {
             return true;
         }
         if(inputs.length != TRIP_REQUEST_INPUT_LIMIT) {
-            addNewTripRequestErrorMessage.append("Please insert 4 elements, try again.\n");
+            addNewTripRequestErrorMessage.append("Please insert 5 elements, try again.\n");
             return false;
         }
         if(!super.validateOwnerName(inputs[0])) {
