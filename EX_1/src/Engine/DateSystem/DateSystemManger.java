@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class DateSystemManger {
-    private static DateSystemManger dateSystemMangerSingle;
     Date startSystemDate = null;
     int startingDayNumber = -1;
 
@@ -16,12 +15,14 @@ public class DateSystemManger {
         startingDayNumber = cal.get(Calendar.DAY_OF_WEEK);
     }
 
+    /** thread safe */
     public static DateSystemManger getInstance()
     {
-        if (dateSystemMangerSingle == null)
-            dateSystemMangerSingle = new DateSystemManger();
+        return SingletonHelper.instance;
+    }
 
-        return dateSystemMangerSingle;
+    private static class SingletonHelper {
+        private static DateSystemManger instance = new DateSystemManger();
     }
 
     public Date getStartSystemDate() {

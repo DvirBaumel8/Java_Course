@@ -62,7 +62,7 @@ public class XMLValidationsImpl implements XMLValidator {
     @Override
     public boolean validateFileExistsAndXmlFile(String myPathToTheXMLFile) {
         File xml = null;
-            xml = new File(myPathToTheXMLFile);
+        xml = new File(myPathToTheXMLFile);
 
         boolean exists = xml.exists();
         return xml.getName().contains(".xml");
