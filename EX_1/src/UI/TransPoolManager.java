@@ -14,6 +14,7 @@ public class TransPoolManager {
     public static final short INPUT_EXIT = 7;
     public static final short INPUT_LOAD_XML = 1;
 
+
     private TransPoolManager() {
     }
 
