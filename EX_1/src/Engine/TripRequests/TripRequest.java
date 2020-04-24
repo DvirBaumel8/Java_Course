@@ -8,16 +8,18 @@ public class TripRequest {
     private String sourceStation;
     private String destinationStation;
     private int startingHour;
+    private int arrivalHour;
     private boolean isMatched;
     private TripSuggest matchTrip;
 
-    public TripRequest(String name, String sourceStation, String destinationStation, int startingHour) {
+    public TripRequest(String name, String sourceStation, String destinationStation, int startingHour, int arrivalHour) {
         this.OwnerName = name;
         this.sourceStation = sourceStation;
         this.destinationStation = destinationStation;
         this.startingHour = startingHour;
         this.isMatched = false;
         this.matchTrip = null;
+        this.arrivalHour = arrivalHour;
     }
 
     public String getNameOfOwner() {
@@ -64,5 +66,9 @@ public class TripRequest {
 
     public void setMatchTrip(TripSuggest matchTrip) {
         this.matchTrip = matchTrip;
+    }
+
+    public int getArrivalHour() {
+        return arrivalHour;
     }
 }

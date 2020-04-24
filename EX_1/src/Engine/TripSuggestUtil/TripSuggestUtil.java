@@ -21,13 +21,10 @@ public class TripSuggestUtil {
 
     public void convertPlannedTripsToSuggestedTrips (List<TransPoolTrip> plannedTrips) {
         for(TransPoolTrip trip : plannedTrips) {
-            int ppk =  Integer.valueOf(trip.getPPK());
+            int ppk = trip.getPPK();
             int tripScheduleTypeInt = getTripScheduleTypeInt(trip.getScheduling().getRecurrences());
-            TripSuggest tripSuggest = new TripSuggest(trip.getOwner(), trip.getRoute(),
-                    trip.getScheduling().getHourStart(), trip.getScheduling().getDayStart(), tripScheduleTypeInt, ppk,
-                    trip.getCapacity());
-            suggestedTrips.put(tripSuggest, nextSuggestID);
-            nextSuggestID++;
+            TripSuggest tripSuggest = new TripSuggest(trip.getOwner(), trip.getRoute(), trip.getScheduling().getDayStart(), trip.getScheduling().getHourStart(), tripScheduleTypeInt, ppk, trip.getCapacity());
+            addSuggestTrip(tripSuggest);
         }
     }
 

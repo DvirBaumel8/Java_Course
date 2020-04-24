@@ -1,15 +1,14 @@
-package Engine.ValidationManager;
+package Engine.Validations.TripValidations;
 
 import Engine.Manager.EngineManager;
 import Engine.TripSuggestUtil.TripSuggest;
 
 public class RequestValidator extends ActionValidator {
     private StringBuilder addNewTripRequestErrorMessage;
-    //add here the general errors in the end
     private StringBuilder chooseRequestAndAmountOfSuggestedTripsErrorMessage;
     private String choosePotentialTripInputErrorMessage;
 
-    public static int TRIP_REQUEST_INPUT_LIMIT = 4;
+    private static final int TRIP_REQUEST_INPUT_LIMIT = 5;
 
     public RequestValidator() {
         this.addNewTripRequestErrorMessage = new StringBuilder();
@@ -25,21 +24,34 @@ public class RequestValidator extends ActionValidator {
             return true;
         }
         if(inputs.length != TRIP_REQUEST_INPUT_LIMIT) {
-            addNewTripRequestErrorMessage.append("Please insert 4 elements, try again.\n");
+            addNewTripRequestErrorMessage.append("Please insert 5 elements, try again.\n");
             return false;
         }
         if(!super.validateOwnerName(inputs[0])) {
             isValid = false;
         }
-        if(!validateSource(inputs[1])) {
+        if(!(inputs[1] == inputs[2])) {//dest and source stations are not the same
+            if(!validateSource(inputs[1])) {
+                isValid = false;
+            }
+            if(!validateDestination(inputs[2])) {
+                isValid = false;
+            }
+        }
+        else {
+            addNewTripRequestErrorMessage.append("You entered same  Source station and Destination station!!\n");
+                    isValid = false;
+        }
+        if(!super.validateTime(inputs[3])) {
             isValid = false;
         }
-        if(!validateDestination(inputs[2])) {
+        if(!super.validateTime(inputs[4])) {
             isValid = false;
         }
-        if(!super.validateStartingTime(inputs[3])) {
-            isValid = false;
-        }
+
+        addNewTripRequestErrorMessage.append(this.getGeneralErrorMessage());
+        this.setGeneralErrorMessage(new StringBuilder());
+
         return isValid;
     }
 
@@ -112,7 +124,7 @@ public class RequestValidator extends ActionValidator {
             return true;
         }
         else {
-            addNewTripRequestErrorMessage.append("*Source isn't exist in the system\n");
+            addNewTripRequestErrorMessage.append("Source isn't exist in the system\n");
             return false;
         }
     }

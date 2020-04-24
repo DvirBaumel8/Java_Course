@@ -3,102 +3,87 @@ package Engine.XMLValidations;
 import Engine.XMLLoading.jaxb.schema.generated.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
-public class XMLValidationsImpl implements XMLValidator {
+public class XMLValidationsImpl implements XMLValidations {
     private static final String VALID_XML_MESSAGE = "XML file was loaded to the system successfully";
-    private String errorMessage;
-    TransPool transPool;
-    Map<String, Stop> existingAndDefinedStops = null;
+    private TransPool transPool;
 
     public XMLValidationsImpl(TransPool transPool) {
-        this.transPool = transPool;
     }
 
-    public List<String> validateXmlFile(String myPathToTheXMLFile) {
-        List<String> errors = null;
+    public boolean validateXmlFile(TransPool transPoolTOCheck, List<String> errors, String pathToTheXMLFile) {
+        transPool = transPoolTOCheck;
         List<Stop> stops = transPool.getMapDescriptor().getStops().getStop();
         List<Path> paths = transPool.getMapDescriptor().getPaths().getPath();
+
         List<TransPoolTrip> transPoolTrips = transPool.getPlannedTrips().getTransPoolTrip();
         MapDescriptor mapDescriptor = transPool.getMapDescriptor();
+
         int mapLength = mapDescriptor.getMapBoundries().getLength();
         int mapWidth = mapDescriptor.getMapBoundries().getWidth();
 
-        if (!validateFileExistsAndXmlFile(myPathToTheXMLFile)) {
-            errors = checkIfErrorListNullableAndInitialize(errors);
-            errors.add("ERROR TYPE: File Doesnt exist/Not XML type");
+        boolean isValid = true;
+
+        if(!validateFileExistsAndXmlFile(pathToTheXMLFile)) {
+            errors.add("File doesnt exists/XmlFile\n");
+            isValid = false;
         }
         if (!validateMapSize(mapLength, mapWidth)) {
-            errors = checkIfErrorListNullableAndInitialize(errors);
-            errors.add("ERROR TYPE: Map size ranges isnt from 6 to 100, inclusive, for both length and width");
+            errors.add("Map size ranges isn't from 6 to 100, inclusive, for both length and width\n");
+            isValid = false;
         }
-        if (!validateUniqueNameStations(stops, mapLength, mapWidth)) {
-            errors = checkIfErrorListNullableAndInitialize(errors);
-            errors.add("ERROR TYPE: Each station doesnt have its own unique name");
+        if (!validateUniqueNameStations(stops)) {
+            errors.add("Each station doesnt have its own unique name\n");
+            isValid = false;
         }
         if (!validateStationsBorders(stops, mapLength, mapWidth)) {
-            errors = checkIfErrorListNullableAndInitialize(errors);
-            errors.add("ERROR TYPE: Each station is NOT defined within the boundaries of the map");
+            errors.add("Each station is NOT defined within the boundaries of the map\n");
+            isValid = false;
         }
         if (!validateStationsUniqueLocations(stops)) {
-            errors = checkIfErrorListNullableAndInitialize(errors);
-            errors.add("ERROR TYPE: Each station is NOT a unique location" +
-                    " (no 2 stations located in the same coordinates)");
+            errors.add("Each station is NOT a unique location (no 2 stations located in the same coordinates)\n");
+            isValid = false;
         }
         if (!validateEachWayDefinedFromDefinedStations(paths)) {
-            errors = checkIfErrorListNullableAndInitialize(errors);
-            errors.add("ERROR TYPE:Each route is NOT defined as a route" +
-                    " that passes only through defined stations and routes");
+            errors.add("Each route is NOT defined as a route that passes only through defined stations and routes\n");
+            isValid = false;
         }
         if (!validateEachRoutePassesOnlyThroughDefinedStations(transPoolTrips, mapDescriptor)) {
-            errors = checkIfErrorListNullableAndInitialize(errors);
-            errors.add("ERROR TYPE:Each route is NOT defined as a route" +
-                    " that passes only through defined stations and routes");
+            errors.add("Each route is NOT defined as a route that passes only through defined stations and routes\n");
+            isValid = false;
         }
-        return errors;
+        return isValid;
     }
 
     @Override
     public boolean validateFileExistsAndXmlFile(String myPathToTheXMLFile) {
-        File xml = null;
-        xml = new File(myPathToTheXMLFile);
-
-        boolean exists = xml.exists();
-        return xml.getName().contains(".xml");
-    }
-
-    public List<String>  checkIfErrorListNullableAndInitialize(List<String> errors) {
-        List<String> res = null;
-        if (errors == null) {
-            res = new LinkedList<>();
-            return res;
+        File xml;
+        try {
+            xml = new File(myPathToTheXMLFile);
+            return xml.exists() && xml.getName().contains(".xml");
         }
-        else {
-            return errors;
+        catch (Exception e) {
+            return false;
         }
     }
 
     @Override
     public boolean validateMapSize(int mapLength, int mapWidth) {
         boolean isMapSizeValidate = false;
-        if ((mapLength >= XMLValidator.MAP_BOUNDARIES[0] && mapLength <= XMLValidator.MAP_BOUNDARIES[1])
-                || (mapWidth >= XMLValidator.MAP_BOUNDARIES[0] && mapWidth <= XMLValidator.MAP_BOUNDARIES[1])) {
+        if ((mapLength >= XMLValidations.MAP_BOUNDARIES[0] && mapLength <= XMLValidations.MAP_BOUNDARIES[1])
+                || (mapWidth >= XMLValidations.MAP_BOUNDARIES[0] && mapWidth <= XMLValidations.MAP_BOUNDARIES[1])) {
             isMapSizeValidate = true;
         }
         return isMapSizeValidate;
     }
 
     @Override
-    public boolean validateUniqueNameStations(List<Stop> stops, int mapLength, int mapWidth) {
-        existingAndDefinedStops = new HashMap<>();
-        boolean isValidateUniqueStations = true;
-
+    public boolean validateUniqueNameStations(List<Stop> stops) {
+        Set<Stop> myStops = new HashSet<>();
         for (Stop stop : stops) {
-            if (existingAndDefinedStops.containsKey(stop.getName())) {
-                isValidateUniqueStations = false;
-            } else {
-                existingAndDefinedStops.put(stop.getName(), stop);
+            if(!myStops.add(stop)) {
+                return false;
             }
         }
 
@@ -136,15 +121,18 @@ public class XMLValidationsImpl implements XMLValidator {
 
     @Override
     public boolean validateEachWayDefinedFromDefinedStations(List<Path> paths) {
-        boolean isValidateUniqueLocation = true;
+        boolean isValida = true;
+
         for (Path path : paths) {
             String from = path.getFrom();
             String to = path.getTo();
-            if (!checkStopsValidations(from, to)) {
-                isValidateUniqueLocation = false;
+
+            if (!(checkStopStationExist(from) && checkStopStationExist(to))) {
+                isValida = false;
             }
         }
-        return isValidateUniqueLocation;
+
+        return isValida;
     }
 
     @Override
@@ -177,14 +165,16 @@ public class XMLValidationsImpl implements XMLValidator {
         return isRoutePassesOnlyThroughDefinedStations;
     }
 
-    public boolean checkStopsValidations(String from, String to) {
-        boolean isValid = false;
+    public boolean checkStopStationExist(String stationName) {
 
-        if (existingAndDefinedStops.containsKey(from) && existingAndDefinedStops.containsKey(to)) {
-            isValid = true;
+
+        for(Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
+            if(stop.getName().equals(stationName)) {
+                return true;
+            }
         }
 
-        return isValid;
+        return false;
     }
 
     public Map<String, List<String>> getPathValidOptions(List<Path> pathMapDescriptorList) {
@@ -269,5 +259,13 @@ public class XMLValidationsImpl implements XMLValidator {
         } else {
             return true;
         }
+    }
+
+    public static String getValidXmlMessage() {
+        return VALID_XML_MESSAGE;
+    }
+
+    public String getValidMessage() {
+        return VALID_XML_MESSAGE;
     }
 }
