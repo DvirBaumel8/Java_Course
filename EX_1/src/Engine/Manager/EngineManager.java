@@ -236,19 +236,11 @@ public class EngineManager {
         double arrivalHour = startingHour;
         for(Path path : transPool.getMapDescriptor().getPaths().getPath()) {
             if(path.getFrom().equals(pathFrom) && path.getTo().equals(pathTo)) {
-                double fraction = (double) path.getLength()/path.getSpeedLimit();
-                arrivalHour += changeToHoursFormat(fraction);
+                arrivalHour +=  (double) path.getLength()/path.getSpeedLimit();
             }
         }
         return arrivalHour;
-
     }
-
-    private double changeToHoursFormat(double fraction) {
-        //todo
-        return fraction;
-    }
-
 
     public String getAllNotMatchedRequestsTrip() {
         StringBuilder str = new StringBuilder();

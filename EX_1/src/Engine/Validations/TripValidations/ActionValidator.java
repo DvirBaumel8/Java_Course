@@ -43,6 +43,9 @@ public class ActionValidator {
             else if(index == 4) {
                 generalErrorMessage.append("Time template of trip arrival time isn't valid, template should be __:__ (12:34)\n");
             }
+            else {
+                generalErrorMessage.append("Time template isn't valid, template should be __:__ (12:34)\n");
+            }
             return false;
         }
     }
