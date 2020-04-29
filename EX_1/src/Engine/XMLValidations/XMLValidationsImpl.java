@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.*;
 
 public class XMLValidationsImpl implements XMLValidations {
-    private static final String VALID_XML_MESSAGE = "XML file was loaded to the system successfully";
+    private static final String VALID_XML_MESSAGE = "XML file was loaded to the system successfully\n";
     private TransPool transPool;
 
     public XMLValidationsImpl(TransPool transPool) {

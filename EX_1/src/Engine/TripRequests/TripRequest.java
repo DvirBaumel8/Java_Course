@@ -7,8 +7,8 @@ public class TripRequest {
     private String OwnerName;
     private String sourceStation;
     private String destinationStation;
-    private int startingHour;
-    private int arrivalHour;
+    private double startingHour;
+    private double arrivalHour;
     private boolean isMatched;
     private TripSuggest matchTrip;
 
@@ -31,7 +31,7 @@ public class TripRequest {
         return isMatched;
     }
 
-    public int getStartingHour() {
+    public double getStartingHour() {
         return startingHour;
     }
 
@@ -68,7 +68,7 @@ public class TripRequest {
         this.matchTrip = matchTrip;
     }
 
-    public int getArrivalHour() {
+    public double getArrivalHour() {
         return arrivalHour;
     }
 }

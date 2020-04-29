@@ -42,10 +42,11 @@ public class RequestValidator extends ActionValidator {
             addNewTripRequestErrorMessage.append("You entered same  Source station and Destination station!!\n");
                     isValid = false;
         }
-        if(!super.validateTime(inputs[3])) {
+        if(!super.validateTime(inputs[3], 3)) {
             isValid = false;
+
         }
-        if(!super.validateTime(inputs[4])) {
+        if(!super.validateTime(inputs[4], 4)) {
             isValid = false;
         }
 

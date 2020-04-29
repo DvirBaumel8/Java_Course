@@ -12,18 +12,18 @@ public class TripSuggest {
     private int suggestID;
     private String TripOwnerName;
     private String tripRoute;
-    private int arrivalDayNumber;
-    private int startingHour;
+    private double arrivalDayNumber;
+    private double startingHour;
     private TripScheduleType tripScheduleType;
     private int ppk;
     private int remainingCapacity;
     private int tripPrice;
-    private int arrivalHour;
+    private double arrivalHour;
     private List<Integer> passengers;
     private List<StopStationDetails> stopStationsDetails;
     private int requiredFuel;
 
-    public TripSuggest(String ownerName, Route route, int arrivalDayNumber, int startingHour, int tripScheduleTypeInt, int ppk, int driverCapacity) {
+    public TripSuggest(String ownerName, Route route, int arrivalDayNumber, double startingHour, int tripScheduleTypeInt, int ppk, int driverCapacity) {
         this.TripOwnerName = ownerName;
         this.tripRoute = route.getPath();
         this.arrivalDayNumber = arrivalDayNumber;
@@ -32,19 +32,24 @@ public class TripSuggest {
         this.ppk = ppk;
         this.remainingCapacity = driverCapacity;
         this.tripPrice = calculateTripPrice(ppk, route);
-        this.arrivalHour = calcArrivalHour(route);
+        this.arrivalHour = calcArrivalHour(route.getPath());
         this.passengers = new ArrayList<>();
         this.stopStationsDetails = new ArrayList<>();
         this.requiredFuel = calcRequiredFuel(route);
     }
 
-    private int calcArrivalHour(Route route) {
-        int sum = 0;
-        String[] paths = route.getPath().split(",");
+    private double calcArrivalHour(String path) {
+        double sum = this.startingHour;
+        String[] paths = path.split(",");
         for(int i = 0; i < paths.length - 1; i++) {
-            sum += EngineManager.getEngineManagerInstance().calcArrivalHourToRoute(paths[i], paths[i+1], this.startingHour);
+            sum = EngineManager.getEngineManagerInstance().calcArrivalHourToRoute(paths[i], paths[i+1], sum);
         }
-        return sum;
+        double fraction = sum % 1;
+        if(fraction > 0.6) {
+            sum = sum - 0.6;
+            sum++;
+        }
+        return sum - sum % 1;
     }
 
 
@@ -67,7 +72,7 @@ public class TripSuggest {
         return sum;
     }
 
-    public int getArrivalHour() {
+    public double getArrivalHour() {
         return arrivalHour;
     }
 
@@ -83,7 +88,7 @@ public class TripSuggest {
         return tripPrice;
     }
 
-    public int getStartingHour() {
+    public double getStartingHour() {
         return startingHour;
     }
 
@@ -171,15 +176,21 @@ public class TripSuggest {
         }
     }
 
-    public int getArrivalHourToSpecificStation(String stationName) {
-        int arrivalHour = startingHour;
+    public double getArrivalHourToSpecificStation(String stationName) {
         String[] paths = tripRoute.split(",");
+        StringBuilder pathToCalc = new StringBuilder();
 
-        for(int i = 0; i < paths.length - 1; i++) {
-            arrivalHour += EngineManager.getEngineManagerInstance().calcArrivalHourToRoute(paths[i], paths[i+1], arrivalHour);
+        for(int i =0; i < paths.length; i++) {
+            if(!paths[i].equals(stationName)) {
+                pathToCalc.append(paths[i]);
+                pathToCalc.append(",");
+            }
+            else {
+                pathToCalc.append(paths[i]);
+                break;
+            }
         }
-
-        return arrivalHour;
+        return calcArrivalHour(pathToCalc.toString());
     }
 
     @Override

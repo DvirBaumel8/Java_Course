@@ -30,14 +30,19 @@ public class ActionValidator {
     }
 
 
-    public boolean validateTime (String input) {
+    public boolean validateTime (String input, int index) {
         Pattern p = Pattern.compile("[0-2][0-9]:[0-5][0-9]");
         Matcher matcher = p.matcher(input);
         if(matcher.matches()) {
             return true;
         }
         else {
-            generalErrorMessage.append("Time template isn't valid, template should be __:__ (12:34)\n");
+            if(index == 3) {
+                generalErrorMessage.append("Time template of trip starting time isn't valid, template should be __:__ (12:34)\n");
+            }
+            else if(index == 4) {
+                generalErrorMessage.append("Time template of trip arrival time isn't valid, template should be __:__ (12:34)\n");
+            }
             return false;
         }
     }

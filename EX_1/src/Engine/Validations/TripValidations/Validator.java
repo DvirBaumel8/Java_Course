@@ -31,16 +31,16 @@ public class Validator {
            }
 
             catch(NumberFormatException ex) {
-                this.menuErrorMessage.append("Your choice was fraction (double) please choose Integer, try again..");
+                this.menuErrorMessage.append("Your choice was fraction (double) please choose Integer, try again..\n");
                 return false;
             }
             catch (Exception ex) {
-                this.menuErrorMessage.append("Your choice isn't a number, please try again..");
+                this.menuErrorMessage.append("Your choice isn't a number, please try again..\n");
                 return false;
             }
 
            if(input > 7 || input < 0 ) {
-               this.menuErrorMessage.append("Your choice isn't a number between 1-7, please try again..");
+               this.menuErrorMessage.append("Your choice isn't a number between 1-7, please try again..\n");
                isValidInput = false;
            }
 

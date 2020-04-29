@@ -155,7 +155,7 @@ public class TransPoolManager {
 
     public void printAddNewTripRequestMenu(String allStationsNames) {
         System.out.println(allStationsNames);
-        System.out.println("Please insert the following details separated with ',' (Insert 'b' to go back to the main menu):\n " +
+        System.out.println("Please insert the following details separated with ',' (Insert 'b' to go back to the main menu):\n" +
                 "- Name of owner\n" +
                 "- Source station\n" +
                 "- Destination station\n" +

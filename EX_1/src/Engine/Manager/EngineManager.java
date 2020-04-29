@@ -54,7 +54,7 @@ public class EngineManager {
             transPool = jax.init(pathToTheXMLFile);
         }
         catch (FileNotFoundException ex) {
-            errors.add(ex.getMessage());
+            errors.add("No such file or directory\n");
             return errors;
         }
 
@@ -94,7 +94,7 @@ public class EngineManager {
             str.append(String.format("Trip Owner - %s\n", trip.getKey().getTripOwnerName()));
             str.append(String.format("Trip Route - %s\n", trip.getKey().getTripRoute()));
             str.append(String.format("Trip Price - %s\n", trip.getKey().getTripPrice()));
-            str.append(String.format("Trip starting hour - %s\nTrip arrival hour - %s\n", trip.getKey().getStartingHour(), trip.getKey().getArrivalHour()));
+            str.append(String.format("Trip starting hour - %f\nTrip arrival hour - %f\n", trip.getKey().getStartingHour(), trip.getKey().getArrivalHour()));
             str.append(String.format("Trip available sits - %s\n", trip.getKey().getRemainingCapacity()));
             str.append(String.format("Exists passengers trip - %s\n", getListOfAllTripPassengersID(trip.getKey())));
             str.append(String.format("Required fuel to trip - %s.L\n", trip.getKey().getRequiredFuel()));
@@ -145,14 +145,15 @@ public class EngineManager {
             str.append(String.format("Trip ID - %d\n", getRequestTripID(trip.getKey())));
             str.append(String.format("Trip requester - %s\n", trip.getKey().getNameOfOwner()));
             str.append(String.format("Trip source station - %s\nTrip destination station - %s\n", trip.getKey().getSourceStation(), trip.getKey().getDestinationStation()));
-            str.append(String.format("Trip starting hour - %d\n", trip.getKey().getStartingHour()));
+            str.append(String.format("Trip starting hour - %f\n", trip.getKey().getStartingHour()));
+            str.append(String.format("Trip arrival hour - %f\n", trip.getKey().getArrivalHour()));
 
             if(trip.getKey().isMatched()) {
                 str.append("This request is already match to suggested trip, here are the details of the trip: \n");
                 str.append(String.format("Trip Match ID - %d\n", trip.getKey().getMatchTrip().getSuggestID()));
                 str.append(String.format("Trip Match owner name - %s\n", trip.getKey().getMatchTrip().getTripOwnerName()));
                 str.append(String.format("Trip Match price - %d\n", trip.getKey().getMatchTrip().getTripPrice()));
-                str.append(String.format("Trip Match estimate arrival hour - %d\n", trip.getKey().getMatchTrip().getArrivalHour()));
+                str.append(String.format("Trip Match estimate arrival hour - %f\n", trip.getKey().getMatchTrip().getArrivalHour()));
                 str.append(String.format("Required fuel for request - %d\n", calcRequiredFuelToRequest(trip.getKey())));
             }
             else {
@@ -231,16 +232,23 @@ public class EngineManager {
         return -1;
     }
 
-    public int calcArrivalHourToRoute(String pathFrom, String pathTo, int startingHour) {
-        int arrivalHour = startingHour;
+    public double calcArrivalHourToRoute(String pathFrom, String pathTo, double startingHour) {
+        double arrivalHour = startingHour;
         for(Path path : transPool.getMapDescriptor().getPaths().getPath()) {
             if(path.getFrom().equals(pathFrom) && path.getTo().equals(pathTo)) {
-                arrivalHour += path.getLength()/path.getSpeedLimit();
+                double fraction = (double) path.getLength()/path.getSpeedLimit();
+                arrivalHour += changeToHoursFormat(fraction);
             }
         }
         return arrivalHour;
 
     }
+
+    private double changeToHoursFormat(double fraction) {
+        //todo
+        return fraction;
+    }
+
 
     public String getAllNotMatchedRequestsTrip() {
         StringBuilder str = new StringBuilder();
@@ -288,7 +296,7 @@ public class EngineManager {
             str.append(String.format("Trip ID - %d\n", trip.getSuggestID()));
             str.append(String.format("Trip owner name - %s\n", trip.getTripOwnerName()));
             str.append(String.format("Trip price - %d\n", trip.getTripPrice()));
-            str.append(String.format("Trip estimate time to arrival - %d\n", trip.getArrivalHour()));
+            str.append(String.format("Trip estimate time to arrival - %f\n", trip.getArrivalHour()));
             str.append(String.format("Required fuel to your trip - %d\n\n", calcRequiredFuelToRequest(trip, Integer.parseInt(requestID))));
             index++;
         }
