@@ -90,15 +90,15 @@ public class EngineManager {
         for(Map.Entry<TripSuggest, Integer> trip : tripSuggestUtil.getAllSuggestedTrips().entrySet()) {
             str.append(String.format("%d - \n", index));
             index++;
-            str.append(String.format("Trip ID - %d\n", getSuggestTripID(trip.getKey())));
-            str.append(String.format("Trip Owner - %s\n", trip.getKey().getTripOwnerName()));
-            str.append(String.format("Trip Route - %s\n", trip.getKey().getTripRoute()));
-            str.append(String.format("Trip Price - %s\n", trip.getKey().getTripPrice()));
-            str.append(String.format("Trip starting hour - %f\nTrip arrival hour - %f\n", trip.getKey().getStartingHour(), trip.getKey().getArrivalHour()));
-            str.append(String.format("Trip available sits - %s\n", trip.getKey().getRemainingCapacity()));
-            str.append(String.format("Exists passengers trip - %s\n", getListOfAllTripPassengersID(trip.getKey())));
-            str.append(String.format("Required fuel to trip - %s.L\n", trip.getKey().getRequiredFuel()));
-            str.append(String.format("Stations to stop -  - %s\n", trip.getKey().getStationsDetailsAsString()));
+            str.append(String.format("Trip ID- %d\n", getSuggestTripID(trip.getKey())));
+            str.append(String.format("Trip Owner- %s\n", trip.getKey().getTripOwnerName()));
+            str.append(String.format("Trip Route- %s\n", trip.getKey().getTripRoute()));
+            str.append(String.format("Trip Price- %s\n", trip.getKey().getTripPrice()));
+            str.append(String.format("Trip starting hour- %.2f\nTrip arrival hour - %.2f\n", trip.getKey().getStartingHour(), trip.getKey().getArrivalHour()));
+            str.append(String.format("Trip available sits- %s\n", trip.getKey().getRemainingCapacity()));
+            str.append(String.format("Exists passengers trip:\n %s\n", getListOfAllTripPassengersID(trip.getKey())));
+            str.append(String.format("Required fuel to trip- %s.L\n", trip.getKey().getRequiredFuel()));
+            str.append(String.format("Stations to stop-  \n%s\n", trip.getKey().getStationsDetailsAsString()));
         }
         return str.toString();
     }
@@ -145,16 +145,15 @@ public class EngineManager {
             str.append(String.format("Trip ID - %d\n", getRequestTripID(trip.getKey())));
             str.append(String.format("Trip requester - %s\n", trip.getKey().getNameOfOwner()));
             str.append(String.format("Trip source station - %s\nTrip destination station - %s\n", trip.getKey().getSourceStation(), trip.getKey().getDestinationStation()));
-            str.append(String.format("Trip starting hour - %f\n", trip.getKey().getStartingHour()));
-            str.append(String.format("Trip arrival hour - %f\n", trip.getKey().getArrivalHour()));
+            str.append(String.format("Trip arrival hour - %.2f\n", trip.getKey().getArrivalHour()));
 
             if(trip.getKey().isMatched()) {
                 str.append("This request is already match to suggested trip, here are the details of the trip: \n");
                 str.append(String.format("Trip Match ID - %d\n", trip.getKey().getMatchTrip().getSuggestID()));
                 str.append(String.format("Trip Match owner name - %s\n", trip.getKey().getMatchTrip().getTripOwnerName()));
                 str.append(String.format("Trip Match price - %d\n", trip.getKey().getMatchTrip().getTripPrice()));
-                str.append(String.format("Trip Match estimate arrival hour - %f\n", trip.getKey().getMatchTrip().getArrivalHour()));
-                str.append(String.format("Required fuel for request - %d\n", calcRequiredFuelToRequest(trip.getKey())));
+                str.append(String.format("Trip Match estimate arrival hour - %.2f\n", trip.getKey().getMatchTrip().getArrivalHour()));
+                str.append(String.format("Required fuel for request- %d\n", calcRequiredFuelToRequest(trip.getKey())));
             }
             else {
                 str.append("This trip request isn't matched yet\n\n");
@@ -174,9 +173,8 @@ public class EngineManager {
 
     public void addNewTripRequest(String input) {
         String[] inputs = input.split(",");
-        int startHour = Integer.parseInt(inputs[3].split(":")[0]);
-        int arrivalHour = Integer.parseInt(inputs[4].split(":")[0]);
-        TripRequest newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], startHour, arrivalHour);
+        int arrivalHour = Integer.parseInt(inputs[3].split(":")[0]);
+        TripRequest newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], arrivalHour);
         tripRequestUtil.addRequestTrip(newRequest);
     }
 
@@ -259,7 +257,7 @@ public class EngineManager {
                 str.append(String.format("Name of requester - %s\n", trip.getKey().getNameOfOwner()));
                 str.append(String.format("Source stations - %s\n", trip.getKey().getSourceStation()));
                 str.append(String.format("Destination stations - %s\n", trip.getKey().getDestinationStation()));
-                str.append(String.format("Starting hour - %s\n\n", trip.getKey().getStartingHour()));
+                str.append(String.format("Arrival hour - %s\n\n", trip.getKey().getArrivalHour()));
             }
         }
         return str.toString();
@@ -288,8 +286,8 @@ public class EngineManager {
             str.append(String.format("Trip ID - %d\n", trip.getSuggestID()));
             str.append(String.format("Trip owner name - %s\n", trip.getTripOwnerName()));
             str.append(String.format("Trip price - %d\n", trip.getTripPrice()));
-            str.append(String.format("Trip estimate time to arrival - %f\n", trip.getArrivalHour()));
-            str.append(String.format("Required fuel to your trip - %d\n\n", calcRequiredFuelToRequest(trip, Integer.parseInt(requestID))));
+            str.append(String.format("Trip estimate time to arrival - %.2f\n", trip.getArrivalHour()));
+            str.append(String.format("Required fuel to your trip- %d\n", calcRequiredFuelToRequest(trip, Integer.parseInt(requestID))));
             index++;
         }
         return str.toString();
@@ -356,9 +354,8 @@ public class EngineManager {
     }
 
     public String setInputPathToSystemStylePath(String dotPath) {
-        return dotPath.replace('.',',');
+        return dotPath.replace('-',',');
     }
-
 
 //---------------------------- RequestValidator Section ----------------------------
 

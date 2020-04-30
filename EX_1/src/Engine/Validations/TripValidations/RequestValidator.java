@@ -8,7 +8,7 @@ public class RequestValidator extends ActionValidator {
     private StringBuilder chooseRequestAndAmountOfSuggestedTripsErrorMessage;
     private String choosePotentialTripInputErrorMessage;
 
-    private static final int TRIP_REQUEST_INPUT_LIMIT = 5;
+    private static final int TRIP_REQUEST_INPUT_LIMIT = 4;
 
     public RequestValidator() {
         this.addNewTripRequestErrorMessage = new StringBuilder();
@@ -24,13 +24,13 @@ public class RequestValidator extends ActionValidator {
             return true;
         }
         if(inputs.length != TRIP_REQUEST_INPUT_LIMIT) {
-            addNewTripRequestErrorMessage.append("Please insert 5 elements, try again.\n");
+            addNewTripRequestErrorMessage.append("Please insert 4 elements, try again.\n");
             return false;
         }
         if(!super.validateOwnerName(inputs[0])) {
             isValid = false;
         }
-        if(!(inputs[1] == inputs[2])) {//dest and source stations are not the same
+        if(!(inputs[1].equals(inputs[2]))) {//dest and source stations are not the same
             if(!validateSource(inputs[1])) {
                 isValid = false;
             }
@@ -39,14 +39,10 @@ public class RequestValidator extends ActionValidator {
             }
         }
         else {
-            addNewTripRequestErrorMessage.append("You entered same  Source station and Destination station!!\n");
+            addNewTripRequestErrorMessage.append("You entered same Source station and Destination station!!\n");
                     isValid = false;
         }
         if(!super.validateTime(inputs[3], 3)) {
-            isValid = false;
-
-        }
-        if(!super.validateTime(inputs[4], 4)) {
             isValid = false;
         }
 

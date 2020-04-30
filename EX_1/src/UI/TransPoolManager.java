@@ -159,7 +159,6 @@ public class TransPoolManager {
                 "- Name of owner\n" +
                 "- Source station\n" +
                 "- Destination station\n" +
-                "- Starting time of trip\n" +
                 "- arrival time of the trip");
     }
 
@@ -170,16 +169,16 @@ public class TransPoolManager {
                 "- Suggest trip owner name \n" +
                 "- Route of suggested trip separate with '-') \n" +
                 "- Arrival Day Number \n" +
-                "- Arrival Time: Hour at 24 (0 - 23) and minutes in multiples of 5 (0 - 55)\n" +
+                "- Starting Time: Hour at 24 (0 - 23) and minutes in multiples of 5 (0 - 55)\n" +
                 "- Trip schedule type: \n" +
                 "  * insert 1 - one time \n" +
                 "  * insert 2 - daily \n" +
-                "  * press 3 - twice a week \n" +
-                "  * press 4 - weekly \n" +
-                "  * press 5 - monthly \n" +
+                "  * insert 3 - twice a week \n" +
+                "  * insert 4 - weekly \n" +
+                "  * insert 5 - monthly \n" +
                 "- PPK: cost of trip per kilometer \n" +
                 "- Passengers capacity\n" +
-                " EXAMPLE: Ohad,A-C-B,3,13:25,4,30,2\n");
+                "EXAMPLE: Ohad,A-B-C,3,13:25,4,30,2\n");
     }
 
     public boolean printXMLResultAction(List<String> errors) {

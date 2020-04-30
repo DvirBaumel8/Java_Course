@@ -7,16 +7,14 @@ public class TripRequest {
     private String OwnerName;
     private String sourceStation;
     private String destinationStation;
-    private double startingHour;
     private double arrivalHour;
     private boolean isMatched;
     private TripSuggest matchTrip;
 
-    public TripRequest(String name, String sourceStation, String destinationStation, int startingHour, int arrivalHour) {
+    public TripRequest(String name, String sourceStation, String destinationStation,int arrivalHour) {
         this.OwnerName = name;
         this.sourceStation = sourceStation;
         this.destinationStation = destinationStation;
-        this.startingHour = startingHour;
         this.isMatched = false;
         this.matchTrip = null;
         this.arrivalHour = arrivalHour;
@@ -29,10 +27,6 @@ public class TripRequest {
 
     public boolean isMatched() {
         return isMatched;
-    }
-
-    public double getStartingHour() {
-        return startingHour;
     }
 
     public String getSourceStation() {

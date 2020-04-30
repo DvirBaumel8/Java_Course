@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MatchingUtil {
-    private static final String SUCCESS_MATCHING = "Your trip request was match to trip suggested successfully";
+    private static final String SUCCESS_MATCHING = "Your trip request was match to trip suggested successfully\n";
     private Map<TripSuggest, List<TripRequest>> matches;
 
     public MatchingUtil() {
@@ -31,7 +31,7 @@ public class MatchingUtil {
         int counter = 0;
 
         for(Map.Entry<TripSuggest, Integer> trip : suggestedTrips.entrySet()) {
-            if(requestTrip.getStartingHour() == trip.getKey().getStartingHour() && requestTrip.getArrivalHour() == trip.getKey().getArrivalHourToSpecificStation(requestTrip.getDestinationStation())) {
+            if(requestTrip.getArrivalHour() == trip.getKey().getArrivalHourToSpecificStation(requestTrip.getDestinationStation())) {
                 if(checkIFSuggestedTripIncludeRequestStations(requestTrip.getSourceStation(), requestTrip.getDestinationStation(), trip.getKey())) {
                     if(trip.getKey().getRemainingCapacity() > 0) {
                         if(counter < suggestedAmountTrips) {

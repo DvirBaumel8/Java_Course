@@ -6,7 +6,7 @@ public class SuggestValidator extends ActionValidator {
     private StringBuilder addNewTripSuggestErrorMessage = new StringBuilder();
     private static final int TRIP_SUGGEST_INPUT_LIMIT = 7;
     private static final int[] TRIP_SCHEDULE_TYPE_INPUT_RANGE  = {1, 5};
-    private static final String SUCCESS_MESSAGE = "Trip suggest was added successfully to the system.";
+    private static final String SUCCESS_MESSAGE = "Trip suggest was added successfully to the system.\n";
 
     public String getAddNewTripSuggestErrorMessage() {
         return addNewTripSuggestErrorMessage.toString();
