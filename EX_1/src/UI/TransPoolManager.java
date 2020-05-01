@@ -58,8 +58,7 @@ public class TransPoolManager {
                     break;
                 }
                 case 6: {
-                    String requestIDAndAmountToMatch = null;
-                    requestIDAndAmountToMatch = getValidRequestIDAndAmountToMatch();
+                    String requestIDAndAmountToMatch = getValidRequestIDAndAmountToMatch();
                     if (requestIDAndAmountToMatch.equals("b")) {
                         run();
                         break;
@@ -96,8 +95,13 @@ public class TransPoolManager {
 
         while (!isValid) {
             System.out.println(potentialSuggestedTripsStr);
-            System.out.println("Please choose one of the following potential suggested trips to be match for your request. Please insert the suggested trip ID.");
+            System.out.println("Please choose one of the following potential suggested trips to be match for your request.\n" +
+                    "Please insert the suggested trip ID or 'b' to go back to the Main Menu:\n");
             input = scanner.nextLine();
+            if (input.equals("b")) {
+                run();
+                break;
+            }
             isValid = engineManager.validateChoosePotentialTripInput(input, potentialSuggestedTrips);
             if (!isValid) {
                 System.out.println(engineManager.getChoosePotentialTripInputErrorMessage());
@@ -110,11 +114,9 @@ public class TransPoolManager {
     private String getValidRequestIDAndAmountToMatch() {
         String input = null;
         boolean isValid = false;
-        String allNotMatchRequestsTrips = engineManager.getAllNotMatchedRequestsTrip();
 
         while (!isValid) {
-            System.out.println(allNotMatchRequestsTrips);
-            System.out.println("Please choose one of the requests to get match, in addition choose the amount of suggested trips you want to be displayed separated with ','  For example: 1,4 (1 - request trip id, 4 - amount of suggested trips). Insert 'b' to go back to the main menu");
+            printRequestMatchMenu();
             input = scanner.nextLine();
             isValid = engineManager.validateChooseRequestAndAmountOfSuggestedTripsInput(input);
 
@@ -125,6 +127,16 @@ public class TransPoolManager {
         }
 
         return input;
+    }
+
+    private void printRequestMatchMenu() {
+        String allNotMatchRequestsTrips = engineManager.getAllNotMatchedRequestsTrip();
+        System.out.println(allNotMatchRequestsTrips);
+        System.out.println("Match your trip request in the following way:\n" +
+                "Separated with , Trip request ID,Maximum Trip Suggest options you want to receive'\n" +
+                "For example: 1,4 \n" +
+                "(1 - request trip id, 4 - Maximum of amount of suggested trips)\n" +
+                "Insert 'b' to go back to the main menu...\n");
     }
 
     private short displayMenu() {
@@ -147,6 +159,7 @@ public class TransPoolManager {
             isValidInput = engineManager.validateMenuInput(input);
             if (!isValidInput) {
                 System.out.println(engineManager.getMenuErrorMessage());
+                engineManager.setNullableMenuErrorMessage();
             }
         }
 
@@ -159,7 +172,7 @@ public class TransPoolManager {
                 "- Name of owner\n" +
                 "- Source station\n" +
                 "- Destination station\n" +
-                "- arrival time of the trip");
+                "- arrival time of the trip (**:** format every 5 min)");
     }
 
     public void printAddNewTripSuggestMenu(String allStationsNames) {
@@ -209,6 +222,7 @@ public class TransPoolManager {
 
     public void printNewNewTripRequestErrorMessage() {
         System.out.println(engineManager.getRequestValidationErrorMessage());
+        System.out.println("Please try again...");
         engineManager.deleteNewTripRequestErrorMessage();
     }
 

@@ -276,13 +276,16 @@ public class EngineManager {
         StringBuilder str = new StringBuilder();
         str.append("\nPotential suggested trips:\n");
         int index = 1;
+        TripSuggest[] notNullPotentialSuggestedTrips = Arrays.stream(potentialSuggestedTrips)
+                .filter(Objects::nonNull).toArray(TripSuggest[]::new);
 
-        if(potentialSuggestedTrips.length == 0) {
+
+        if(notNullPotentialSuggestedTrips.length == 0) {
             str.append("The system couldn't found suggested trips to you trip request, sorry.\n");
             return str.toString();
         }
 
-        for(TripSuggest trip : potentialSuggestedTrips) {
+        for(TripSuggest trip : notNullPotentialSuggestedTrips) {
             str.append(String.format("Trip ID - %d\n", trip.getSuggestID()));
             str.append(String.format("Trip owner name - %s\n", trip.getTripOwnerName()));
             str.append(String.format("Trip price - %d\n", trip.getTripPrice()));
@@ -297,14 +300,29 @@ public class EngineManager {
         TripRequest tripRequest = tripRequestUtil.getTripRequestByID(requestID);
         String sourceStation = tripRequest.getSourceStation();
         String destinationStation = tripRequest.getDestinationStation();
+        List<Path> paths = transPool.getMapDescriptor().getPaths().getPath();
+        int sum = 0;
+        boolean isBetween = false;
 
-        for(Path path : transPool.getMapDescriptor().getPaths().getPath()) {
-            if(path.getFrom().equals(sourceStation) && path.getTo().equals(destinationStation)) {
-                return path.getLength()/path.getFuelConsumption();
+        for(Path path : paths) {
+            String pathFrom = path.getFrom();
+            String pathTo = path.getTo();
+            if (pathFrom.equals(sourceStation)) {
+                sum = sum + path.getLength() / path.getFuelConsumption();
+                if (!pathTo.equals(destinationStation)) {
+                    isBetween = true;
+                }
+            } else {
+                if (isBetween) {
+                    sum = sum + path.getLength() / path.getFuelConsumption();
+                }
+            }
+            if (pathTo.equals(destinationStation)) {
+                break;
             }
         }
 
-        return -1;
+        return sum;
     }
 
     public TripRequest getTripRequestByID(int requestID) {
@@ -321,6 +339,10 @@ public class EngineManager {
 
     public StringBuilder getMenuErrorMessage() {
         return validator.getMenuErrorMessage();
+    }
+
+    public void setNullableMenuErrorMessage() {
+        validator.setNullableMenuErrorMessage();
     }
 
     public String matchRequestToSuggest(String input, TripSuggest[] potentialSuggestedTrips, String requestIDAndAmountToMatch) {

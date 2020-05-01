@@ -29,9 +29,8 @@ public class Validator {
            try {
             input = Short.parseShort(choice);
            }
-
             catch(NumberFormatException ex) {
-                this.menuErrorMessage.append("Your choice was fraction (double) please choose Integer, try again..\n");
+                this.menuErrorMessage.append("Please choose Integer, try again..\n");
                 return false;
             }
             catch (Exception ex) {
@@ -39,7 +38,7 @@ public class Validator {
                 return false;
             }
 
-           if(input > 7 || input < 0 ) {
+           if(input > 7 || input < 1 ) {
                this.menuErrorMessage.append("Your choice isn't a number between 1-7, please try again..\n");
                isValidInput = false;
            }
@@ -53,6 +52,10 @@ public class Validator {
 
     public StringBuilder getMenuErrorMessage() {
         return menuErrorMessage;
+    }
+
+    public void setNullableMenuErrorMessage() {
+        menuErrorMessage = new StringBuilder();
     }
 
     public boolean validateTripRequestInput(String input) {

@@ -30,21 +30,30 @@ public class ActionValidator {
     }
 
 
-    public boolean validateTime (String input, int index) {
-        Pattern p = Pattern.compile("[0-2][0-9]:[0-5][0-9]");
-        Matcher matcher = p.matcher(input);
+    public boolean validateTime (String time, int index) {
+       final String TIME24HOURS_PATTERN =
+                "([01]?[0-9]|2[0-3]):[0-5][0-9]";
+        Pattern pattern = Pattern.compile(TIME24HOURS_PATTERN);
+        Matcher matcher = pattern.matcher(time);
         if(matcher.matches()) {
-            return true;
+            char[] charTimeArr = time.toCharArray();
+            int lastDigitInt = charTimeArr[time.length() - 1] - '0';
+            if(lastDigitInt % 5 == 0) {
+                return true;
+            }
+            else {
+                generalErrorMessage.append("Time isn't valid, should be __:__ (12:35) and last digit%5 should be zero \n");
+            }
         }
         else {
             if(index == 3) {
-                generalErrorMessage.append("Time template of trip arrival time isn't valid, template should be __:__ (12:34)\n");
+                generalErrorMessage.append("Time template of trip arrival time isn't valid, template should be __:__ (12:35)\n");
             }
             else {
-                generalErrorMessage.append("Time template isn't valid, template should be __:__ (12:34)\n");
+                generalErrorMessage.append("Time template isn't valid, template should be __:__ (12:35)\n");
             }
-            return false;
         }
+        return false;
     }
 
     public boolean checkIFStationsIsExist(String stationName) {
