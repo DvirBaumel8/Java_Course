@@ -55,18 +55,18 @@ public class MatchingUtil {
     private boolean checkIFSuggestedTripIncludeRequestStations(String sourceStation, String destinationStation, TripSuggest suggestedTrip) {
         String suggestedTripRoute = suggestedTrip.getTripRoute();
         String[] stations = suggestedTripRoute.split(",");
-        int indexOfSourceDestionation = -1;
+        int indexOfSourceDestination = -1;
         int indexOfDestinationStation = -1;
 
         for(int i = 0; i < stations.length; i++) {
             if(stations[i].equals(sourceStation)) {
-                indexOfSourceDestionation = i;
+                indexOfSourceDestination = i;
             }
             if(stations[i].equals(destinationStation)) {
                 indexOfDestinationStation = i;
             }
         }
-        if(indexOfSourceDestionation < indexOfDestinationStation) {
+        if(indexOfSourceDestination < indexOfDestinationStation && indexOfDestinationStation != -1 && indexOfSourceDestination != -1) {
             return true;
         }
         return true;

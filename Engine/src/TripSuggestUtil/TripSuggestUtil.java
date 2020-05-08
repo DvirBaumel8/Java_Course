@@ -1,7 +1,6 @@
 package TripSuggestUtil;
 
 import Manager.EngineManager;
-import XML.XMLLoading.jaxb.schema.generated.Route;
 import XML.XMLLoading.jaxb.schema.generated.TransPoolTrip;
 
 import java.util.HashMap;
@@ -65,7 +64,6 @@ public class TripSuggestUtil {
     }
 
     public static int calcRequiredFuel(String route) {
-        //Bug
         int sum = 0;
         String[] paths = route.split(",");
         for(int i = 0; i < paths.length - 1; i++) {

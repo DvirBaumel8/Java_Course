@@ -153,17 +153,17 @@ public class EngineManager {
         }
 
         for(Map.Entry<TripRequest, Integer> trip : tripRequestUtil.getAllRequestTrips().entrySet()) {
-            str.append(String.format("Trip ID - %d\n", getRequestTripID(trip.getKey())));
-            str.append(String.format("Trip requester - %s\n", trip.getKey().getNameOfOwner()));
-            str.append(String.format("Trip source station - %s\nTrip destination station - %s\n", trip.getKey().getSourceStation(), trip.getKey().getDestinationStation()));
-            str.append(String.format("Trip arrival hour - %s\n", trip.getKey().getArrivalHourAsTime()));
+            str.append(String.format("Trip ID- %d\n", getRequestTripID(trip.getKey())));
+            str.append(String.format("Trip requester- %s\n", trip.getKey().getNameOfOwner()));
+            str.append(String.format("Trip source station- %s\nTrip destination station - %s\n", trip.getKey().getSourceStation(), trip.getKey().getDestinationStation()));
+            str.append(String.format("Trip arrival hour- %s\n", trip.getKey().getArrivalHourAsTime()));
 
             if(trip.getKey().isMatched()) {
                 str.append("This request is already match to suggested trip, here are the details of the trip: \n");
-                str.append(String.format("Trip Match ID - %d\n", trip.getKey().getMatchTrip().getSuggestID()));
-                str.append(String.format("Trip Match owner name - %s\n", trip.getKey().getMatchTrip().getTripOwnerName()));
-                str.append(String.format("Trip Match price - %d\n", trip.getKey().getMatchTrip().getTripPrice()));
-                str.append(String.format("Trip Match estimate arrival hour - %s\n", trip.getKey().getArrivalHourAsTime()));
+                str.append(String.format("Trip Match ID- %d\n", trip.getKey().getMatchTrip().getSuggestID()));
+                str.append(String.format("Trip Match owner name- %s\n", trip.getKey().getMatchTrip().getTripOwnerName()));
+                str.append(String.format("Trip Match price- %d\n", trip.getKey().getMatchTrip().getTripPrice()));
+                str.append(String.format("Trip Match estimate arrival hour- %s\n", trip.getKey().getArrivalHourAsTime()));
                 str.append(String.format("Required fuel for request- %d\n", calcRequiredFuelToRequest(trip.getKey())));
             }
             else {
@@ -174,8 +174,38 @@ public class EngineManager {
     }
 
     private int calcRequiredFuelToRequest(TripRequest tripRequest) {
-        String route = tripRequest.getSourceStation() + "," + tripRequest.getDestinationStation();
-        return TripSuggestUtil.calcRequiredFuel(route);
+        return calcRequiredFuelToRequest(tripRequest.getMatchTrip(), tripRequest);
+    }
+
+    private String findRouteToRequest(TripSuggest tripSuggest, TripRequest tripRequest) {
+        String[] stations = tripSuggest.getTripRoute().split(",");
+        boolean start = false;
+        String sourceStation = tripRequest.getSourceStation();
+        String destinationStation = tripRequest.getDestinationStation();
+        StringBuilder str = new StringBuilder();
+
+        for(int i = 0; i < stations.length; i++) {
+            if (!start) {
+                if(stations[i].equals(sourceStation)) {
+                    start = true;
+                    str.append(stations[i]);
+                    str.append(",");
+                }
+            }
+            else {
+                if(stations[i].equals(destinationStation)) {
+                    str.append(stations[i]);
+                    str.append(",");
+                    break;
+                }
+                else {
+                    str.append(stations[i]);
+                    str.append(",");
+                }
+            }
+        }
+
+        return str.toString();
     }
 
     private Integer getRequestTripID(TripRequest trip) {
@@ -290,6 +320,7 @@ public class EngineManager {
     }
 
     public String convertPotentialSuggestedTripsToString(TripSuggest[] potentialSuggestedTrips, String requestID) {
+        TripRequest tripRequest = getTripRequestByID(Integer.parseInt(requestID));
         StringBuilder str = new StringBuilder();
         str.append("\nPotential suggested trips:\n");
 
@@ -304,14 +335,15 @@ public class EngineManager {
                 str.append(String.format("Trip owner name - %s\n", trip.getTripOwnerName()));
                 str.append(String.format("Trip price - %d\n", trip.getTripPrice()));
                 str.append(String.format("Trip estimate time to arrival - %.2f\n", trip.getArrivalHour()));
-                str.append(String.format("Required fuel to your trip- %d\n", calcRequiredFuelToRequest(trip, Integer.parseInt(requestID))));
+                str.append(String.format("Required fuel to your trip- %d\n", calcRequiredFuelToRequest(trip, tripRequest)));
             }
         }
         return str.toString();
     }
 
-    private int calcRequiredFuelToRequest(TripSuggest tripsuggest, int requestID) {
-        return TripSuggestUtil.calcRequiredFuel(tripsuggest.getTripRoute());
+    private int calcRequiredFuelToRequest(TripSuggest tripsuggest, TripRequest tripRequest) {
+        String route = findRouteToRequest(tripsuggest, tripRequest);
+        return TripSuggestUtil.calcRequiredFuel(route);
     }
 
     public TripRequest getTripRequestByID(int requestID) {
