@@ -173,7 +173,9 @@ public class TransPoolManager {
                 "- Name of owner\n" +
                 "- Source station\n" +
                 "- Destination station\n" +
-                "- arrival time of the trip (**:** format every 5 min)");
+                "- start or arrival time of the trip (**:** format every 5 min) \n" +
+                "- s to choose start time, a to choose arrival time.\n" +
+                "Example: Ohad§,A,C,12:25,s");
     }
 
     public void printAddNewTripSuggestMenu(String allStationsNames) {

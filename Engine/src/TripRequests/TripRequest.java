@@ -8,25 +8,26 @@ public class TripRequest {
     private String OwnerName;
     private String sourceStation;
     private String destinationStation;
-    private double arrivalHour;
+    private double requiredTime;
     private String arrivalHourAsTime;
     private boolean isMatched;
     private TripSuggest matchTrip;
+    private boolean requestByStartTime;
 
-    public TripRequest(String name, String sourceStation, String destinationStation, double arrivalHour) {
+    public TripRequest(String name, String sourceStation, String destinationStation, double time, boolean requestByStartTime) {
         this.OwnerName = name;
         this.sourceStation = sourceStation;
         this.destinationStation = destinationStation;
         this.isMatched = false;
         this.matchTrip = null;
-        this.arrivalHour = arrivalHour;
-        this.arrivalHourAsTime = EngineManager.getTime(arrivalHour);
+        this.requiredTime = time;
+        this.arrivalHourAsTime = EngineManager.convertDoubleTimeToStrTime(time);
+        this.requestByStartTime = requestByStartTime;
     }
 
     public String getNameOfOwner() {
         return OwnerName;
     }
-
 
     public boolean isMatched() {
         return isMatched;
@@ -60,11 +61,15 @@ public class TripRequest {
         this.matchTrip = matchTrip;
     }
 
-    public double getArrivalHour() {
-        return arrivalHour;
+    public double getRequestRequiredTime() {
+        return requiredTime;
     }
 
-    public String getArrivalHourAsTime() {
+    public String getTimeStr() {
         return arrivalHourAsTime;
+    }
+
+    public boolean isRequestByStartTime() {
+        return requestByStartTime;
     }
 }

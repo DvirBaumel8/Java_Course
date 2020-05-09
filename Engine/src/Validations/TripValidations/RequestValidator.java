@@ -8,7 +8,7 @@ public class RequestValidator extends ActionValidator {
     private StringBuilder chooseRequestAndAmountOfSuggestedTripsErrorMessage;
     private String choosePotentialTripInputErrorMessage;
 
-    private static final int TRIP_REQUEST_INPUT_LIMIT = 4;
+    private static final int TRIP_REQUEST_INPUT_LIMIT = 5;
 
     public RequestValidator() {
         this.addNewTripRequestErrorMessage = new StringBuilder();
@@ -24,7 +24,7 @@ public class RequestValidator extends ActionValidator {
             return true;
         }
         if(inputs.length != TRIP_REQUEST_INPUT_LIMIT) {
-            addNewTripRequestErrorMessage.append("Please insert 4 elements, try again.\n");
+            addNewTripRequestErrorMessage.append("Please insert 5 elements, try again.\n");
             return false;
         }
         if(!super.validateOwnerName(inputs[0])) {
@@ -45,11 +45,25 @@ public class RequestValidator extends ActionValidator {
         if(!super.validateTime(inputs[3], 3)) {
             isValid = false;
         }
+        if(!validateTimeParam(inputs[4])) {
+            addNewTripRequestErrorMessage.append("The fifth parameter is invalid, please insert a to choose arrival time or s to choose starting time.");
+            isValid = false;
+        }
 
         addNewTripRequestErrorMessage.append(this.getGeneralErrorMessage());
         this.setGeneralErrorMessage(new StringBuilder());
 
         return isValid;
+    }
+
+    private boolean validateTimeParam(String input) {
+        if(input.equals("s") || input.equals("a")) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 
     public String getAddNewTripRequestErrorMessage() {

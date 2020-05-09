@@ -26,14 +26,6 @@ public class EngineManager {
     private static Validator validator;
     private static DateSystemManger dateSystemManger = null;
 
-    public static String getTime(double arrivalHour) {
-        String[] vals = String.valueOf(arrivalHour).split("\\.");
-        if(vals[1].length() == 1) {
-            vals[1] += "0";
-        }
-        return vals[0] + ":" + vals[1];
-    }
-
     public DateSystemManger getDateSystemManger() {
         return dateSystemManger;
     }
@@ -59,7 +51,7 @@ public class EngineManager {
         return engineManagerInstance;
     }
 
-    public List<String> LoadXML(String pathToTheXMLFile, List<String> errors) throws FileNotFoundException {
+    public List<String> LoadXML(String pathToTheXMLFile, List<String> errors) {
         SchemaBasedJAXBMain jax = new SchemaBasedJAXBMain();
         try {
             transPool = jax.init(pathToTheXMLFile);
@@ -156,14 +148,19 @@ public class EngineManager {
             str.append(String.format("Trip ID- %d\n", getRequestTripID(trip.getKey())));
             str.append(String.format("Trip requester- %s\n", trip.getKey().getNameOfOwner()));
             str.append(String.format("Trip source station- %s\nTrip destination station - %s\n", trip.getKey().getSourceStation(), trip.getKey().getDestinationStation()));
-            str.append(String.format("Trip arrival hour- %s\n", trip.getKey().getArrivalHourAsTime()));
+            if(trip.getKey().isRequestByStartTime()) {
+                str.append(String.format("Trip starting hour- %s\n", trip.getKey().getTimeStr()));
+            }
+            else {
+                str.append(String.format("Trip arrival hour- %s\n", trip.getKey().getTimeStr()));
+            }
 
             if(trip.getKey().isMatched()) {
                 str.append("This request is already match to suggested trip, here are the details of the trip: \n");
                 str.append(String.format("Trip Match ID- %d\n", trip.getKey().getMatchTrip().getSuggestID()));
                 str.append(String.format("Trip Match owner name- %s\n", trip.getKey().getMatchTrip().getTripOwnerName()));
                 str.append(String.format("Trip Match price- %d\n", trip.getKey().getMatchTrip().getTripPrice()));
-                str.append(String.format("Trip Match estimate arrival hour- %s\n", trip.getKey().getArrivalHourAsTime()));
+                str.append(String.format("Estimate arrival hour- %s\n", trip.getKey().getTimeStr()));
                 str.append(String.format("Required fuel for request- %d\n", calcRequiredFuelToRequest(trip.getKey())));
             }
             else {
@@ -195,7 +192,6 @@ public class EngineManager {
             else {
                 if(stations[i].equals(destinationStation)) {
                     str.append(stations[i]);
-                    str.append(",");
                     break;
                 }
                 else {
@@ -214,13 +210,13 @@ public class EngineManager {
 
     public void addNewTripRequest(String input) {
         String[] inputs = input.split(",");
-        double arrivalHour = Integer.parseInt(inputs[3].split(":")[0]);
-        double arrivalMinutes = Integer.parseInt(inputs[3].split(":")[1]);
-        while(arrivalMinutes > 1) {
-            arrivalMinutes = arrivalMinutes/10;
+        double Hour = Integer.parseInt(inputs[3].split(":")[0]);
+        double Minutes = Integer.parseInt(inputs[3].split(":")[1]);
+        while(Minutes > 1) {
+            Minutes = Minutes/10;
         }
-        arrivalHour += arrivalMinutes;
-        TripRequest newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], arrivalHour);
+        Hour += Minutes;
+        TripRequest newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], Hour, inputs[4].equals("s"));
         tripRequestUtil.addRequestTrip(newRequest);
     }
 
@@ -300,11 +296,17 @@ public class EngineManager {
 
         for(Map.Entry<TripRequest, Integer> trip : tripRequestUtil.getAllRequestTrips().entrySet()) {
             if(!trip.getKey().isMatched()) {
-                str.append(String.format("Request ID - %d\n", trip.getKey().getRequestID()));
-                str.append(String.format("Name of requester - %s\n", trip.getKey().getNameOfOwner()));
-                str.append(String.format("Source stations - %s\n", trip.getKey().getSourceStation()));
-                str.append(String.format("Destination stations - %s\n", trip.getKey().getDestinationStation()));
-                str.append(String.format("Arrival hour - %s\n\n", trip.getKey().getArrivalHour()));
+                str.append(String.format("Request ID- %d\n", trip.getKey().getRequestID()));
+                str.append(String.format("Name of requester- %s\n", trip.getKey().getNameOfOwner()));
+                str.append(String.format("Source stations- %s\n", trip.getKey().getSourceStation()));
+                str.append(String.format("Destination stations- %s\n", trip.getKey().getDestinationStation()));
+                if(trip.getKey().isRequestByStartTime()) {
+                    str.append(String.format("Starting hour- %s\n\n", trip.getKey().getTimeStr()));
+                }
+                else {
+                    str.append(String.format("Arrival hour- %s\n\n", trip.getKey().getTimeStr()));
+                }
+
             }
         }
         return str.toString();
@@ -334,7 +336,7 @@ public class EngineManager {
                 str.append(String.format("Trip ID - %d\n", trip.getSuggestID()));
                 str.append(String.format("Trip owner name - %s\n", trip.getTripOwnerName()));
                 str.append(String.format("Trip price - %d\n", trip.getTripPrice()));
-                str.append(String.format("Trip estimate time to arrival - %.2f\n", trip.getArrivalHour()));
+                str.append(String.format("Trip estimate time to arrival - %s\n", convertDoubleTimeToStrTime(trip.getArrivalHourToSpecificStation(tripRequest.getDestinationStation()))));
                 str.append(String.format("Required fuel to your trip- %d\n", calcRequiredFuelToRequest(trip, tripRequest)));
             }
         }
@@ -446,5 +448,13 @@ public class EngineManager {
 
     public String getXMLValidationsSuccessMessage() {
         return XMLValidationsImpl.getValidXmlMessage();
+    }
+
+    public static String convertDoubleTimeToStrTime(double time) {
+        String[] vals = String.valueOf(time).split("\\.");
+        if(vals[1].length() == 1) {
+            vals[1] += "0";
+        }
+        return vals[0] + ":" + vals[1];
     }
 }

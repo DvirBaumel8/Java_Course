@@ -32,8 +32,8 @@ public class MatchingUtil {
         int counter = 0;
 
         for(Map.Entry<TripSuggest, Integer> trip : suggestedTrips.entrySet()) {
-            if(requestTrip.getArrivalHour() == trip.getKey().getArrivalHourToSpecificStation(requestTrip.getDestinationStation())) {
-                if(checkIFSuggestedTripIncludeRequestStations(requestTrip.getSourceStation(), requestTrip.getDestinationStation(), trip.getKey())) {
+            if(checkIFSuggestedTripIncludeRequestStations(requestTrip.getSourceStation(), requestTrip.getDestinationStation(), trip.getKey())) {
+                if((!requestTrip.isRequestByStartTime() && requestTrip.getRequestRequiredTime() == trip.getKey().getArrivalHourToSpecificStation(requestTrip.getDestinationStation()) ) || (requestTrip.isRequestByStartTime() && checkRequestTimeToSuggestTrip(requestTrip, trip.getKey()))) {
                     if(trip.getKey().getRemainingCapacity() > 0) {
                         if(counter < suggestedAmountTrips) {
                             potentialSuggestedTrips[counter] = trip.getKey();
@@ -50,6 +50,16 @@ public class MatchingUtil {
             return null;
         }
         return potentialSuggestedTrips;
+    }
+
+    private boolean checkRequestTimeToSuggestTrip(TripRequest tripRequest, TripSuggest tripSuggest) {
+        double hour = tripSuggest.getArrivalHourToSpecificStation(tripRequest.getSourceStation());
+        if(hour == tripRequest.getRequestRequiredTime()) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     private boolean checkIFSuggestedTripIncludeRequestStations(String sourceStation, String destinationStation, TripSuggest suggestedTrip) {
@@ -69,9 +79,8 @@ public class MatchingUtil {
         if(indexOfSourceDestination < indexOfDestinationStation && indexOfDestinationStation != -1 && indexOfSourceDestination != -1) {
             return true;
         }
-        return true;
+        return false;
     }
-
 
     public String matchRequestToSuggest(TripSuggest tripSuggest, TripRequest tripRequest) {
         if(checkIFSuggestedTripHasPassengers(tripSuggest)) {
@@ -100,4 +109,5 @@ public class MatchingUtil {
     public Map<TripSuggest, List<TripRequest>> getMatches() {
         return matches;
     }
+
 }

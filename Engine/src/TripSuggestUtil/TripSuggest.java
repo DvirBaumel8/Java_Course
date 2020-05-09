@@ -31,13 +31,13 @@ public class TripSuggest {
         this.tripRoute = trimRoute(route);
         this.arrivalDayNumber = arrivalDayNumber;
         this.startingHour = startingHour;
-        this.startingHourAsTime = EngineManager.getTime(startingHour);
+        this.startingHourAsTime = EngineManager.convertDoubleTimeToStrTime(startingHour);
         this.setTripScheduleTypeByInt(tripScheduleTypeInt);
         this.ppk = ppk;
         this.remainingCapacity = driverCapacity;
         this.tripPrice = calculateTripPrice(ppk, route);
         this.arrivalHour = calcArrivalHour(route.getPath());
-        this.arrivalHourAsTime = EngineManager.getTime(arrivalHour);
+        this.arrivalHourAsTime = EngineManager.convertDoubleTimeToStrTime(arrivalHour);
         this.passengers = new ArrayList<>();
         this.stopStationsDetails = new ArrayList<>();
         this.requiredFuel = calcRequiredFuel(route);
