@@ -1,6 +1,5 @@
 package controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
@@ -14,9 +13,8 @@ public class TripSuggestController {
         this.mainController = mainController;
     }
 
-
     @FXML
-    void addTripSuggestButtonActionListener(ActionEvent event) {
+    void addTripSuggestButtonActionListener() {
         mainController.addTripSuggestAction();
     }
 }

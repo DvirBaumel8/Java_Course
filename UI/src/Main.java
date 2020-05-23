@@ -18,8 +18,8 @@ public class Main extends Application {
         Thread.currentThread().setName("main");
         launch(args);
 
-        TransPoolManager transPoolManager = TransPoolManager.getTransPoolManagerInstance();
-        transPoolManager.run();
+      //  TransPoolManager transPoolManager = TransPoolManager.getTransPoolManagerInstance();
+       // transPoolManager.run();
     }
 
 
@@ -63,7 +63,7 @@ public class Main extends Application {
         appController.setTripRequestComponentController(tripRequestController);
         appController.setTripSuggestComponentController(tripSuggestController);
 
-        Scene scene = new Scene(root, 640, 690);
+        Scene scene = new Scene(root, 700, 690);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

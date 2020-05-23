@@ -15,6 +15,14 @@ public class AppController {
 
     @FXML private TripSuggestController tripSuggestController;
 
+    @FXML
+    public void initialize() {
+        if (headerComponentController != null && tripRequestController != null && tripSuggestController != null) {
+            headerComponentController.setMainController(this);
+            tripRequestController.setMainController(this);
+            tripSuggestController.setMainController(this);
+        }
+    }
 
     public void setHeaderComponentController(HeaderController headerComponentController) {
         this.headerComponentController = headerComponentController;
@@ -32,18 +40,18 @@ public class AppController {
     }
 
     public void exitButtonAction() {
-
+        headerComponentController.exitButtonActionListener();
     }
 
     public void loadXMLAction() {
-
+        headerComponentController.loadXMLButtonActionListener();
     }
 
     public void addTripRequestAction() {
-
+        tripRequestController.addTripRequestButtonActionListener();
     }
 
     public void addTripSuggestAction() {
-
+        tripSuggestController.addTripSuggestButtonActionListener();
     }
 }

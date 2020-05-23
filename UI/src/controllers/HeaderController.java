@@ -1,5 +1,5 @@
 package controllers;
-import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
@@ -14,12 +14,13 @@ public class HeaderController {
     }
 
     @FXML
-    void exitButtonActionListener(ActionEvent event) {
+    void exitButtonActionListener() {
+        exitButton.setText("Checked");
         mainController.exitButtonAction();
     }
 
     @FXML
-    void loadXMLButtonActionListener(ActionEvent event) {
-        mainController.loadXMLAction();
+    void loadXMLButtonActionListener() {
+
     }
 }
