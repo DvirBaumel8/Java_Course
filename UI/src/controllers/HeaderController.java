@@ -21,6 +21,11 @@ public class HeaderController {
 
     @FXML
     void loadXMLButtonActionListener() {
-
+        if(mainController.loadXMLButtonAction()) {
+            //new popup of success loading
+        }
+        else {
+           // new popup of failure
+        }
     }
 }

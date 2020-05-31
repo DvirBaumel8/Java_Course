@@ -1,8 +1,5 @@
+package Manager;
 
-
-
-
-import Manager.EngineManager;
 import TripSuggestUtil.TripSuggest;
 
 import java.util.*;
@@ -302,5 +299,29 @@ public class TransPoolManager {
                 System.out.println("You cant start using the application without load the xml !!!");
             }
         }
+    }
+
+    public static EngineManager getEngineManager() {
+        return engineManager;
+    }
+
+    public static void setEngineManager(EngineManager engineManager) {
+        TransPoolManager.engineManager = engineManager;
+    }
+
+    public static boolean isXMLLoaded() {
+        return isXMLLoaded;
+    }
+
+    public static void setIsXMLLoaded(boolean isXMLLoaded) {
+        TransPoolManager.isXMLLoaded = isXMLLoaded;
+    }
+
+    public static short getInputExit() {
+        return INPUT_EXIT;
+    }
+
+    public static short getInputLoadXml() {
+        return INPUT_LOAD_XML;
     }
 }
