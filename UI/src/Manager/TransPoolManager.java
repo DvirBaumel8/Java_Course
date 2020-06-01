@@ -25,6 +25,13 @@ public class TransPoolManager {
         return transPoolManagerInstance;
     }
 
+    public static EngineManager getEngineManagerInstance() {
+        if (engineManager == null) {
+            engineManager = EngineManager.getEngineManagerInstance();
+        }
+        return engineManager;
+    }
+
     public void run() {
         short userChoice = displayMenu();
         if (userChoice == INPUT_EXIT) {

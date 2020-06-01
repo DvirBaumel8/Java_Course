@@ -1,10 +1,9 @@
 package controllers;
 
 import Manager.TransPoolManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +49,8 @@ public class AppController {
     }
 
     public void exitButtonAction() {
-        headerComponentController.exitButtonActionListener();
+        Platform.exit();
+        System.exit(0);
     }
 
     public void loadXMLAction() {
@@ -65,30 +65,18 @@ public class AppController {
         tripSuggestController.addTripSuggestButtonActionListener();
     }
 
-    public boolean loadXMLButtonAction() {
-        boolean res = false;
-
-        if(!this.transPoolManager.isXMLLoaded()) {
+    public List<String> CheckPathForXML(String myPathToTheXMLFile) {
             List<String> xmlErrors = new ArrayList<>();
             try {
-                String myPathToTheXMLFile = null;
-                // do pop up and get string full path
-                // System.out.println("Please copy your full path to master.xml file and than press enter:");
                 xmlErrors = this.transPoolManager.getEngineManager().LoadXML(myPathToTheXMLFile, xmlErrors);
-                if(xmlErrors == null) {
+                if(xmlErrors.isEmpty()) {
                     this.transPoolManager.setIsXMLLoaded(true);
-                }
-                else {
-                    // xml faild popup message
-                    //this.isXMLLoaded = this.transPoolManager.printXMLResultAction(xmlErrors);
                 }
             } catch (Exception e) {
                 xmlErrors.add(e.getMessage());
             } finally {
                 //checkIfErrorsOccurredAndPrint(xmlErrors);
             }
-        }
-
-        return res;
+            return xmlErrors;
     }
 }
