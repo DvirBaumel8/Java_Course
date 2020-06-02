@@ -208,8 +208,7 @@ public class EngineManager {
         return tripRequestUtil.getTripID(trip);
     }
 
-    public void addNewTripRequest(String input) {
-        String[] inputs = input.split(",");
+    public void addNewTripRequest(String[] inputs) {
         double Hour = Integer.parseInt(inputs[3].split(":")[0]);
         double Minutes = Integer.parseInt(inputs[3].split(":")[1]);
         while(Minutes > 1) {
@@ -397,8 +396,8 @@ public class EngineManager {
 
 //---------------------------- RequestValidator Section ----------------------------
 
-    public boolean validateTripRequestInput(String input) {
-        return validator.validateTripRequestInput(input);
+    public boolean validateTripRequestInput(String[] inputs) {
+        return validator.validateTripRequestInput(inputs);
     }
 
     public String getRequestValidationErrorMessage () {

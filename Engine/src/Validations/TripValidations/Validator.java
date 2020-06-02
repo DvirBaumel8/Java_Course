@@ -60,8 +60,8 @@ public class Validator {
         menuErrorMessage = new StringBuilder();
     }
 
-    public boolean validateTripRequestInput(String input) {
-        return requestValidator.validateTripRequestInput(input);
+    public boolean validateTripRequestInput(String[] inputs) {
+        return requestValidator.validateTripRequestInput(inputs);
     }
 
     public String getAddNewTripRequestErrorMessage() {

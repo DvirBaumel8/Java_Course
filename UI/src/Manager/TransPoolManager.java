@@ -45,8 +45,6 @@ public class TransPoolManager {
                     break;
                 }
                 case 2: {
-                    String allStationsNames = engineManager.getAllStationsName();
-                    addNewTripRequestActions(allStationsNames);
                     break;
                 }
                 case 3: {
@@ -222,15 +220,16 @@ public class TransPoolManager {
         System.out.println("Please try again");
     }
 
-    public void printAndAddNewTripRequestSuccess(String input) {
-        engineManager.addNewTripRequest(input);
+    public void addNewTripRequestSuccess() {
+        String[] inputs = null;
+        engineManager.addNewTripRequest(inputs);
         System.out.println(engineManager.getRequestValidationSuccessMessage());
     }
 
-    public void printNewNewTripRequestErrorMessage() {
-        System.out.println(engineManager.getRequestValidationErrorMessage());
-        System.out.println("Please try again...");
+    public String getAddNewTripRequestErrorMessage() {
+        String errors = engineManager.getRequestValidationErrorMessage();
         engineManager.deleteNewTripRequestErrorMessage();
+        return errors;
     }
 
     public void addNewTripSuggestedActions(String allStationsNames, HashSet<String> allStationsLogicNames) {
@@ -257,28 +256,6 @@ public class TransPoolManager {
         }
     }
 
-    void addNewTripRequestActions(String allStationsNames) {
-        boolean isValidInput = false;
-        while (!isValidInput) {
-            printAddNewTripRequestMenu(allStationsNames);
-            String input = scanner.nextLine();
-            try {
-                isValidInput = engineManager.validateTripRequestInput(input);
-                if (isValidInput) {
-                    if (input.equals("b")) {
-                        run();
-                        break;
-                    }
-                    printAndAddNewTripRequestSuccess(input);
-                } else {
-                    printNewNewTripRequestErrorMessage();
-                }
-            }
-            catch (Exception e) {
-                printNewNewTripRequestErrorMessage();
-            }
-        }
-    }
 
     public void matchTripRequestToTripSuggestActions(String requestIDAndAmountToMatch) {
         String input = null;

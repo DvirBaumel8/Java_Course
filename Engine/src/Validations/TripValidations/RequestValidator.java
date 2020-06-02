@@ -16,13 +16,9 @@ public class RequestValidator extends ActionValidator {
         this.chooseRequestAndAmountOfSuggestedTripsErrorMessage = new StringBuilder();
     }
 
-    public boolean validateTripRequestInput(String input) {
-        String[] inputs = input.split(",");
+    public boolean validateTripRequestInput(String[] inputs) {
         boolean isValid = true;
 
-        if(input.equals("b")) {
-            return true;
-        }
         if(inputs.length != TRIP_REQUEST_INPUT_LIMIT) {
             addNewTripRequestErrorMessage.append("Please insert 5 elements, try again.\n");
             return false;

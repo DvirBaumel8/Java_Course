@@ -12,7 +12,7 @@
    <content>
       <VBox id="vbox" prefHeight="343.0" prefWidth="157.0" spacing="5.0" styleClass="vbox" stylesheets="@../../../../UI/src/CSS/vbox.css">
          <children>
-            <TextArea accessibleRole="TEXT" editable="false" prefHeight="33.0" prefWidth="128.0" styleClass="textArea" stylesheets="@../../../../UI/src/CSS/textArea.css" text="Trip Request ">
+            <TextArea accessibleRole="TEXT" editable="false" prefHeight="33.0" prefWidth="128.0" styleClass="CSS/textArea" stylesheets="@../../../../UI/src/CSS/textArea.css" text="Trip Request ">
                <font>
                   <Font name="System Font" size="14.0" />
                </font>

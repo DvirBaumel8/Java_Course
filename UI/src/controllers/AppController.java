@@ -57,7 +57,26 @@ public class AppController {
         headerComponentController.loadXMLButtonActionListener();
     }
 
-    public void addTripRequestAction() {
+    public void addTripRequestAction(String[] inputTripRequestString) {
+        StringBuilder errors = new StringBuilder();
+        boolean isValidInput = this.transPoolManager.getEngineManager().validateTripRequestInput(inputTripRequestString);
+
+        if(!isValidInput) {
+            try {
+                this.transPoolManager.addNewTripRequestSuccess();
+                if(isValidInput) {
+                    this.transPoolManager.addNewTripRequestSuccess();
+                }
+                else {
+                    errors = new StringBuilder(this.transPoolManager.getAddNewTripRequestErrorMessage());
+                }
+            }
+            catch (Exception e) {
+                errors.append(e.getMessage());
+                errors.append(this.transPoolManager.getAddNewTripRequestErrorMessage());
+            }
+        }
+
         tripRequestController.addTripRequestButtonActionListener();
     }
 
@@ -78,5 +97,9 @@ public class AppController {
                 //checkIfErrorsOccurredAndPrint(xmlErrors);
             }
             return xmlErrors;
+    }
+
+    public String getAllStationsNames() {
+      return  this.transPoolManager.getEngineManager().getAllStationsName();
     }
 }

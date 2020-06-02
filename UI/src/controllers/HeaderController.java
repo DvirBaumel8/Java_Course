@@ -22,9 +22,12 @@ public class HeaderController {
         this.mainController = mainController;
     }
 
-    TextField pathTextField = new TextField("full path to .xml");
-    Stage xmlStage = new Stage();
+    TextField xmlPathTextField = null;
+    Stage xmlStage = null;
 
+    public HeaderController() {
+        this.xmlPathTextField = new TextField("full path to .xml");
+    }
 
     @FXML
     void exitButtonActionListener() {
@@ -37,7 +40,7 @@ public class HeaderController {
     }
 
     private void xmlHandleButtonAction(ActionEvent event) {
-        String userFullPath = pathTextField.getText();
+        String userFullPath = xmlPathTextField.getText();
         List<String> xmlErrors = mainController.CheckPathForXML(userFullPath);
         if(xmlErrors.isEmpty()) {
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "XML Load Successfully");
@@ -62,16 +65,16 @@ public class HeaderController {
         xmlLabel.setPrefWidth(300);
         xmlWindow.getChildren().add(xmlLabel);
 
-        pathTextField = new TextField("full path to .xml");
-        pathTextField.setPrefWidth(120);
-        xmlWindow.getChildren().add(pathTextField);
+        xmlPathTextField = new TextField("full path to .xml");
+        xmlPathTextField.setPrefWidth(120);
+        xmlWindow.getChildren().add(xmlPathTextField);
 
         Button xmlLoadButton= new Button("Load");
         xmlLoadButton.setOnAction(this::xmlHandleButtonAction);
         xmlWindow.getChildren().add(xmlLoadButton);
 
         xmlWindow.setMargin(xmlLabel, margin);
-        xmlWindow.setMargin(pathTextField, margin);
+        xmlWindow.setMargin(xmlPathTextField, margin);
         xmlWindow.setMargin(xmlLoadButton, margin);
 
         Scene scene = new Scene(xmlWindow, 300, 200);
