@@ -1,8 +1,10 @@
 package controllers;
 
 import Manager.TransPoolManager;
+import TripRequests.TripRequest;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ScrollPane;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,25 +61,24 @@ public class AppController {
 
     public void addTripRequestAction(String[] inputTripRequestString) {
         StringBuilder errors = new StringBuilder();
-        boolean isValidInput = this.transPoolManager.getEngineManager().validateTripRequestInput(inputTripRequestString);
-
-        if(!isValidInput) {
-            try {
-                this.transPoolManager.addNewTripRequestSuccess();
-                if(isValidInput) {
-                    this.transPoolManager.addNewTripRequestSuccess();
-                }
-                else {
-                    errors = new StringBuilder(this.transPoolManager.getAddNewTripRequestErrorMessage());
-                }
-            }
-            catch (Exception e) {
-                errors.append(e.getMessage());
-                errors.append(this.transPoolManager.getAddNewTripRequestErrorMessage());
+        TripRequest newRequest = null;
+        try {
+            boolean isValidInput = this.transPoolManager.getEngineManager().validateTripRequestInput(inputTripRequestString);
+            if (isValidInput) {
+                newRequest = this.transPoolManager.addNewTripRequestSuccess(inputTripRequestString);
+                tripRequestController.addNewTripRequestLabel(newRequest);
+                tripRequestController.closeAddNewTripRequestStage();
+            } else {
+                errors = new StringBuilder(this.transPoolManager.getAddNewTripRequestErrorMessage());
+                this.getAlertErrorWindow(errors.toString());
             }
         }
-
-        tripRequestController.addTripRequestButtonActionListener();
+         catch (Exception e) {
+                errors.append(e.getMessage());
+                errors.append(this.transPoolManager.getAddNewTripRequestErrorMessage());
+                this.getAlertErrorWindow(errors.toString());
+            }
+        //tripRequestController.addTripRequestButtonActionListener();
     }
 
     public void addTripSuggestAction() {
@@ -90,6 +91,7 @@ public class AppController {
                 xmlErrors = this.transPoolManager.getEngineManager().LoadXML(myPathToTheXMLFile, xmlErrors);
                 if(xmlErrors.isEmpty()) {
                     this.transPoolManager.setIsXMLLoaded(true);
+                    transPoolManager = transPoolManager.getTransPoolManagerInstance();
                 }
             } catch (Exception e) {
                 xmlErrors.add(e.getMessage());
@@ -99,7 +101,16 @@ public class AppController {
             return xmlErrors;
     }
 
+    public boolean isXMLLoaded() {
+       return this.transPoolManager.isXMLLoaded();
+    }
+
     public String getAllStationsNames() {
       return  this.transPoolManager.getEngineManager().getAllStationsName();
+    }
+
+    public void getAlertErrorWindow(String message) {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR, message);
+        errorAlert.showAndWait();
     }
 }

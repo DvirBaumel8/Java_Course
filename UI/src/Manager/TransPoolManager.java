@@ -1,5 +1,6 @@
 package Manager;
 
+import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
 
 import java.util.*;
@@ -220,10 +221,9 @@ public class TransPoolManager {
         System.out.println("Please try again");
     }
 
-    public void addNewTripRequestSuccess() {
-        String[] inputs = null;
-        engineManager.addNewTripRequest(inputs);
-        System.out.println(engineManager.getRequestValidationSuccessMessage());
+    public TripRequest addNewTripRequestSuccess(String[] inputs) {
+        TripRequest newRequest = engineManager.addNewTripRequest(inputs);
+        return newRequest;
     }
 
     public String getAddNewTripRequestErrorMessage() {

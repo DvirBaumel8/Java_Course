@@ -1,13 +1,19 @@
 package controllers;
 
+import Routes.CommonResourcesPaths;
+import TripRequests.TripRequest;
+import javafx.beans.property.ObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -17,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +47,15 @@ public class TripRequestController {
 
     @FXML
     void addTripRequestButtonActionListener() {
-        getAddTripRequestWindow();
-        getStationsWindow();
+        if(mainController.isXMLLoaded()) {
+            getAddTripRequestWindow();
+        }
+        else {
+            mainController.getAlertErrorWindow("XML doesnt load yet - please load one");
+        }
+    }
+
+    private void addInputTripRequestButtonAction(ActionEvent event) {
         String[] inputTripRequestString = new String[INPUT_ADD_TRIP_REQUEST_SIZE];
         int index = 0;
         for(TextField inputTextField : inputAddTripRequest) {
@@ -51,22 +65,11 @@ public class TripRequestController {
         mainController.addTripRequestAction(inputTripRequestString);
     }
 
-    private void addInputTripRequestButtonAction(ActionEvent event) {
-       String x;
-    }
-
-    void getStationsWindow() {
-        String allStationsNames = mainController.getAllStationsNames();
-        Stage stageAllStationsNames = new Stage();
-        VBox allStationsNamesWindow = new VBox();
-
-
-    }
 
     void getAddTripRequestWindow() {
         addTripRequestStage = new Stage();
         VBox addTripRequestWindow = new VBox();
-        javafx.geometry.Insets margin = new javafx.geometry.Insets(20,20,20,20);
+        javafx.geometry.Insets margin = new javafx.geometry.Insets(12,12,12,12);
         javafx.geometry.Insets generalMargin = new javafx.geometry.Insets(0,4,0,4);
         addTripRequestWindow.setSpacing(10);
         addTripRequestWindow.setBackground((new Background(new BackgroundFill(Color.gray(0.865),
@@ -75,8 +78,18 @@ public class TripRequestController {
         Label detailsLabel = new Label("Please insert the following details:");
 
         detailsLabel.setFont(new javafx.scene.text.Font("Arial", 21));
-        detailsLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(detailsLabel);
+
+        //-----------------------------------------------------
+
+        String allStationsNames = mainController.getAllStationsNames();
+        Label allStationsNamesLabel = new Label(allStationsNames);
+        addTripRequestWindow.getChildren().add(allStationsNamesLabel);
+
+        //-----------------------------------------------------
+
+        Label exampleLabel = new Label("Example: Ohad§,A,C,12:25,s");
+        addTripRequestWindow.getChildren().add(exampleLabel);
 
         //-----------------------------------------------------
 
@@ -144,6 +157,8 @@ public class TripRequestController {
 
         addTripRequestWindow.setMargin(detailsLabel, margin);
         addTripRequestWindow.setMargin(addInputTripRequestButton, margin);
+        addTripRequestWindow.setMargin(allStationsNamesLabel, margin);
+        addTripRequestWindow.setMargin(exampleLabel, margin);
 
         addTripRequestWindow.setMargin(nameOfOwnerLabel, generalMargin);
         addTripRequestWindow.setMargin(sourceStationLabel, generalMargin);
@@ -159,7 +174,7 @@ public class TripRequestController {
         addTripRequestWindow.setMargin(inputAddTripRequest.get(4), generalMargin);
 
 
-        Scene scene = new Scene(addTripRequestWindow, 420, 500);
+        Scene scene = new Scene(addTripRequestWindow, 450, 650);
 
         addTripRequestStage.setTitle("Add New Trip Request");
         addTripRequestStage.setScene(scene);
@@ -174,4 +189,50 @@ public class TripRequestController {
                 "Example: Ohad§,A,C,12:25,s");
          */
     }
+
+    public void addNewTripRequestLabel(TripRequest newRequest) throws Exception{
+        CommonResourcesPaths route = CommonResourcesPaths.getInstance();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        URL url = getClass().getResource(route.TRIP_SUGGEST_fXML_RESOURCE);
+        ScrollPane borderPaneTripRequest = fxmlLoader.load(url.openStream());
+        Node node = borderPaneTripRequest.getContent();
+
+        Button newIdRequestButton = new Button(Integer.toString(newRequest.getRequestID()));
+
+        newIdRequestButton.setMinWidth(150);
+        newIdRequestButton.setTranslateY(25);
+        newIdRequestButton.setTranslateX(15);
+        newIdRequestButton.setOnAction(this::newIdRequestButtonDisplay);
+
+        ObjectProperty<Node> x = borderPaneTripRequest.contentProperty();
+
+        VBox check1 = (VBox) node;
+        check1.getChildren().add(newIdRequestButton);
+
+        //VBox check = (VBox) x.get();
+        //check.getChildren().add(newIdRequestButton);
+
+        //id:
+        //sourceStation:
+        //destinationStation:
+        //    private String OwnerName;
+        //    private String sourceStation;
+        //    private String destinationStation;
+        //    private double requiredTime;
+        //    private String arrivalHourAsTime;
+        //    private boolean isMatched;
+        //    private TripSuggest matchTrip;
+        //    private boolean requestByStartTime;
+
+        //int x = 3;
+    }
+
+    private void newIdRequestButtonDisplay(ActionEvent actionEvent) {
+    }
+
+    public void closeAddNewTripRequestStage() {
+        addTripRequestStage.close();
+    }
+
+
 }

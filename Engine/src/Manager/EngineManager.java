@@ -208,15 +208,17 @@ public class EngineManager {
         return tripRequestUtil.getTripID(trip);
     }
 
-    public void addNewTripRequest(String[] inputs) {
+    public TripRequest addNewTripRequest(String[] inputs) {
+        TripRequest newRequest = null;
         double Hour = Integer.parseInt(inputs[3].split(":")[0]);
         double Minutes = Integer.parseInt(inputs[3].split(":")[1]);
         while(Minutes > 1) {
             Minutes = Minutes/10;
         }
         Hour += Minutes;
-        TripRequest newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], Hour, inputs[4].equals("s"));
+        newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], Hour, inputs[4].equals("s"));
         tripRequestUtil.addRequestTrip(newRequest);
+        return newRequest;
     }
 
     public void addNewTripSuggest(String input) {

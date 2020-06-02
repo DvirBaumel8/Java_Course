@@ -17,14 +17,13 @@ public class Main extends Application {
     public static void main(String[] args) {
         Thread.currentThread().setName("main");
         launch(args);
-        // transPoolManager.run();
     }
 
 
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        CommonResourcesPaths route = new CommonResourcesPaths();
+        CommonResourcesPaths route = CommonResourcesPaths.getInstance();
 
         // load header component and controller from fxml
         FXMLLoader fxmlLoader = new FXMLLoader();
