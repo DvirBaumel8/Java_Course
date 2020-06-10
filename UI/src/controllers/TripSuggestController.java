@@ -73,6 +73,7 @@ public class TripSuggestController {
           //      CornerRadii.EMPTY, Insets.EMPTY))));
 
         Label detailsLabel = new Label("Please insert the following details:");
+        detailsLabel.setTranslateX(15);
 
         detailsLabel.setFont(new javafx.scene.text.Font("Arial", 21));
         addTripSuggestWindow.getChildren().add(detailsLabel);
@@ -81,11 +82,13 @@ public class TripSuggestController {
 
         String allStationsNames = mainController.getAllStationsNames();
         Label allStationsNamesLabel = new Label(allStationsNames);
+        allStationsNamesLabel.setTranslateX(15);
         addTripSuggestWindow.getChildren().add(allStationsNamesLabel);
 
         //-----------------------------------------------------
 
         Label exampleLabel = new Label("EXAMPLE: Dvir,A-B-C,3,13:25,4,30,2");
+        exampleLabel.setTranslateX(15);
         addTripSuggestWindow.getChildren().add(exampleLabel);
 
         //-----------------------------------------------------
@@ -192,16 +195,22 @@ public class TripSuggestController {
         Button addInputTripSuggestButton= new Button("Add");
 
         addInputTripSuggestButton.setMinWidth(150);
-        addInputTripSuggestButton.setTranslateY(10);
+        addInputTripSuggestButton.setTranslateY(5);
         addInputTripSuggestButton.setTranslateX(15);
         addInputTripSuggestButton.setOnAction(this::addInputTripSuggestButtonAction);
         addTripSuggestWindow.getChildren().add(addInputTripSuggestButton);
 
         ScrollPane scrollPane = new ScrollPane(addTripSuggestWindow);
-        scrollPane.setMaxHeight(700);
-        scrollPane.setMaxWidth(350);
+        scrollPane.setMaxHeight(900);
+        scrollPane.setMaxWidth(500);
 
-        Scene scene = new Scene(scrollPane, 450, 800);
+        scrollPane.setMinWidth(250);
+        scrollPane.setMinHeight(500);
+
+        scrollPane.setBackground((new Background(new BackgroundFill(Color.gray(0.865),
+                CornerRadii.EMPTY, Insets.EMPTY))));
+
+        Scene scene = new Scene(scrollPane, 500, 900);
 
         addTripSuggestStage.setTitle("Add New Trip Suggest");
         addTripSuggestStage.setScene(scene);

@@ -77,6 +77,7 @@ public class TripRequestController {
         addTripRequestWindow.setSpacing(10);
 
         Label detailsLabel = new Label("Please insert the following details:");
+        detailsLabel.setTranslateX(15);
 
         detailsLabel.setFont(new javafx.scene.text.Font("Arial", 21));
         addTripRequestWindow.getChildren().add(detailsLabel);
@@ -85,76 +86,90 @@ public class TripRequestController {
 
         String allStationsNames = mainController.getAllStationsNames();
         Label allStationsNamesLabel = new Label(allStationsNames);
+        allStationsNamesLabel.setTranslateX(15);
         addTripRequestWindow.getChildren().add(allStationsNamesLabel);
 
         //-----------------------------------------------------
 
         Label exampleLabel = new Label("Example: Ohad§,A,C,12:25,s");
+        exampleLabel.setTranslateX(15);
         addTripRequestWindow.getChildren().add(exampleLabel);
 
         //-----------------------------------------------------
 
         Label nameOfOwnerLabel = new Label("- Name of owner:");
+        nameOfOwnerLabel.setTranslateX(15);
         nameOfOwnerLabel.setTextFill(Color.web("#0076a3"));
         nameOfOwnerLabel.setPrefWidth(300);
         addTripRequestWindow.getChildren().add(nameOfOwnerLabel);
 
         inputAddTripRequest.add(new TextField("Enter owner name"));
         inputAddTripRequest.get(0).setMaxWidth(250);
+        inputAddTripRequest.get(0).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(0));
 
         //-----------------------------------------------------
 
         Label sourceStationLabel = new Label("- Source station:");
+        sourceStationLabel.setTranslateX(15);
         sourceStationLabel.setTextFill(Color.web("#0076a3"));
         sourceStationLabel.setPrefWidth(300);
         addTripRequestWindow.getChildren().add(sourceStationLabel);
 
         inputAddTripRequest.add(new TextField("Enter source station"));
         inputAddTripRequest.get(1).setMaxWidth(250);
+        inputAddTripRequest.get(1).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(1));
 
         //-----------------------------------------------------
 
         Label destinationStationLabel = new Label("- Destination station:");
+        destinationStationLabel.setTranslateX(15);
         destinationStationLabel.setTextFill(Color.web("#0076a3"));
         destinationStationLabel.setPrefWidth(300);
         addTripRequestWindow.getChildren().add(destinationStationLabel);
 
         inputAddTripRequest.add(new TextField("Enter destination station"));
         inputAddTripRequest.get(2).setMaxWidth(250);
+        inputAddTripRequest.get(2).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(2));
 
         //-----------------------------------------------------
 
         Label startOrArrivalTimeLabel = new Label("- Start or Arrival time of the trip (**:** format every 5 min):");
+        startOrArrivalTimeLabel.setTranslateX(15);
         startOrArrivalTimeLabel.setTextFill(Color.web("#0076a3"));
         startOrArrivalTimeLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(startOrArrivalTimeLabel);
 
         inputAddTripRequest.add(new TextField("Enter start or arrival time"));
         inputAddTripRequest.get(3).setMaxWidth(250);
+        inputAddTripRequest.get(3).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(3));
 
         //-----------------------------------------------------
 
         Label timeTypeLabel = new Label("-s to choose start time, a to choose arrival time:5");
+        timeTypeLabel.setTranslateX(15);
         timeTypeLabel.setTextFill(Color.web("#0076a3"));
         timeTypeLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(timeTypeLabel);
 
         inputAddTripRequest.add(new TextField("Enter s or a"));
         inputAddTripRequest.get(4).setMaxWidth(250);
+        inputAddTripRequest.get(4).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(4));
 
         //-----------------------------------------------------
 
         Label arrivalDayNumberLabel = new Label("- Arrival Day Number:");
+        arrivalDayNumberLabel.setTranslateX(15);
         arrivalDayNumberLabel.setTextFill(Color.web("#0076a3"));
         arrivalDayNumberLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(arrivalDayNumberLabel);
 
         inputAddTripRequest.add(new TextField("arrival Day Number"));
+        inputAddTripRequest.get(5).setTranslateX(15);
         inputAddTripRequest.get(5).setMaxWidth(250);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(5));
 
@@ -162,7 +177,7 @@ public class TripRequestController {
 
         Button addInputTripRequestButton= new Button("Add");
         addInputTripRequestButton.setMinWidth(150);
-        addInputTripRequestButton.setTranslateY(5);
+        addInputTripRequestButton.setTranslateY(1);
         addInputTripRequestButton.setTranslateX(15);
         addInputTripRequestButton.setOnAction(this::addInputTripRequestButtonAction);
         addTripRequestWindow.getChildren().add(addInputTripRequestButton);
