@@ -1,5 +1,7 @@
 package controllers;
 
+import Manager.BorderPaneWrapper;
+import Manager.ViewWrapper;
 import Routes.CommonResourcesPaths;
 import TripRequests.TripRequest;
 import javafx.beans.property.ObjectProperty;
@@ -9,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -137,12 +140,12 @@ public class TripRequestController {
 
         //-----------------------------------------------------
 
-        Label timeTypeLabel = new Label("-S to choose start time, A to choose arrival time:5");
+        Label timeTypeLabel = new Label("-s to choose start time, a to choose arrival time:5");
         timeTypeLabel.setTextFill(Color.web("#0076a3"));
         timeTypeLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(timeTypeLabel);
 
-        inputAddTripRequest.add(new TextField("Enter S or A"));
+        inputAddTripRequest.add(new TextField("Enter s or a"));
         inputAddTripRequest.get(4).setMaxWidth(250);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(4));
 
@@ -196,17 +199,26 @@ public class TripRequestController {
         URL url = getClass().getResource(route.TRIP_SUGGEST_fXML_RESOURCE);
         ScrollPane borderPaneTripRequest = fxmlLoader.load(url.openStream());
         Node node = borderPaneTripRequest.getContent();
-
+        VBox vBox =(VBox) node;
         Button newIdRequestButton = new Button(Integer.toString(newRequest.getRequestID()));
-
+        Label bindingLabel = new Label(String.valueOf(newRequest.getRequestID()));
+        //for (int i = 0; i < 4; i++) {
+          //  vbox.getChildren().add(new Label("Item "+(i+1)));
+        //}
+        vBox.getChildren().setAll(bindingLabel);
+        borderPaneTripRequest.setContent(vBox);
         newIdRequestButton.setOnAction(this::newIdRequestButtonDisplay);
 
-        ObjectProperty<Node> x = borderPaneTripRequest.contentProperty();
+        ViewWrapper viewWrapper = ViewWrapper.getInstance();
 
-        VBox check1 = (VBox) node;
-        check1.getChildren().add(newIdRequestButton);
+        //viewWrapper.getRoot().setLeft(borderPaneTripRequest);
+        //Scene scene = new Scene(viewWrapper.getRoot(), 700, 690);
+        //viewWrapper.getPrimaryStage().setScene(scene);
+        //viewWrapper.getPrimaryStage().show();
 
-
+        //Scene scene = button.getScene();
+        //Parent root = MyApplication.pages.get("LoginPage");
+        //scene.setRoot(root);
         //VBox check = (VBox) x.get();
         //check.getChildren().add(newIdRequestButton);
 

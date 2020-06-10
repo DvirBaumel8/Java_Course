@@ -1,3 +1,5 @@
+import Manager.BorderPaneWrapper;
+import Manager.ViewWrapper;
 import XML.XMLLoading.jaxb.schema.generated.Route;
 
 import javafx.application.Application;
@@ -24,6 +26,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         CommonResourcesPaths route = CommonResourcesPaths.getInstance();
+        ViewWrapper viewWrapper = ViewWrapper.getInstance();
 
         // load header component and controller from fxml
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -48,20 +51,21 @@ public class Main extends Application {
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(route.APP_FXML_LIGHT_RESOURCE);
         fxmlLoader.setLocation(url);
-        BorderPane root = fxmlLoader.load(url.openStream());
+        viewWrapper.setRoot(fxmlLoader.load(url.openStream()));
         AppController appController = fxmlLoader.getController();
 
         // add sub components to master app placeholders
-        root.setTop(headerComponent);
-        root.setLeft(borderPaneTripRequest);
-        root.setRight(borderPaneTripSuggest);
+        viewWrapper.getRoot().setTop(headerComponent);
+        viewWrapper.getRoot().setLeft(borderPaneTripRequest);
+        viewWrapper.getRoot().setRight(borderPaneTripSuggest);
 
         appController.setHeaderComponentController(headerController);
         appController.setTripRequestComponentController(tripRequestController);
         appController.setTripSuggestComponentController(tripSuggestController);
 
-        Scene scene = new Scene(root, 700, 690);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        Scene scene = new Scene(viewWrapper.getRoot(), 700, 690);
+        viewWrapper.setPrimaryStage(primaryStage);
+        viewWrapper.getPrimaryStage().setScene(scene);
+        viewWrapper.getPrimaryStage().show();
     }
 }
