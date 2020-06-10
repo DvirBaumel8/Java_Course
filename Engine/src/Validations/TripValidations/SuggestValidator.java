@@ -12,40 +12,36 @@ public class SuggestValidator extends ActionValidator {
         return addNewTripSuggestErrorMessage.toString();
     }
 
-    public boolean validateTripSuggestInput(String input, HashSet<String> allStationsLogicNames) {
-        String[] inputs = input.split(",");
+    public boolean validateTripSuggestInput(String[] inputTripSuggestString, HashSet<String> allStationsLogicNames) {
         boolean isValid = true;
         //example of valid input - Ohad,A.C.B,3,13:25,4,30,2
 
-        if (input.equals("b")) {
-            return true;
-        }
-        if (inputs.length != TRIP_SUGGEST_INPUT_LIMIT) {
+        if (inputTripSuggestString.length != TRIP_SUGGEST_INPUT_LIMIT) {
             addNewTripSuggestErrorMessage.append("Please insert 7 elements, try again.\n");
             return false;
         }
-        if (!validateOwnerName(inputs[0])) {
+        if (!validateOwnerName(inputTripSuggestString[0])) {
             isValid = false;
         }
-        if(!validateOwnerRoute(inputs[1], allStationsLogicNames)) {//add 1 more check of valid route A.B.C
+        if(!validateOwnerRoute(inputTripSuggestString[1], allStationsLogicNames)) {//add 1 more check of valid route A.B.C
             addNewTripSuggestErrorMessage.append("Not valid route.\n");
             isValid = false;
         }
-        if (!validateDepartureDayNumber(inputs[2])) {
+        if (!validateDepartureDayNumber(inputTripSuggestString[2])) {
             isValid = false;
         }
-        if (!validateTime(inputs[3], 1)) {
+        if (!validateTime(inputTripSuggestString[3], 1)) {
             //check if its : 24 (0-23) and minutes in multiples of 5 (0 - 55)
             isValid = false;
         }
-        if (!validateTripScheduleType(inputs[4])) {
+        if (!validateTripScheduleType(inputTripSuggestString[4])) {
             isValid = false;
         }
-        if (!validatePPK(inputs[5])) {
+        if (!validatePPK(inputTripSuggestString[5])) {
             // check again if how the calc if this value valid
             isValid = false;
         }
-        if (!validatePossiblePassengerCapacity(inputs[6])) {
+        if (!validatePossiblePassengerCapacity(inputTripSuggestString[6])) {
             isValid = false;
         }
 
@@ -106,6 +102,11 @@ public class SuggestValidator extends ActionValidator {
                     " please try again, insert a number bigger than 0 \n");
          }
         return res;
+    }
+
+    public void deleteErrorMessageOfAddNewTripSuggest () {
+        addNewTripSuggestErrorMessage.setLength(0);
+        addNewTripSuggestErrorMessage.append("\nSorry, your input was not valid. Errors: \n");
     }
 
     public boolean validatePossiblePassengerCapacity(String input) {

@@ -221,8 +221,9 @@ public class EngineManager {
         return newRequest;
     }
 
-    public void addNewTripSuggest(String input) {
-        String[] inputs = input.split(",");
+    public TripSuggest addNewTripSuggest(String[] inputs) {
+
+        TripSuggest newSuggest = null;
         int startHour = Integer.parseInt(inputs[3].split(":")[0]);
         Route newTripSuggestRoute = new Route();
         String stringPath = setInputPathToSystemStylePath(inputs[1]);
@@ -237,14 +238,15 @@ public class EngineManager {
             tripScheduleTypeInt = Integer.parseInt(inputs[4]);
             ppk = Integer.parseInt(inputs[5]);
             driverCapacity = Integer.parseInt(inputs[6]);
-        }
+            newSuggest = new TripSuggest(inputs[0], newTripSuggestRoute, departureDayNumber, startHour,
+                    tripScheduleTypeInt , ppk, driverCapacity);        }
         catch (NumberFormatException e) {
             addErrorMessageToMenuOrder("NumberFormatException occur ");
         }
-        TripSuggest newSuggest = new TripSuggest(inputs[0], newTripSuggestRoute, departureDayNumber, startHour,
-                tripScheduleTypeInt , ppk, driverCapacity);
 
         tripSuggestUtil.addSuggestTrip(newSuggest);
+
+        return newSuggest;
     }
 
     public String getRequestValidationSuccessMessage () {
@@ -422,6 +424,10 @@ public class EngineManager {
         validator.deleteErrorMessageOfAddNewTripRequest();
     }
 
+    public void deleteNewTripSuggestErrorMessage() {
+        validator.deleteErrorMessageOfAddNewTripSuggest();
+    }
+
     public String getChoosePotentialTripInputErrorMessage() {
         return validator.getChoosePotentialTripInputErrorMessage();
     }
@@ -431,8 +437,8 @@ public class EngineManager {
     }
 
 //---------------------------- SuggestValidator Section ----------------------------
-    public boolean validateTripSuggestInput(String input, HashSet<String> allStationsLogicNames) {
-        return validator.validateTripSuggestInput(input, allStationsLogicNames);
+    public boolean validateTripSuggestInput(String[] inputTripSuggestString, HashSet<String> allStationsLogicNames) {
+        return validator.validateTripSuggestInput(inputTripSuggestString, allStationsLogicNames);
     }
 
     public String getSuggestValidationErrorMessage() {

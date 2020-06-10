@@ -84,6 +84,10 @@ public class Validator {
         requestValidator.deleteErrorMessageOfAddNewTripRequest();
     }
 
+    public void deleteErrorMessageOfAddNewTripSuggest() {
+        suggestValidator.deleteErrorMessageOfAddNewTripSuggest();
+    }
+
     public String getChoosePotentialTripInputErrorMessage() {
         return requestValidator.getChoosePotentialTripInputErrorMessage();
     }
@@ -92,8 +96,8 @@ public class Validator {
         return requestValidator.validateChoosePotentialTripInput(input, potentialSuggestedTrips);
     }
 
-    public boolean validateTripSuggestInput(String input, HashSet<String> allStationsLogicNames) {
-        return suggestValidator.validateTripSuggestInput(input, allStationsLogicNames);
+    public boolean validateTripSuggestInput(String[] inputTripSuggestString, HashSet<String> allStationsLogicNames) {
+        return suggestValidator.validateTripSuggestInput(inputTripSuggestString, allStationsLogicNames);
     }
 
     public String getAddNewTripSuggestErrorMessage() {

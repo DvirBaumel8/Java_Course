@@ -49,9 +49,6 @@ public class TransPoolManager {
                     break;
                 }
                 case 3: {
-                    String allStationsNames = engineManager.getAllStationsName();
-                    HashSet<String> allStationsLogicNames = engineManager.getAllLogicStationsName();
-                    addNewTripSuggestedActions(allStationsNames, allStationsLogicNames);
                     break;
                 }
                 case 4: {
@@ -209,8 +206,8 @@ public class TransPoolManager {
         return res;
     }
 
-    public void printAndAddNewTripSuggestSuccess(String input) {
-        engineManager.addNewTripSuggest(input);
+    public void printAndAddNewTripSuggestSuccess(String[] inputs) {
+        engineManager.addNewTripSuggest(inputs);
         System.out.println(engineManager.getSuggestValidationSuccesMessage());
     }
 
@@ -226,36 +223,22 @@ public class TransPoolManager {
         return newRequest;
     }
 
+    public TripSuggest addNewTripSuggestSuccess(String[] inputs) {
+        TripSuggest newSuggest = engineManager.addNewTripSuggest(inputs);
+        return newSuggest;
+    }
+
     public String getAddNewTripRequestErrorMessage() {
         String errors = engineManager.getRequestValidationErrorMessage();
         engineManager.deleteNewTripRequestErrorMessage();
         return errors;
     }
 
-    public void addNewTripSuggestedActions(String allStationsNames, HashSet<String> allStationsLogicNames) {
-        boolean isValidInput = false;
-        while (!isValidInput) {
-            printAddNewTripSuggestMenu(allStationsNames);
-            String input = scanner.nextLine();
-            try {
-                isValidInput = engineManager.validateTripSuggestInput(input, allStationsLogicNames);
-                if (isValidInput) {
-                    if (input.equals("b")) {
-                        run();
-                        break;
-                    }
-                    printAndAddNewTripSuggestSuccess(input);
-                }
-                else {
-                    printNewTripSuggestSuccessErrorMessage();
-                }
-            }
-            catch (Exception e) {
-                printNewTripSuggestSuccessErrorMessage();
-            }
-        }
+    public String getAddNewTripSuggestErrorMessage() {
+        String errors = engineManager.getSuggestValidationErrorMessage();
+        engineManager.deleteNewTripSuggestErrorMessage();
+        return errors;
     }
-
 
     public void matchTripRequestToTripSuggestActions(String requestIDAndAmountToMatch) {
         String input = null;
