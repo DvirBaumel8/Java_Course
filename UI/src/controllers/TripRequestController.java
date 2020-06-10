@@ -199,15 +199,13 @@ public class TripRequestController {
 
         Button newIdRequestButton = new Button(Integer.toString(newRequest.getRequestID()));
 
-        newIdRequestButton.setMinWidth(150);
-        newIdRequestButton.setTranslateY(25);
-        newIdRequestButton.setTranslateX(15);
         newIdRequestButton.setOnAction(this::newIdRequestButtonDisplay);
 
         ObjectProperty<Node> x = borderPaneTripRequest.contentProperty();
 
         VBox check1 = (VBox) node;
         check1.getChildren().add(newIdRequestButton);
+
 
         //VBox check = (VBox) x.get();
         //check.getChildren().add(newIdRequestButton);
