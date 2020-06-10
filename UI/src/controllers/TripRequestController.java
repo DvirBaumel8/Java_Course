@@ -37,7 +37,7 @@ public class TripRequestController {
     private Button addTripRequestButton;
 
     ArrayList<TextField> inputAddTripRequest = null;
-    static final int INPUT_ADD_TRIP_REQUEST_SIZE = 5;
+    static final int INPUT_ADD_TRIP_REQUEST_SIZE = 6;
     Stage addTripRequestStage = null;
 
     public TripRequestController() {
@@ -75,8 +75,6 @@ public class TripRequestController {
         javafx.geometry.Insets margin = new javafx.geometry.Insets(12,12,12,12);
         javafx.geometry.Insets generalMargin = new javafx.geometry.Insets(0,4,0,4);
         addTripRequestWindow.setSpacing(10);
-        addTripRequestWindow.setBackground((new Background(new BackgroundFill(Color.gray(0.865),
-                CornerRadii.EMPTY, Insets.EMPTY))));
 
         Label detailsLabel = new Label("Please insert the following details:");
 
@@ -151,9 +149,20 @@ public class TripRequestController {
 
         //-----------------------------------------------------
 
+        Label arrivalDayNumberLabel = new Label("- Arrival Day Number:");
+        arrivalDayNumberLabel.setTextFill(Color.web("#0076a3"));
+        arrivalDayNumberLabel.setPrefWidth(400);
+        addTripRequestWindow.getChildren().add(arrivalDayNumberLabel);
+
+        inputAddTripRequest.add(new TextField("arrival Day Number"));
+        inputAddTripRequest.get(5).setMaxWidth(250);
+        addTripRequestWindow.getChildren().add(inputAddTripRequest.get(5));
+
+        //-----------------------------------------------------
+
         Button addInputTripRequestButton= new Button("Add");
         addInputTripRequestButton.setMinWidth(150);
-        addInputTripRequestButton.setTranslateY(25);
+        addInputTripRequestButton.setTranslateY(5);
         addInputTripRequestButton.setTranslateX(15);
         addInputTripRequestButton.setOnAction(this::addInputTripRequestButtonAction);
         addTripRequestWindow.getChildren().add(addInputTripRequestButton);
@@ -168,6 +177,7 @@ public class TripRequestController {
         addTripRequestWindow.setMargin(destinationStationLabel, generalMargin);
         addTripRequestWindow.setMargin(startOrArrivalTimeLabel, generalMargin);
         addTripRequestWindow.setMargin(timeTypeLabel, generalMargin);
+        addTripRequestWindow.setMargin(arrivalDayNumberLabel, generalMargin);
         addTripRequestWindow.setMargin(addInputTripRequestButton, generalMargin);
 
         addTripRequestWindow.setMargin(inputAddTripRequest.get(0), generalMargin);
@@ -175,14 +185,26 @@ public class TripRequestController {
         addTripRequestWindow.setMargin(inputAddTripRequest.get(2), generalMargin);
         addTripRequestWindow.setMargin(inputAddTripRequest.get(3), generalMargin);
         addTripRequestWindow.setMargin(inputAddTripRequest.get(4), generalMargin);
+        addTripRequestWindow.setMargin(inputAddTripRequest.get(5), generalMargin);
 
+        ScrollPane scrollPane = new ScrollPane(addTripRequestWindow);
+        scrollPane.setMaxHeight(800);
+        scrollPane.setMaxWidth(500);
 
-        Scene scene = new Scene(addTripRequestWindow, 450, 650);
+        scrollPane.setMinWidth(250);
+        scrollPane.setMinHeight(500);
+
+        scrollPane.setBackground((new Background(new BackgroundFill(Color.gray(0.865),
+                CornerRadii.EMPTY, Insets.EMPTY))));
+
+        Scene scene = new Scene(scrollPane, 500, 800);
 
         addTripRequestStage.setTitle("Add New Trip Request");
         addTripRequestStage.setScene(scene);
         addTripRequestStage.show();
-             /*
+        addTripRequestStage.setMaxHeight(scrollPane.getHeight());
+
+        /*
             System.out.println("Please insert the following details separated with ',' (Insert 'b' to go back to the main menu):\n" +
                 "- Name of owner\n" +
                 "- Source station\n" +
