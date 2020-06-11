@@ -30,6 +30,15 @@ public class EngineManager {
         return dateSystemManger;
     }
 
+    public TripRequestsUtil getTripRequestUtil() {
+        return tripRequestUtil;
+    }
+
+    public TripSuggestUtil getTripSuggestUtil() {
+        return tripSuggestUtil;
+    }
+
+
     public void setDateSystemManger(DateSystemManger dateSystemManger) {
         this.dateSystemManger = dateSystemManger;
     }

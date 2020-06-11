@@ -232,16 +232,25 @@ public class TripSuggestController {
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource(route.TRIP_SUGGEST_fXML_RESOURCE);
         ScrollPane borderPaneTripSuggest = fxmlLoader.load(url.openStream());
+
+
         Node node = borderPaneTripSuggest.getContent();
 
         Button newIdSuggestButton = new Button(Integer.toString(newSuggest.getSuggestID()));
+        borderPaneTripSuggest.getChildrenUnmodifiable().add(newIdSuggestButton);
 
-        newIdSuggestButton.setOnAction(this::newIdSuggestButtonDisplay);
+        Scene scene = new Scene(borderPaneTripSuggest);
 
-        ObjectProperty<Node> x = borderPaneTripSuggest.contentProperty();
 
-        VBox check1 = (VBox) node;
-        check1.getChildren().add(newIdSuggestButton);
+
+
+        //newIdSuggestButton.setOnAction(this::newIdSuggestButtonDisplay);
+
+        //ObjectProperty<Node> x = borderPaneTripSuggest.contentProperty();
+
+        //VBox check1 = (VBox) node;
+
+        //check1.getChildren().add(newIdSuggestButton);
 
 
         //VBox check = (VBox) x.get();

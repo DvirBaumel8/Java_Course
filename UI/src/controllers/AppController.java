@@ -5,11 +5,12 @@ import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class AppController {
     @FXML
@@ -23,6 +24,13 @@ public class AppController {
 
     @FXML
     private TripSuggestController tripSuggestController;
+
+    @FXML
+    Accordion tripRequestAccordion;
+
+    @FXML
+    Accordion tripSuggestAccordion;
+
 
     private TransPoolManager transPoolManager;
 
@@ -134,5 +142,41 @@ public class AppController {
     public void getAlertErrorWindow(String message) {
         Alert errorAlert = new Alert(Alert.AlertType.ERROR, message);
         errorAlert.showAndWait();
+    }
+
+
+    public void setSystem() {
+        Map<TripRequest, Integer> tripRequestMap = this.transPoolManager.getEngineManager().getTripRequestUtil().getAllRequestTrips();
+        Map<TripSuggest, Integer> tripSuggestMap = this.transPoolManager.getEngineManager().getTripSuggestUtil().getAllSuggestedTrips();
+
+        tripRequestMap.forEach((tripRequest,id)-> {
+            TitledPane title = new TitledPane(tripRequest.getNameOfOwner() + " " + id, new TextArea(tripRequest.toString()));
+           // title.setOnMouseClicked(event-> tripsAccordionOnAction());
+          //  tripsAccordion.getPanes().add(1, title);
+        });
+
+
+        if(!tripSuggestMap.isEmpty()) {
+            //tripsAccordion.getPanes().remove(0);
+            //firstTrip=false;
+            //rankYourDriverButton.setDisable(false);
+        }
+
+
+        tripSuggestMap.forEach((tripSuggest,id)-> {
+            //requestsAccordion.getPanes().add(1, new TitledPane(tripSuggest.getTripOwnerName() + " " + id, new TextArea(tripSuggest.toString())));
+           // driverReviewComponentController.getRequestCB().getItems().add(entry.getValue().getSerialNumber());
+        });
+
+        if(!tripRequestMap.isEmpty()) {
+            //requestsAccordion.getPanes().remove(0);
+            //firstRequest = false;
+            //rankYourDriverButton.setDisable(false);
+        }
+
+        //disableButtons(false);
+
+        //liveMapComponentController.setLiveMap();
+
     }
 }

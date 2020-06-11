@@ -13,10 +13,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -35,6 +36,9 @@ public class TripRequestController {
 
     @FXML
     private Button addTripRequestButton;
+
+    @FXML
+    Accordion tripRequestAccordion;
 
     ArrayList<TextField> inputAddTripRequest = null;
     static final int INPUT_ADD_TRIP_REQUEST_SIZE = 6;
@@ -231,47 +235,15 @@ public class TripRequestController {
     }
 
     public void addNewTripRequestLabel(TripRequest newRequest) throws Exception{
-        CommonResourcesPaths route = CommonResourcesPaths.getInstance();
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource(route.TRIP_SUGGEST_fXML_RESOURCE);
-        ScrollPane borderPaneTripRequest = fxmlLoader.load(url.openStream());
-        Node node = borderPaneTripRequest.getContent();
-        VBox vBox =(VBox) node;
-        Button newIdRequestButton = new Button(Integer.toString(newRequest.getRequestID()));
-        Label bindingLabel = new Label(String.valueOf(newRequest.getRequestID()));
-        //for (int i = 0; i < 4; i++) {
-          //  vbox.getChildren().add(new Label("Item "+(i+1)));
-        //}
-        vBox.getChildren().setAll(bindingLabel);
-        borderPaneTripRequest.setContent(vBox);
-        newIdRequestButton.setOnAction(this::newIdRequestButtonDisplay);
+            TitledPane title = new TitledPane(newRequest.getNameOfOwner() + " " + newRequest.getRequestID(),
+                    new TextArea(newRequest.toString()));
+           // title.setOnMouseClicked(event-> tripsAccordionOnAction());
+                tripRequestAccordion.getPanes().add(0,title);
+                tripRequestAccordion.getPanes().remove(0);
+                //firstTrip=false;
+                //tripsAccordion.getPanes().add(0,title);
 
-        ViewWrapper viewWrapper = ViewWrapper.getInstance();
-
-        //viewWrapper.getRoot().setLeft(borderPaneTripRequest);
-        //Scene scene = new Scene(viewWrapper.getRoot(), 700, 690);
-        //viewWrapper.getPrimaryStage().setScene(scene);
-        //viewWrapper.getPrimaryStage().show();
-
-        //Scene scene = button.getScene();
-        //Parent root = MyApplication.pages.get("LoginPage");
-        //scene.setRoot(root);
-        //VBox check = (VBox) x.get();
-        //check.getChildren().add(newIdRequestButton);
-
-        //id:
-        //sourceStation:
-        //destinationStation:
-        //    private String OwnerName;
-        //    private String sourceStation;
-        //    private String destinationStation;
-        //    private double requiredTime;
-        //    private String arrivalHourAsTime;
-        //    private boolean isMatched;
-        //    private TripSuggest matchTrip;
-        //    private boolean requestByStartTime;
-
-        //int x = 3;
+            //liveMapComponentController.updateTripOnMap(trip);
     }
 
     private void newIdRequestButtonDisplay(ActionEvent actionEvent) {

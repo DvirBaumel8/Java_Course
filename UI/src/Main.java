@@ -5,6 +5,7 @@ import XML.XMLLoading.jaxb.schema.generated.Route;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -27,6 +28,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         CommonResourcesPaths route = CommonResourcesPaths.getInstance();
         ViewWrapper viewWrapper = ViewWrapper.getInstance();
+
+        //Accordion tripRequestAccordion;
+        //Accordion tripSuggestAccordion;
 
         // load header component and controller from fxml
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -62,6 +66,7 @@ public class Main extends Application {
         appController.setHeaderComponentController(headerController);
         appController.setTripRequestComponentController(tripRequestController);
         appController.setTripSuggestComponentController(tripSuggestController);
+
 
         Scene scene = new Scene(viewWrapper.getRoot(), 700, 690);
         viewWrapper.setPrimaryStage(primaryStage);
