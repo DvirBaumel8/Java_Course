@@ -18,12 +18,13 @@ public class HeaderController {
 
     @FXML private Button loadXMLButton;
 
+    Stage xmlStage = null;
+    TextField xmlPathTextField = null;
+
+
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
     }
-
-    TextField xmlPathTextField = null;
-    Stage xmlStage = null;
 
     public HeaderController() {
         this.xmlPathTextField = new TextField("full path to .xml");

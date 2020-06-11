@@ -157,7 +157,7 @@ public class EngineManager {
             str.append(String.format("Trip ID- %d\n", getRequestTripID(trip.getKey())));
             str.append(String.format("Trip requester- %s\n", trip.getKey().getNameOfOwner()));
             str.append(String.format("Trip source station- %s\nTrip destination station - %s\n", trip.getKey().getSourceStation(), trip.getKey().getDestinationStation()));
-            if(trip.getKey().isRequestByStartTime()) {
+            if(trip.getKey().getIsStartTime()) {
                 str.append(String.format("Trip starting hour- %s\n", trip.getKey().getTimeStr()));
             }
             else {
@@ -312,7 +312,7 @@ public class EngineManager {
                 str.append(String.format("Name of requester- %s\n", trip.getKey().getNameOfOwner()));
                 str.append(String.format("Source stations- %s\n", trip.getKey().getSourceStation()));
                 str.append(String.format("Destination stations- %s\n", trip.getKey().getDestinationStation()));
-                if(trip.getKey().isRequestByStartTime()) {
+                if(trip.getKey().getIsStartTime()) {
                     str.append(String.format("Starting hour- %s\n\n", trip.getKey().getTimeStr()));
                 }
                 else {
@@ -417,7 +417,7 @@ public class EngineManager {
         return validator.getAddNewTripRequestErrorMessage();
     }
 
-    public boolean validateChooseRequestAndAmountOfSuggestedTripsInput(String input) {
+    public List<String> validateChooseRequestAndAmountOfSuggestedTripsInput(String input) {
         return validator.validateChooseRequestAndAmountOfSuggestedTripsInput(input);
     }
 

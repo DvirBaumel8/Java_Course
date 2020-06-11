@@ -1,19 +1,10 @@
 package controllers;
-
-import Routes.CommonResourcesPaths;
-import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
-import javafx.beans.property.ObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -21,7 +12,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 public class TripSuggestController {
@@ -29,6 +19,10 @@ public class TripSuggestController {
 
     @FXML
     private Button addTripSuggestButton;
+
+    @FXML
+    Accordion tripSuggestAccordion;
+
 
     ArrayList<TextField> inputAddTripSuggest = null;
     static final int INPUT_ADD_TRIP_SUGGEST_SIZE = 7;
@@ -41,7 +35,6 @@ public class TripSuggestController {
     public TripSuggestController() {
         this.inputAddTripSuggest = new ArrayList<>(INPUT_ADD_TRIP_SUGGEST_SIZE);;
     }
-
 
     @FXML
     void addTripSuggestButtonActionListener() {
@@ -99,7 +92,7 @@ public class TripSuggestController {
         addTripSuggestWindow.getChildren().add(nameOfOwnerLabel);
         nameOfOwnerLabel.setTranslateX(15);
 
-        inputAddTripSuggest.add(new TextField("Enter owner name"));
+        inputAddTripSuggest.add(new TextField("Dvir"));
         inputAddTripSuggest.get(0).setMaxWidth(250);
         inputAddTripSuggest.get(0).setTranslateX(15);
         addTripSuggestWindow.getChildren().add(inputAddTripSuggest.get(0));
@@ -112,7 +105,7 @@ public class TripSuggestController {
         addTripSuggestWindow.getChildren().add(suggestedTripLabel);
         suggestedTripLabel.setTranslateX(15);
 
-        inputAddTripSuggest.add(new TextField("Enter suggested trip separate with '-'"));
+        inputAddTripSuggest.add(new TextField("A-B-C"));
         inputAddTripSuggest.get(1).setMaxWidth(250);
         inputAddTripSuggest.get(1).setTranslateX(15);
         addTripSuggestWindow.getChildren().add(inputAddTripSuggest.get(1));
@@ -126,7 +119,7 @@ public class TripSuggestController {
         addTripSuggestWindow.getChildren().add(arrivalDayNumberLabel);
 
         arrivalDayNumberLabel.setTranslateX(15);
-        inputAddTripSuggest.add(new TextField("Enter arrival Day Number"));
+        inputAddTripSuggest.add(new TextField("3"));
         inputAddTripSuggest.get(2).setMaxWidth(250);
         inputAddTripSuggest.get(2).setTranslateX(15);
         addTripSuggestWindow.getChildren().add(inputAddTripSuggest.get(2));
@@ -141,7 +134,7 @@ public class TripSuggestController {
 
         addTripSuggestWindow.getChildren().add(startTimeLabel);
 
-        inputAddTripSuggest.add(new TextField("Enter start time"));
+        inputAddTripSuggest.add(new TextField("11:35"));
         inputAddTripSuggest.get(3).setMaxWidth(250);
         inputAddTripSuggest.get(3).setTranslateX(5);
         inputAddTripSuggest.get(3).setTranslateX(15);
@@ -159,7 +152,7 @@ public class TripSuggestController {
         tripScheduleTypeLabel.setTranslateX(15);
         addTripSuggestWindow.getChildren().add(tripScheduleTypeLabel);
 
-        inputAddTripSuggest.add(new TextField("Enter number between 1 to 5"));
+        inputAddTripSuggest.add(new TextField("4"));
         inputAddTripSuggest.get(4).setMaxWidth(250);
         inputAddTripSuggest.get(4).setTranslateX(15);
         addTripSuggestWindow.getChildren().add(inputAddTripSuggest.get(4));
@@ -172,7 +165,7 @@ public class TripSuggestController {
         ppkLabel.setTranslateX(15);
         addTripSuggestWindow.getChildren().add(ppkLabel);
 
-        inputAddTripSuggest.add(new TextField("Enter ppk"));
+        inputAddTripSuggest.add(new TextField("30"));
         inputAddTripSuggest.get(5).setMaxWidth(250);
         inputAddTripSuggest.get(5).setTranslateX(15);
         addTripSuggestWindow.getChildren().add(inputAddTripSuggest.get(5));
@@ -185,7 +178,7 @@ public class TripSuggestController {
         passengersCapacityLabel.setTranslateX(15);
         addTripSuggestWindow.getChildren().add(passengersCapacityLabel);
 
-        inputAddTripSuggest.add(new TextField("Enter passengers capacity"));
+        inputAddTripSuggest.add(new TextField("2"));
         inputAddTripSuggest.get(6).setMaxWidth(250);
         inputAddTripSuggest.get(6).setTranslateX(15);
         addTripSuggestWindow.getChildren().add(inputAddTripSuggest.get(6));
@@ -220,54 +213,27 @@ public class TripSuggestController {
     }
 
 
-    private void newIdSuggestButtonDisplay(ActionEvent actionEvent) {
-    }
-
     public void closeAddNewTripSuggestStage() {
         addTripSuggestStage.close();
     }
 
-    public void addNewTripSuggestLabel(TripSuggest newSuggest) throws Exception {
-        CommonResourcesPaths route = CommonResourcesPaths.getInstance();
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource(route.TRIP_SUGGEST_fXML_RESOURCE);
-        ScrollPane borderPaneTripSuggest = fxmlLoader.load(url.openStream());
+    public void addNewTripSuggestAccordion(TripSuggest newSuggest) {
+        String scheduleTypeString = String.valueOf(newSuggest.getTripScheduleType());
 
+        TextArea newTripSuggestTextArea =
+                new TextArea("-Suggest trip:" + newSuggest.getTripRoute() + System.lineSeparator() +
+                        "-Arrival day:" + newSuggest.getArrivalDayNumber() + System.lineSeparator() +
+                        "-Starting time:" + newSuggest.getStartingHourAsTime() + System.lineSeparator() +
+                        "-Schedule type:" + scheduleTypeString + System.lineSeparator() +
+                        "-PPK:" + newSuggest.getPpk() + System.lineSeparator() +
+                        "- Pass capacity:" + newSuggest.getPassengers());
+        newTripSuggestTextArea.setPrefRowCount(6);
+        TitledPane title = new TitledPane(newSuggest.getTripOwnerName() + ", id:" + newSuggest.getSuggestID(),
+                newTripSuggestTextArea);
+        // title.setOnMouseClicked(event-> tripsAccordionOnAction());
+        int sizeOfCurrentPanes = tripSuggestAccordion.getPanes().size();
+        tripSuggestAccordion.getPanes().add(sizeOfCurrentPanes,title);
 
-        Node node = borderPaneTripSuggest.getContent();
-
-        Button newIdSuggestButton = new Button(Integer.toString(newSuggest.getSuggestID()));
-        borderPaneTripSuggest.getChildrenUnmodifiable().add(newIdSuggestButton);
-
-        Scene scene = new Scene(borderPaneTripSuggest);
-
-
-
-
-        //newIdSuggestButton.setOnAction(this::newIdSuggestButtonDisplay);
-
-        //ObjectProperty<Node> x = borderPaneTripSuggest.contentProperty();
-
-        //VBox check1 = (VBox) node;
-
-        //check1.getChildren().add(newIdSuggestButton);
-
-
-        //VBox check = (VBox) x.get();
-        //check.getChildren().add(newIdRequestButton);
-
-        //id:
-        //sourceStation:
-        //destinationStation:
-        //    private String OwnerName;
-        //    private String sourceStation;
-        //    private String destinationStation;
-        //    private double requiredTime;
-        //    private String arrivalHourAsTime;
-        //    private boolean isMatched;
-        //    private TripSuggest matchTrip;
-        //    private boolean requestByStartTime;
-
-        //int x = 3;
+        //liveMapComponentController.updateTripOnMap(trip);
     }
 }

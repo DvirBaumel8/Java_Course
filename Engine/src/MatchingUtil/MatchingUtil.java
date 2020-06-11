@@ -33,7 +33,7 @@ public class MatchingUtil {
 
         for(Map.Entry<TripSuggest, Integer> trip : suggestedTrips.entrySet()) {
             if(checkIFSuggestedTripIncludeRequestStations(requestTrip.getSourceStation(), requestTrip.getDestinationStation(), trip.getKey())) {
-                if((!requestTrip.isRequestByStartTime() && requestTrip.getRequestRequiredTime() == trip.getKey().getArrivalHourToSpecificStation(requestTrip.getDestinationStation()) ) || (requestTrip.isRequestByStartTime() && checkRequestTimeToSuggestTrip(requestTrip, trip.getKey()))) {
+                if((!requestTrip.getIsStartTime() && requestTrip.getRequestRequiredTime() == trip.getKey().getArrivalHourToSpecificStation(requestTrip.getDestinationStation()) ) || (requestTrip.getIsStartTime() && checkRequestTimeToSuggestTrip(requestTrip, trip.getKey()))) {
                     if(trip.getKey().getRemainingCapacity() > 0) {
                         if(counter < suggestedAmountTrips) {
                             potentialSuggestedTrips[counter] = trip.getKey();

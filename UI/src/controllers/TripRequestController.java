@@ -1,17 +1,10 @@
 package controllers;
 
-import Manager.BorderPaneWrapper;
-import Manager.ViewWrapper;
-import Routes.CommonResourcesPaths;
 import TripRequests.TripRequest;
-import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -26,10 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 public class TripRequestController {
     private AppController mainController;
@@ -107,7 +97,7 @@ public class TripRequestController {
         nameOfOwnerLabel.setPrefWidth(300);
         addTripRequestWindow.getChildren().add(nameOfOwnerLabel);
 
-        inputAddTripRequest.add(new TextField("Enter owner name"));
+        inputAddTripRequest.add(new TextField("Ohad"));
         inputAddTripRequest.get(0).setMaxWidth(250);
         inputAddTripRequest.get(0).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(0));
@@ -120,7 +110,7 @@ public class TripRequestController {
         sourceStationLabel.setPrefWidth(300);
         addTripRequestWindow.getChildren().add(sourceStationLabel);
 
-        inputAddTripRequest.add(new TextField("Enter source station"));
+        inputAddTripRequest.add(new TextField("A"));
         inputAddTripRequest.get(1).setMaxWidth(250);
         inputAddTripRequest.get(1).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(1));
@@ -133,7 +123,7 @@ public class TripRequestController {
         destinationStationLabel.setPrefWidth(300);
         addTripRequestWindow.getChildren().add(destinationStationLabel);
 
-        inputAddTripRequest.add(new TextField("Enter destination station"));
+        inputAddTripRequest.add(new TextField("B"));
         inputAddTripRequest.get(2).setMaxWidth(250);
         inputAddTripRequest.get(2).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(2));
@@ -146,7 +136,7 @@ public class TripRequestController {
         startOrArrivalTimeLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(startOrArrivalTimeLabel);
 
-        inputAddTripRequest.add(new TextField("Enter start or arrival time"));
+        inputAddTripRequest.add(new TextField("12:00"));
         inputAddTripRequest.get(3).setMaxWidth(250);
         inputAddTripRequest.get(3).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(3));
@@ -159,7 +149,7 @@ public class TripRequestController {
         timeTypeLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(timeTypeLabel);
 
-        inputAddTripRequest.add(new TextField("Enter s or a"));
+        inputAddTripRequest.add(new TextField("s"));
         inputAddTripRequest.get(4).setMaxWidth(250);
         inputAddTripRequest.get(4).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(4));
@@ -172,7 +162,7 @@ public class TripRequestController {
         arrivalDayNumberLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(arrivalDayNumberLabel);
 
-        inputAddTripRequest.add(new TextField("arrival Day Number"));
+        inputAddTripRequest.add(new TextField("2"));
         inputAddTripRequest.get(5).setTranslateX(15);
         inputAddTripRequest.get(5).setMaxWidth(250);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(5));
@@ -234,24 +224,30 @@ public class TripRequestController {
          */
     }
 
-    public void addNewTripRequestLabel(TripRequest newRequest) throws Exception{
-            TitledPane title = new TitledPane(newRequest.getNameOfOwner() + " " + newRequest.getRequestID(),
-                    new TextArea(newRequest.toString()));
-           // title.setOnMouseClicked(event-> tripsAccordionOnAction());
-                tripRequestAccordion.getPanes().add(0,title);
-                tripRequestAccordion.getPanes().remove(0);
-                //firstTrip=false;
-                //tripsAccordion.getPanes().add(0,title);
+    public void addNewTripRequestAccordion(TripRequest newRequest) throws Exception{
+        String startOrArrival = null;
+        if(newRequest.getIsStartTime()) {
+            startOrArrival = "start";
+        }
+        else {
+            startOrArrival = "arrival";
+        }
+        TextArea newTripRequestTextArea =
+                new TextArea("-Src station:" + newRequest.getSourceStation() + System.lineSeparator() +
+                "-Dest station:" + newRequest.getDestinationStation() + System.lineSeparator() +
+                "-Time:" + newRequest.getTimeStr() + System.lineSeparator() +
+                "-Start/Arrival" + startOrArrival);
+        newTripRequestTextArea.setPrefRowCount(4);
+        TitledPane title = new TitledPane(newRequest.getNameOfOwner() + ", id:" + newRequest.getRequestID(),
+                newTripRequestTextArea);
+        // title.setOnMouseClicked(event-> tripsAccordionOnAction());
+        int sizeOfCurrentPanes = tripRequestAccordion.getPanes().size();
+        tripRequestAccordion.getPanes().add(sizeOfCurrentPanes,title);
 
             //liveMapComponentController.updateTripOnMap(trip);
-    }
-
-    private void newIdRequestButtonDisplay(ActionEvent actionEvent) {
     }
 
     public void closeAddNewTripRequestStage() {
         addTripRequestStage.close();
     }
-
-
 }

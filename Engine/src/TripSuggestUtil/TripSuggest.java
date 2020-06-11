@@ -43,6 +43,30 @@ public class TripSuggest {
         this.requiredFuel = calcRequiredFuel(route);
     }
 
+    public TripScheduleType getTripScheduleType() {
+        return tripScheduleType;
+    }
+
+    public void setTripScheduleType(TripScheduleType tripScheduleType) {
+        this.tripScheduleType = tripScheduleType;
+    }
+
+    public double getArrivalDayNumber() {
+        return arrivalDayNumber;
+    }
+
+    public int getPpk() {
+        return ppk;
+    }
+
+    public void setPpk(int ppk) {
+        this.ppk = ppk;
+    }
+
+    public void setArrivalDayNumber(double arrivalDayNumber) {
+        this.arrivalDayNumber = arrivalDayNumber;
+    }
+
     private String trimRoute(Route route) {
         String[] stations = route.getPath().split(",");
         StringBuilder str = new StringBuilder();
@@ -190,6 +214,9 @@ public class TripSuggest {
     enum TripScheduleType
     {
         ONE_TIME_ONLY, DAILY, BI_DAILY, WEEKLY, MONTHLY;
+       public String getTripScheduleTypeString(){
+         return this.toString();
+      }
     }
 
     public void setTripScheduleTypeByInt(int tripScheduleType) {

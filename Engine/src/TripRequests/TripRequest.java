@@ -12,9 +12,11 @@ public class TripRequest {
     private String arrivalHourAsTime;
     private boolean isMatched;
     private TripSuggest matchTrip;
-    private boolean requestByStartTime;
+    private boolean isStartTime;
+    private String startOrArrivalTime;
 
-    public TripRequest(String name, String sourceStation, String destinationStation, double time, boolean requestByStartTime) {
+
+    public TripRequest(String name, String sourceStation, String destinationStation, double time, boolean isStartTime) {
         this.OwnerName = name;
         this.sourceStation = sourceStation;
         this.destinationStation = destinationStation;
@@ -22,7 +24,15 @@ public class TripRequest {
         this.matchTrip = null;
         this.requiredTime = time;
         this.arrivalHourAsTime = EngineManager.convertDoubleTimeToStrTime(time);
-        this.requestByStartTime = requestByStartTime;
+        this.isStartTime = isStartTime;
+    }
+
+    public void setIsStartTime(boolean isStartTime) {
+        this.isStartTime = isStartTime;
+    }
+
+    public boolean getIsStartTime() {
+        return this.isStartTime;
     }
 
     public String getNameOfOwner() {
@@ -69,7 +79,4 @@ public class TripRequest {
         return arrivalHourAsTime;
     }
 
-    public boolean isRequestByStartTime() {
-        return requestByStartTime;
-    }
 }

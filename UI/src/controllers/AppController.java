@@ -7,10 +7,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AppController {
     @FXML
@@ -26,11 +23,7 @@ public class AppController {
     private TripSuggestController tripSuggestController;
 
     @FXML
-    Accordion tripRequestAccordion;
-
-    @FXML
-    Accordion tripSuggestAccordion;
-
+    MatchingController matchingController;
 
     private TransPoolManager transPoolManager;
 
@@ -60,6 +53,11 @@ public class AppController {
         this.tripSuggestController.setMainController(this);
     }
 
+    public void setMatchingComponentController(MatchingController matchingController) {
+        this.matchingController = matchingController;
+        this.matchingController.setMainController(this);
+    }
+
     public void exitButtonAction() {
         Platform.exit();
         System.exit(0);
@@ -76,7 +74,7 @@ public class AppController {
             boolean isValidInput = this.transPoolManager.getEngineManager().validateTripRequestInput(inputTripRequestString);
             if (isValidInput) {
                 newRequest = this.transPoolManager.addNewTripRequestSuccess(inputTripRequestString);
-                tripRequestController.addNewTripRequestLabel(newRequest);
+                tripRequestController.addNewTripRequestAccordion(newRequest);
                 tripRequestController.closeAddNewTripRequestStage();
             } else {
                 errors = new StringBuilder(this.transPoolManager.getAddNewTripRequestErrorMessage());
@@ -100,7 +98,7 @@ public class AppController {
                     .validateTripSuggestInput(inputTripSuggestString,allStationsLogicNames);
             if (isValidInput) {
                 newSuggest = this.transPoolManager.addNewTripSuggestSuccess(inputTripSuggestString);
-                tripSuggestController.addNewTripSuggestLabel(newSuggest);
+                tripSuggestController.addNewTripSuggestAccordion(newSuggest);
                 tripSuggestController.closeAddNewTripSuggestStage();
             } else {
                 errors = new StringBuilder(this.transPoolManager.getAddNewTripSuggestErrorMessage());
@@ -144,39 +142,19 @@ public class AppController {
         errorAlert.showAndWait();
     }
 
+    public List<String> matchingAction(String inputMatchingString) {
+        List<String> matchingErrors = new LinkedList<>();
+        try {
+            matchingErrors = transPoolManager.getEngineManager().validateChooseRequestAndAmountOfSuggestedTripsInput(inputMatchingString);
 
-    public void setSystem() {
-        Map<TripRequest, Integer> tripRequestMap = this.transPoolManager.getEngineManager().getTripRequestUtil().getAllRequestTrips();
-        Map<TripSuggest, Integer> tripSuggestMap = this.transPoolManager.getEngineManager().getTripSuggestUtil().getAllSuggestedTrips();
-
-        tripRequestMap.forEach((tripRequest,id)-> {
-            TitledPane title = new TitledPane(tripRequest.getNameOfOwner() + " " + id, new TextArea(tripRequest.toString()));
-           // title.setOnMouseClicked(event-> tripsAccordionOnAction());
-          //  tripsAccordion.getPanes().add(1, title);
-        });
-
-
-        if(!tripSuggestMap.isEmpty()) {
-            //tripsAccordion.getPanes().remove(0);
-            //firstTrip=false;
-            //rankYourDriverButton.setDisable(false);
+            if (matchingErrors.isEmpty()) {
+                matchingErrors = transPoolManager.matchTripRequestToTripSuggestActions(inputMatchingString);
+            }
+        }
+        catch (Exception e) {
+            matchingErrors.add(e.getMessage());
         }
 
-
-        tripSuggestMap.forEach((tripSuggest,id)-> {
-            //requestsAccordion.getPanes().add(1, new TitledPane(tripSuggest.getTripOwnerName() + " " + id, new TextArea(tripSuggest.toString())));
-           // driverReviewComponentController.getRequestCB().getItems().add(entry.getValue().getSerialNumber());
-        });
-
-        if(!tripRequestMap.isEmpty()) {
-            //requestsAccordion.getPanes().remove(0);
-            //firstRequest = false;
-            //rankYourDriverButton.setDisable(false);
-        }
-
-        //disableButtons(false);
-
-        //liveMapComponentController.setLiveMap();
-
+        return matchingErrors;
     }
 }

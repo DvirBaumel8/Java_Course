@@ -3,6 +3,7 @@ package Validations.TripValidations;
 import TripSuggestUtil.TripSuggest;
 
 import java.util.HashSet;
+import java.util.List;
 
 public class Validator {
     private static Validator instance;
@@ -68,7 +69,7 @@ public class Validator {
         return requestValidator.getAddNewTripRequestErrorMessage();
     }
 
-    public boolean validateChooseRequestAndAmountOfSuggestedTripsInput(String input) {
+    public List<String> validateChooseRequestAndAmountOfSuggestedTripsInput(String input) {
         return requestValidator.validateChooseRequestAndAmountOfSuggestedTripsInput(input);
     }
 

@@ -1,11 +1,6 @@
-import Manager.BorderPaneWrapper;
-import Manager.ViewWrapper;
-import XML.XMLLoading.jaxb.schema.generated.Route;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -27,10 +22,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         CommonResourcesPaths route = CommonResourcesPaths.getInstance();
-        ViewWrapper viewWrapper = ViewWrapper.getInstance();
-
-        //Accordion tripRequestAccordion;
-        //Accordion tripSuggestAccordion;
 
         // load header component and controller from fxml
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -51,26 +42,34 @@ public class Main extends Application {
         ScrollPane borderPaneTripSuggest = fxmlLoader.load(url.openStream());
         TripSuggestController tripSuggestController = fxmlLoader.getController();
 
+        fxmlLoader = new FXMLLoader();
+        url = getClass().getResource(route.MATCHING_fXML_RESOURCE);
+        fxmlLoader.setLocation(url);
+        ScrollPane borderPaneMatching = fxmlLoader.load(url.openStream());
+        MatchingController matchingController = fxmlLoader.getController();
+
+        //--------------------------------------------------------------------
+
         // load master app and controller from fxml
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(route.APP_FXML_LIGHT_RESOURCE);
         fxmlLoader.setLocation(url);
-        viewWrapper.setRoot(fxmlLoader.load(url.openStream()));
+        BorderPane root = fxmlLoader.load(url.openStream());
         AppController appController = fxmlLoader.getController();
 
         // add sub components to master app placeholders
-        viewWrapper.getRoot().setTop(headerComponent);
-        viewWrapper.getRoot().setLeft(borderPaneTripRequest);
-        viewWrapper.getRoot().setRight(borderPaneTripSuggest);
+        root.setTop(headerComponent);
+        root.setLeft(borderPaneTripRequest);
+        root.setRight(borderPaneTripSuggest);
+        root.setBottom(borderPaneMatching);
 
         appController.setHeaderComponentController(headerController);
         appController.setTripRequestComponentController(tripRequestController);
         appController.setTripSuggestComponentController(tripSuggestController);
+        appController.setMatchingComponentController(matchingController);
 
-
-        Scene scene = new Scene(viewWrapper.getRoot(), 700, 690);
-        viewWrapper.setPrimaryStage(primaryStage);
-        viewWrapper.getPrimaryStage().setScene(scene);
-        viewWrapper.getPrimaryStage().show();
+        Scene scene = new Scene(root, 1000, 800);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }

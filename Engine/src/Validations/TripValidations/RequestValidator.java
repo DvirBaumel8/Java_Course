@@ -3,12 +3,15 @@ package Validations.TripValidations;
 import Manager.EngineManager;
 import TripSuggestUtil.TripSuggest;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class RequestValidator extends ActionValidator {
     private StringBuilder addNewTripRequestErrorMessage;
     private StringBuilder chooseRequestAndAmountOfSuggestedTripsErrorMessage;
     private String choosePotentialTripInputErrorMessage;
 
-    private static final int TRIP_REQUEST_INPUT_LIMIT = 5;
+    private static final int TRIP_REQUEST_INPUT_LIMIT = 6;
 
     public RequestValidator() {
         this.addNewTripRequestErrorMessage = new StringBuilder();
@@ -20,7 +23,7 @@ public class RequestValidator extends ActionValidator {
         boolean isValid = true;
 
         if(inputs.length != TRIP_REQUEST_INPUT_LIMIT) {
-            addNewTripRequestErrorMessage.append("Please insert 5 elements, try again.\n");
+            addNewTripRequestErrorMessage.append("Please insert 6 elements, try again.\n");
             return false;
         }
         if(!super.validateOwnerName(inputs[0])) {
@@ -41,10 +44,12 @@ public class RequestValidator extends ActionValidator {
         if(!super.validateTime(inputs[3], 3)) {
             isValid = false;
         }
+
         if(!validateTimeParam(inputs[4])) {
             addNewTripRequestErrorMessage.append("The fifth parameter is invalid, please insert a to choose arrival time or s to choose starting time.");
             isValid = false;
         }
+
 
         addNewTripRequestErrorMessage.append(this.getGeneralErrorMessage());
         this.setGeneralErrorMessage(new StringBuilder());
@@ -66,31 +71,24 @@ public class RequestValidator extends ActionValidator {
         return addNewTripRequestErrorMessage.toString();
     }
 
-    public boolean validateChooseRequestAndAmountOfSuggestedTripsInput(String input) {
-        if(input.equals("b")) {
-            return true;
-        }
-        else {
+    public List<String> validateChooseRequestAndAmountOfSuggestedTripsInput(String input) {
+        List<String> matchingErrors = new LinkedList<>();
+
             String[] inputs = input.split(",");
             if(inputs.length != 2) {
-                chooseRequestAndAmountOfSuggestedTripsErrorMessage.append("Please insert 2 elements, try again.\n");
-                return false;
+                matchingErrors.add("Please insert 2 elements, try again.\n");
             }
             if(checkIfStringIsInt(inputs[0]) && checkIfStringIsInt(inputs[1])) {
-                if(EngineManager.getEngineManagerInstance().validateRequestIDIsExist(inputs[0])) {
-                    return true;
-                }
-                else {
-                    chooseRequestAndAmountOfSuggestedTripsErrorMessage.append(String.format("Request Trip ID - %s isn't exist in the system, please try again\n", inputs[0]));
-                    return false;
+                if(!EngineManager.getEngineManagerInstance().validateRequestIDIsExist(inputs[0])) {
+                    matchingErrors.add(String.format("Request Trip ID - %s isn't exist in the system, please try again", inputs[0]));
                 }
             }
             else {
-                chooseRequestAndAmountOfSuggestedTripsErrorMessage.append("Please insert two numbers (Integer), try again\n");
-                return false;
+                matchingErrors.add(String.format("Please insert two numbers (Integer), try again"));
             }
+            return matchingErrors;
         }
-    }
+
 
     public String getChooseRequestAndAmountOfSuggestedTripsErrorMessage() {
         return chooseRequestAndAmountOfSuggestedTripsErrorMessage.toString();
