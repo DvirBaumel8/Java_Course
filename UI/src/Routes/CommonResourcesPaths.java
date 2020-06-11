@@ -12,6 +12,7 @@ public class CommonResourcesPaths {
     public final static String HEADER_fXML_RESOURCE = "/resources/fxml/header.fxml";
     public final static String TRIP_SUGGEST_fXML_RESOURCE = "/resources/fxml/TripSuggestFxml.fxml";
     public final static String MATCHING_fXML_RESOURCE = "/resources/fxml/Matching.fxml";
+    public final static String LIVEMAP_fXML_RESOURCE = "/resources/fxml/LiveMap.fxml";
 
     private CommonResourcesPaths() {
     }

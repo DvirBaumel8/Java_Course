@@ -62,7 +62,6 @@ public class TripRequestController {
         mainController.addTripRequestAction(inputTripRequestString);
     }
 
-
     void getAddTripRequestWindow() {
         addTripRequestStage = new Stage();
         VBox addTripRequestWindow = new VBox();

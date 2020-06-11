@@ -23,7 +23,10 @@ public class AppController {
     private TripSuggestController tripSuggestController;
 
     @FXML
-    MatchingController matchingController;
+    private MatchingController matchingController;
+
+    @FXML
+    private LiveMapController liveMapController;
 
     private TransPoolManager transPoolManager;
 
@@ -34,6 +37,8 @@ public class AppController {
             headerComponentController.setMainController(this);
             tripRequestController.setMainController(this);
             tripSuggestController.setMainController(this);
+            matchingController.setMainController(this);
+            liveMapController.setMainController(this);
         }
         transPoolManager.getTransPoolManagerInstance();
     }
@@ -41,6 +46,11 @@ public class AppController {
     public void setHeaderComponentController(HeaderController headerComponentController) {
         this.headerComponentController = headerComponentController;
         headerComponentController.setMainController(this);
+    }
+
+    public void setLiveMapComponentController(LiveMapController liveMapController) {
+        this.liveMapController = liveMapController;
+        liveMapController.setMainController(this);
     }
 
     public void setTripRequestComponentController(TripRequestController tripRequestController) {

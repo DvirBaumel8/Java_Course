@@ -28,25 +28,49 @@ public class Main extends Application {
         URL url = getClass().getResource(route.HEADER_fXML_RESOURCE);
         fxmlLoader.setLocation(url);
         ScrollPane headerComponent = fxmlLoader.load(url.openStream());
+        headerComponent.setFitToHeight(true);
+        headerComponent.setFitToWidth(true);
         HeaderController headerController = fxmlLoader.getController();
+
+        //--------------------------------------------------------------------
 
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(route.TRIP_REQUEST_FXML_RESOURCE);
         fxmlLoader.setLocation(url);
         ScrollPane borderPaneTripRequest = fxmlLoader.load(url.openStream());
+        borderPaneTripRequest.setFitToHeight(true);
+        borderPaneTripRequest.setFitToWidth(true);
         TripRequestController tripRequestController = fxmlLoader.getController();
+
+        //--------------------------------------------------------------------
 
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(route.TRIP_SUGGEST_fXML_RESOURCE);
         fxmlLoader.setLocation(url);
         ScrollPane borderPaneTripSuggest = fxmlLoader.load(url.openStream());
+        borderPaneTripSuggest.setFitToHeight(true);
+        borderPaneTripSuggest.setFitToWidth(true);
         TripSuggestController tripSuggestController = fxmlLoader.getController();
+
+        //--------------------------------------------------------------------
 
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(route.MATCHING_fXML_RESOURCE);
         fxmlLoader.setLocation(url);
         ScrollPane borderPaneMatching = fxmlLoader.load(url.openStream());
+        borderPaneMatching.setFitToHeight(true);
+        borderPaneMatching.setFitToWidth(true);
         MatchingController matchingController = fxmlLoader.getController();
+
+        //--------------------------------------------------------------------
+
+        fxmlLoader = new FXMLLoader();
+        url = getClass().getResource(route.LIVEMAP_fXML_RESOURCE);
+        fxmlLoader.setLocation(url);
+        ScrollPane borderPaneLiveMap = fxmlLoader.load(url.openStream());
+        borderPaneLiveMap.setFitToHeight(true);
+        borderPaneLiveMap.setFitToWidth(true);
+        LiveMapController liveMapController = fxmlLoader.getController();
 
         //--------------------------------------------------------------------
 
@@ -62,11 +86,13 @@ public class Main extends Application {
         root.setLeft(borderPaneTripRequest);
         root.setRight(borderPaneTripSuggest);
         root.setBottom(borderPaneMatching);
+        root.setCenter(borderPaneLiveMap);
 
         appController.setHeaderComponentController(headerController);
         appController.setTripRequestComponentController(tripRequestController);
         appController.setTripSuggestComponentController(tripSuggestController);
         appController.setMatchingComponentController(matchingController);
+        appController.setLiveMapComponentController(liveMapController);
 
         Scene scene = new Scene(root, 1000, 800);
         primaryStage.setScene(scene);
