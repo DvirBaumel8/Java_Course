@@ -225,17 +225,24 @@ public class TripRequestController {
 
     public void addNewTripRequestAccordion(TripRequest newRequest) throws Exception{
         String startOrArrival = null;
+        TextArea newTripRequestTextArea;
         if(newRequest.getIsStartTime()) {
             startOrArrival = "start";
+            newTripRequestTextArea =
+                    new TextArea("-Src station:" + newRequest.getSourceStation() + System.lineSeparator() +
+                            "-Dest station:" + newRequest.getDestinationStation() + System.lineSeparator() +
+                            "-Time:" + newRequest.getStartTime() + System.lineSeparator() +
+                            "-Start/Arrival" + startOrArrival);
         }
         else {
             startOrArrival = "arrival";
+            newTripRequestTextArea =
+                    new TextArea("-Src station:" + newRequest.getSourceStation() + System.lineSeparator() +
+                            "-Dest station:" + newRequest.getDestinationStation() + System.lineSeparator() +
+                            "-Time:" + newRequest.getArrivalTime() + System.lineSeparator() +
+                            "-Start/Arrival" + startOrArrival);
         }
-        TextArea newTripRequestTextArea =
-                new TextArea("-Src station:" + newRequest.getSourceStation() + System.lineSeparator() +
-                "-Dest station:" + newRequest.getDestinationStation() + System.lineSeparator() +
-                "-Time:" + newRequest.getTimeStr() + System.lineSeparator() +
-                "-Start/Arrival" + startOrArrival);
+
         newTripRequestTextArea.setPrefRowCount(4);
         TitledPane title = new TitledPane(newRequest.getNameOfOwner() + ", id:" + newRequest.getRequestID(),
                 newTripRequestTextArea);

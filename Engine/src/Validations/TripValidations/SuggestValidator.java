@@ -70,7 +70,7 @@ public class SuggestValidator extends ActionValidator {
         }
 
         return res;
-        }
+    }
 
     public boolean validateTripScheduleType(String input) {
         boolean res = false;
@@ -97,10 +97,10 @@ public class SuggestValidator extends ActionValidator {
         boolean res = false;
         res = checkIfANumberAndBiggerThanOne(input);
 
-            if(!res) {
+        if(!res) {
             addNewTripSuggestErrorMessage.append("PPK number is not valid," +
                     " please try again, insert a number bigger than 0 \n");
-         }
+        }
         return res;
     }
 
@@ -136,7 +136,7 @@ public class SuggestValidator extends ActionValidator {
                 return true;
             }
         }
-       return false;
+        return false;
     }
 
     public boolean validateOwnerRoute(String route, HashSet<String> allStationsLogicNames) {

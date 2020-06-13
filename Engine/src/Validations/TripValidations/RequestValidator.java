@@ -1,8 +1,7 @@
 package Validations.TripValidations;
 
 import Manager.EngineManager;
-import TripSuggestUtil.TripSuggest;
-
+import MatchingUtil.RoadTrip;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class RequestValidator extends ActionValidator {
         }
         else {
             addNewTripRequestErrorMessage.append("You entered same Source station and Destination station!!\n");
-                    isValid = false;
+            isValid = false;
         }
         if(!super.validateTime(inputs[3], 3)) {
             isValid = false;
@@ -47,6 +46,9 @@ public class RequestValidator extends ActionValidator {
 
         if(!validateTimeParam(inputs[4])) {
             addNewTripRequestErrorMessage.append("The fifth parameter is invalid, please insert a to choose arrival time or s to choose starting time.");
+            isValid = false;
+        }
+        if(!validateTripDay(inputs[5])) {
             isValid = false;
         }
 
@@ -57,8 +59,26 @@ public class RequestValidator extends ActionValidator {
         return isValid;
     }
 
+    private boolean validateTripDay(String input) {
+        int dayN;
+        try {
+            dayN = Integer.parseInt(input);
+        }
+        catch (Exception e) {
+            addNewTripRequestErrorMessage.append("Trip request Day number isn't an integer.");
+            return false;
+        }
+        if(dayN >= 1) {
+            return true;
+        }
+        else {
+            addNewTripRequestErrorMessage.append("Trip request Day number isn't a day >= 1.");
+            return false;
+        }
+    }
+
     private boolean validateTimeParam(String input) {
-        if(input.equals("s") || input.equals("a")) {
+        if(input.equals("S") || input.equals("A")) {
             return true;
         }
         else {
@@ -74,20 +94,20 @@ public class RequestValidator extends ActionValidator {
     public List<String> validateChooseRequestAndAmountOfSuggestedTripsInput(String input) {
         List<String> matchingErrors = new LinkedList<>();
 
-            String[] inputs = input.split(",");
-            if(inputs.length != 2) {
-                matchingErrors.add("Please insert 2 elements, try again.\n");
-            }
-            if(checkIfStringIsInt(inputs[0]) && checkIfStringIsInt(inputs[1])) {
-                if(!EngineManager.getEngineManagerInstance().validateRequestIDIsExist(inputs[0])) {
-                    matchingErrors.add(String.format("Request Trip ID - %s isn't exist in the system, please try again", inputs[0]));
-                }
-            }
-            else {
-                matchingErrors.add(String.format("Please insert two numbers (Integer), try again"));
-            }
-            return matchingErrors;
+        String[] inputs = input.split(",");
+        if(inputs.length != 2) {
+            matchingErrors.add("Please insert 2 elements, try again.\n");
         }
+        if(checkIfStringIsInt(inputs[0]) && checkIfStringIsInt(inputs[1])) {
+            if(!EngineManager.getEngineManagerInstance().validateRequestIDIsExist(inputs[0])) {
+                matchingErrors.add(String.format("Request Trip ID - %s isn't exist in the system, please try again", inputs[0]));
+            }
+        }
+        else {
+            matchingErrors.add(String.format("Please insert two numbers (Integer), try again"));
+        }
+        return matchingErrors;
+    }
 
 
     public String getChooseRequestAndAmountOfSuggestedTripsErrorMessage() {
@@ -107,7 +127,7 @@ public class RequestValidator extends ActionValidator {
         return choosePotentialTripInputErrorMessage;
     }
 
-    public boolean validateChoosePotentialTripInput(String input, TripSuggest[] potentialSuggestedTrips) {
+    public boolean validateChoosePotentialTripInput(String input, List<RoadTrip> potentialSuggestedTrips) {
         int tripSuggestID = -1;
         try {
             tripSuggestID = Integer.parseInt(input);
@@ -115,10 +135,10 @@ public class RequestValidator extends ActionValidator {
         catch(Exception e) {
             choosePotentialTripInputErrorMessage = "Your input isn't a number, please try again.";
         }
-        for(int i =0; i < potentialSuggestedTrips.length; i++) {
-            if(potentialSuggestedTrips[i].getSuggestID() == tripSuggestID) {
-                return true;
-            }
+        for(int i =0; i < potentialSuggestedTrips.size(); i++) {
+//            if(potentialSuggestedTrips.get(i).getSuggestID() == tripSuggestID) {
+//                return true;
+//            }
         }
         choosePotentialTripInputErrorMessage = "Your choice isn't one of the suggested trips ID's, please try again";
         return false;

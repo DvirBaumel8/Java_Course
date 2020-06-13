@@ -218,12 +218,12 @@ public class TripSuggestController {
     }
 
     public void addNewTripSuggestAccordion(TripSuggest newSuggest) {
-        String scheduleTypeString = String.valueOf(newSuggest.getTripScheduleType());
+        String scheduleTypeString = String.valueOf(newSuggest.getRecurrencesType());
 
         TextArea newTripSuggestTextArea =
                 new TextArea("-Suggest trip:" + newSuggest.getTripRoute() + System.lineSeparator() +
-                        "-Arrival day:" + newSuggest.getArrivalDayNumber() + System.lineSeparator() +
-                        "-Starting time:" + newSuggest.getStartingHourAsTime() + System.lineSeparator() +
+                        "-Starting day:" + newSuggest.getStartingDay() + System.lineSeparator() +
+                        "-Starting time:" + newSuggest.getStartingTime().toString() + System.lineSeparator() +
                         "-Schedule type:" + scheduleTypeString + System.lineSeparator() +
                         "-PPK:" + newSuggest.getPpk() + System.lineSeparator() +
                         "- Pass capacity:" + newSuggest.getPassengers());

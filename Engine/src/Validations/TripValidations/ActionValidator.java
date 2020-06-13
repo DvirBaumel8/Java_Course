@@ -3,6 +3,7 @@ package Validations.TripValidations;
 import Manager.EngineManager;
 import XML.XMLLoading.jaxb.schema.generated.Stop;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,9 +16,13 @@ public class ActionValidator {
     }
 
     public boolean validateOwnerName(String input) {
+        if(!validateOwnerNameUnique(input)) {
+            generalErrorMessage.append("Owner name should be unique\n");
+            return false;
+        }
         try {
             if (input.isEmpty()) {
-                generalErrorMessage.append("Request owner name is empty");
+                generalErrorMessage.append("Request owner name is empty\n");
                 return false;
             }
             Integer.parseInt(input);
@@ -29,9 +34,18 @@ public class ActionValidator {
         }
     }
 
+    private boolean validateOwnerNameUnique(String input) {
+        List<String> currentOwnerNamesInSystem = EngineManager.getEngineManagerInstance().getAllPlannedTripsOwnerNames();
+        for(String ownerName : currentOwnerNamesInSystem) {
+            if(ownerName.equals(input)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public boolean validateTime (String time, int index) {
-       final String TIME24HOURS_PATTERN =
+        final String TIME24HOURS_PATTERN =
                 "([01]?[0-9]|2[0-3]):[0-5][0-9]";
         Pattern pattern = Pattern.compile(TIME24HOURS_PATTERN);
         Matcher matcher = pattern.matcher(time);

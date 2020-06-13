@@ -1,5 +1,6 @@
 package Validations.TripValidations;
 
+import MatchingUtil.RoadTrip;
 import TripSuggestUtil.TripSuggest;
 
 import java.util.HashSet;
@@ -27,28 +28,28 @@ public class Validator {
     public boolean validateMenuInput(String choice) {
         boolean isValidInput = false;
         short input;
-           try {
+        try {
             input = Short.parseShort(choice);
-           }
-            catch(NumberFormatException ex) {
-                this.menuErrorMessage.append("Please choose Integer, try again..\n");
-                return false;
-            }
-            catch (Exception ex) {
-                this.menuErrorMessage.append("Your choice isn't a number, please try again..\n");
-                return false;
-            }
-            if(choice.length() > 1) {
-                this.menuErrorMessage.append("Please insert only one digit, please try again..\n");
-            }
-           if(input > 7 || input < 1 ) {
-               this.menuErrorMessage.append("Your choice isn't a number between 1-7, please try again..\n");
-               isValidInput = false;
-           }
+        }
+        catch(NumberFormatException ex) {
+            this.menuErrorMessage.append("Please choose Integer, try again..\n");
+            return false;
+        }
+        catch (Exception ex) {
+            this.menuErrorMessage.append("Your choice isn't a number, please try again..\n");
+            return false;
+        }
+        if(choice.length() > 1) {
+            this.menuErrorMessage.append("Please insert only one digit, please try again..\n");
+        }
+        if(input > 7 || input < 1 ) {
+            this.menuErrorMessage.append("Your choice isn't a number between 1-7, please try again..\n");
+            isValidInput = false;
+        }
 
-           else {
-               isValidInput = true;
-           }
+        else {
+            isValidInput = true;
+        }
 
         return isValidInput;
     }
@@ -93,7 +94,7 @@ public class Validator {
         return requestValidator.getChoosePotentialTripInputErrorMessage();
     }
 
-    public boolean validateChoosePotentialTripInput(String input, TripSuggest[] potentialSuggestedTrips) {
+    public boolean validateChoosePotentialTripInput(String input, List<RoadTrip> potentialSuggestedTrips) {
         return requestValidator.validateChoosePotentialTripInput(input, potentialSuggestedTrips);
     }
 

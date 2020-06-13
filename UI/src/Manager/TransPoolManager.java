@@ -1,5 +1,6 @@
 package Manager;
 
+import MatchingUtil.RoadTrip;
 import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
 
@@ -26,7 +27,7 @@ public class TransPoolManager {
         return transPoolManagerInstance;
     }
 
-    private String getValidChooseOfSuggestedTrip(String requestIDAndAmount, TripSuggest[] potentialSuggestedTrips) {
+    private String getValidChooseOfSuggestedTrip(String requestIDAndAmount, List<RoadTrip> potentialSuggestedTrips) {
         boolean isValid = false;
         String input = null;
         String[] inputs = requestIDAndAmount.split(",");
@@ -64,12 +65,12 @@ public class TransPoolManager {
     public List<String> matchTripRequestToTripSuggestActions(String requestIDAndAmountToMatch) {
         List<String> matchingErrors = new LinkedList<>();
         String input = null;
-        TripSuggest[] potentialSuggestedTrips = engineManager.findPotentialMatchToRequestTrip(requestIDAndAmountToMatch);
-        if (potentialSuggestedTrips == null) {
-            matchingErrors.add("Sorry, there is no potential trips to be matched for your request in the system");
-        } else {
-            input = getValidChooseOfSuggestedTrip(requestIDAndAmountToMatch, potentialSuggestedTrips);
-        }
+        //List<RoadTrip> potentialSuggestedTrips = engineManager.findPotentialMatchToRequestTrip(requestIDAndAmountToMatch);
+//        if (potentialSuggestedTrips == null) {
+//            matchingErrors.add("Sorry, there is no potential trips to be matched for your request in the system");
+//        } else {
+//            input = getValidChooseOfSuggestedTrip(requestIDAndAmountToMatch, potentialSuggestedTrips);
+//        }
         return matchingErrors;
     }
 

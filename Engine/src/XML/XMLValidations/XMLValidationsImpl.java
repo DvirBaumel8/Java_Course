@@ -15,12 +15,11 @@ public class XMLValidationsImpl implements XMLValidations {
     public boolean validateXmlFile(List<String> errors, String pathToTheXMLFile) {
         List<Stop> stops = transPool.getMapDescriptor().getStops().getStop();
         List<Path> paths = transPool.getMapDescriptor().getPaths().getPath();
-
-        List<TransPoolTrip> transPoolTrips = transPool.getPlannedTrips().getTransPoolTrip();
         MapDescriptor mapDescriptor = transPool.getMapDescriptor();
-
         int mapLength = mapDescriptor.getMapBoundries().getLength();
         int mapWidth = mapDescriptor.getMapBoundries().getWidth();
+
+        List<TransPoolTrip> transPoolTrips;
 
         boolean isValid = true;
 
@@ -48,11 +47,57 @@ public class XMLValidationsImpl implements XMLValidations {
             errors.add("   Each path contains only exist and define stations\n");
             isValid = false;
         }
+        try {
+            transPoolTrips = transPool.getPlannedTrips().getTransPoolTrip();
+        }
+        catch (NullPointerException e) {
+            return true;
+        }
+
         if (!validateEachRoutePassesOnlyThroughDefinedStations(transPoolTrips, mapDescriptor)) {
             errors.add("   Each trip suggest contains only exist and defined stations\n");
             isValid = false;
         }
+        if(!validateEachSchedulingHasValue(transPoolTrips, errors)) {
+            isValid = false;
+        }
+        if(!validateSuggestedTripsOwnerNameUnique(transPoolTrips)) {
+            errors.add("   Suggest trip owner name must be unique\n");
+            isValid = false;
+        }
+
         return isValid;
+    }
+
+    private boolean validateSuggestedTripsOwnerNameUnique(List<TransPoolTrip> transPoolTrips) {
+        List<String> suggestTripsOwnerNames = new ArrayList<>();
+
+        for(TransPoolTrip trip : transPoolTrips) {
+            if(suggestTripsOwnerNames.contains(trip.getOwner())) {
+                return false;
+            }
+            else {
+                suggestTripsOwnerNames.add(trip.getOwner());
+            }
+        }
+        return true;
+    }
+
+    private boolean validateEachSchedulingHasValue(List<TransPoolTrip> transPoolTrips, List<String> errors) {
+        for(TransPoolTrip trip : transPoolTrips) {
+            if(trip.getScheduling().getDayStart() == null) {
+                errors.add("   Each trip suggest should contain a value in scheduling day-start (mandatory)\n");
+                return false;
+            }
+            else if(trip.getScheduling().getDayStart() >= 1){
+
+            }
+            else {
+                errors.add("   Scheduling day-start should be a number that higher or equals to 1 (mandatory)\n");
+                return trip.getScheduling().getDayStart() >= 1;
+            }
+        }
+        return true;
     }
 
     @Override

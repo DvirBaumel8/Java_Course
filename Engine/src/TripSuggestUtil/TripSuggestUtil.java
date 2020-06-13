@@ -23,8 +23,7 @@ public class TripSuggestUtil {
     public void convertPlannedTripsToSuggestedTrips (List<TransPoolTrip> plannedTrips) {
         for(TransPoolTrip trip : plannedTrips) {
             int ppk = trip.getPPK();
-            int tripScheduleTypeInt = getTripScheduleTypeInt(trip.getScheduling().getRecurrences());
-            TripSuggest tripSuggest = new TripSuggest(trip.getOwner(), trip.getRoute(), 1, trip.getScheduling().getHourStart(), tripScheduleTypeInt, ppk, trip.getCapacity());
+            TripSuggest tripSuggest = new TripSuggest(trip.getOwner(), trip.getRoute(), 0, trip.getScheduling().getHourStart(), trip.getScheduling().getDayStart(), getTripScheduleTypeInt(trip.getScheduling().getRecurrences()), ppk, trip.getCapacity());
             addSuggestTrip(tripSuggest);
         }
     }
@@ -39,7 +38,7 @@ public class TripSuggestUtil {
         return suggestedTrips;
     }
 
-    int getTripScheduleTypeInt (String tripScheduleType) {
+    int getTripScheduleTypeInt(String tripScheduleType) {
         int res = 0;
         switch(tripScheduleType)
         {
@@ -70,5 +69,14 @@ public class TripSuggestUtil {
             sum += EngineManager.getEngineManagerInstance().getRequiredFuelToPath(paths[i], paths[i+1]);
         }
         return sum;
+    }
+
+    public TripSuggest getTripSuggestByID(int suggestID) {
+        for(Map.Entry<TripSuggest, Integer> trip : suggestedTrips.entrySet()) {
+            if(trip.getValue() == suggestID) {
+                return trip.getKey();
+            }
+        }
+        return null;
     }
 }

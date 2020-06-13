@@ -1,13 +1,17 @@
 package Manager;
 
 import DateSystem.DateSystemManger;
+import MatchingUtil.MatchingUtil;
+import MatchingUtil.RoadTrip;
+import Time.Time;
+import Time.TimeManager;
+import TripSuggestUtil.TripSuggestUtil;
 import Validations.TripValidations.Validator;
 import TripRequests.TripRequest;
 import TripRequests.TripRequestsUtil;
-import TripSuggestUtil.TripSuggestUtil;
 import XML.SchemaBasedJAXBMain;
-import MatchingUtil.MatchingUtil;
 import TripSuggestUtil.TripSuggest;
+import XML.XMLLoading.jaxb.schema.generated.TransPoolTrip;
 import XML.XMLValidations.XMLValidationsImpl;
 import XML.XMLLoading.jaxb.schema.generated.Path;
 import XML.XMLLoading.jaxb.schema.generated.Route;
@@ -24,6 +28,9 @@ public class EngineManager {
     private static TripSuggestUtil tripSuggestUtil;
     private static MatchingUtil matchingUtil;
     private static Validator validator;
+    private static List<String> suggestTripOwners;
+    private static Map<TripRequest, RoadTrip> matches;
+
     private static DateSystemManger dateSystemManger = null;
 
     public DateSystemManger getDateSystemManger() {
@@ -44,6 +51,7 @@ public class EngineManager {
     }
 
     private List<String> menuOrderErrorMessage;
+    private static final String SUCCESS_MATCHING = "Your trip request was match to trip suggested successfully\n";
 
     private EngineManager() {
     }
@@ -53,9 +61,8 @@ public class EngineManager {
             engineManagerInstance = new EngineManager();
             tripSuggestUtil = new TripSuggestUtil();
             tripRequestUtil = new TripRequestsUtil();
-            matchingUtil = new MatchingUtil();
             validator = Validator.getInstance();
-            dateSystemManger = dateSystemManger.getDateSystemMangerInstance();
+            matches = new HashMap<>();
         }
         return engineManagerInstance;
     }
@@ -64,49 +71,60 @@ public class EngineManager {
         SchemaBasedJAXBMain jax = new SchemaBasedJAXBMain();
         try {
             transPool = jax.init(pathToTheXMLFile);
-        }
-        catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException ex) {
             errors.add("No such file or directory\n");
             return errors;
         }
 
-            XMLValidationsImpl xmlValidator = new XMLValidationsImpl(transPool);
-            if(xmlValidator.validateXmlFile(errors, pathToTheXMLFile)) {
+        XMLValidationsImpl xmlValidator = new XMLValidationsImpl(transPool);
+        if (xmlValidator.validateXmlFile(errors, pathToTheXMLFile)) {
+            try {
                 tripSuggestUtil.convertPlannedTripsToSuggestedTrips(transPool.getPlannedTrips().getTransPoolTrip());
+                findAllPlannedTripsOwnerNames();
+            } catch (NullPointerException e) {
+                suggestTripOwners = new ArrayList<>();
             }
-                return errors;
+        }
+        return errors;
     }
 
-    public String getAllStationsName () {
+    private void findAllPlannedTripsOwnerNames() {
+        suggestTripOwners = new ArrayList<>();
+
+        for (TransPoolTrip trip : transPool.getPlannedTrips().getTransPoolTrip()) {
+            suggestTripOwners.add(trip.getOwner());
+        }
+    }
+
+    public String getAllStationsName() {
         StringBuilder str = new StringBuilder();
         str.append("All stations names: \n");
         int index = 1;
-        for(Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
-            str.append(String.format("%d- %s\n",index, stop.getName()));
+        for (Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
+            str.append(String.format("%d- %s\n", index, stop.getName()));
             index++;
         }
         return str.toString();
     }
 
-    public String getAllSuggestedTrips () {
+    public String getAllSuggestedTrips() {
         StringBuilder str = new StringBuilder();
         if (tripSuggestUtil.getAllSuggestedTrips().size() > 0) {
             str.append("All suggested trips: \n");
-        }
-        else {
+        } else {
             str.append("There are no suggested trips");
             return str.toString();
         }
 
         int index = 1;
-        for(Map.Entry<TripSuggest, Integer> trip : tripSuggestUtil.getAllSuggestedTrips().entrySet()) {
+        for (Map.Entry<TripSuggest, Integer> trip : tripSuggestUtil.getAllSuggestedTrips().entrySet()) {
             str.append(String.format("%d- \n", index));
             index++;
             str.append(String.format("Trip ID- %d\n", getSuggestTripID(trip.getKey())));
             str.append(String.format("Trip Owner- %s\n", trip.getKey().getTripOwnerName()));
             str.append(String.format("Trip Route- %s\n", trip.getKey().getTripRoute()));
             str.append(String.format("Trip Price- %s\n", trip.getKey().getTripPrice()));
-            str.append(String.format("Trip starting hour- %s\nTrip arrival hour - %s\n", trip.getKey().getStartingHourAsTime(), trip.getKey().getArrivalHourAsTime()));
+            str.append(String.format("Trip starting hour- %s\nTrip arrival hour - %s\n", trip.getKey().getStartingTime().toString(), trip.getKey().getArrivalTime().toString()));
             str.append(String.format("Trip available sits- %s\n", trip.getKey().getRemainingCapacity()));
             str.append(String.format("Exists passengers trip:\n %s\n", getListOfAllTripPassengersID(trip.getKey())));
             str.append(String.format("Required fuel to trip- %s.L\n", trip.getKey().getRequiredFuel()));
@@ -115,10 +133,10 @@ public class EngineManager {
         return str.toString();
     }
 
-    public HashSet<String> getAllLogicStationsName () {
+    public HashSet<String> getAllLogicStationsName() {
         HashSet<String> hashSet = new HashSet<>();
         List<Stop> stops = transPool.getMapDescriptor().getStops().getStop();
-        for(Stop stop : stops) {
+        for (Stop stop : stops) {
             hashSet.add(stop.getName());
         }
         return hashSet;
@@ -128,12 +146,12 @@ public class EngineManager {
         StringBuilder str = new StringBuilder();
         int index = 1;
 
-        for(Integer id : trip.getPassengers()) {
-            str.append(String.format("%d: Passenger ID - %d\n",index, id));
+        for (Integer id : trip.getPassengers()) {
+            str.append(String.format("%d: Passenger ID - %d\n", index, id));
             index++;
         }
 
-        if(index == 1) {
+        if (index == 1) {
             str.append("empty");
         }
         return str.toString();
@@ -143,37 +161,67 @@ public class EngineManager {
         return tripSuggestUtil.getTripID(trip);
     }
 
-    public String getAllTripRequests () {
+    public String getAllTripRequests() {
         StringBuilder str = new StringBuilder();
-        if(tripRequestUtil.getAllRequestTrips().size() > 0) {
+        if (tripRequestUtil.getAllRequestTrips().size() > 0) {
             str.append("All requested trips:\n");
-        }
-        else {
+        } else {
             str.append("There are no trip requests\n");
             return str.toString();
         }
 
-        for(Map.Entry<TripRequest, Integer> trip : tripRequestUtil.getAllRequestTrips().entrySet()) {
+        for (Map.Entry<TripRequest, Integer> trip : tripRequestUtil.getAllRequestTrips().entrySet()) {
             str.append(String.format("Trip ID- %d\n", getRequestTripID(trip.getKey())));
             str.append(String.format("Trip requester- %s\n", trip.getKey().getNameOfOwner()));
             str.append(String.format("Trip source station- %s\nTrip destination station - %s\n", trip.getKey().getSourceStation(), trip.getKey().getDestinationStation()));
-            if(trip.getKey().getIsStartTime()) {
-                str.append(String.format("Trip starting hour- %s\n", trip.getKey().getTimeStr()));
-            }
-            else {
-                str.append(String.format("Trip arrival hour- %s\n", trip.getKey().getTimeStr()));
-            }
+            if (trip.getKey().isRequestByStartTime()) {
+                str.append(String.format("Trip starting hour- %s\n", trip.getKey().getStartTime().toString()));
+                if (trip.getKey().getIsStartTime()) {
+                    str.append(String.format("Trip starting hour- %s\n", trip.getKey().getStartTime().toString()));
+                } else {
+                    str.append(String.format("Trip arrival hour- %s\n", trip.getKey().getArrivalTime().toString()));
+                }
 
-            if(trip.getKey().isMatched()) {
-                str.append("This request is already match to suggested trip, here are the details of the trip: \n");
-                str.append(String.format("Trip Match ID- %d\n", trip.getKey().getMatchTrip().getSuggestID()));
-                str.append(String.format("Trip Match owner name- %s\n", trip.getKey().getMatchTrip().getTripOwnerName()));
-                str.append(String.format("Trip Match price- %d\n", trip.getKey().getMatchTrip().getTripPrice()));
-                str.append(String.format("Estimate arrival hour- %s\n", trip.getKey().getTimeStr()));
-                str.append(String.format("Required fuel for request- %d\n", calcRequiredFuelToRequest(trip.getKey())));
+                if (trip.getKey().isMatched()) {
+                    str.append("This request is already match to suggested trip, here are the details of the trip: \n");
+                    str.append(String.format("Trip Match ID- %d\n", trip.getKey().getMatchTrip().getSuggestID()));
+                    str.append(String.format("Trip Match owner name- %s\n", trip.getKey().getMatchTrip().getTripOwnerName()));
+                    str.append(String.format("Trip Match price- %d\n", trip.getKey().getMatchTrip().getTripPrice()));
+                    str.append(String.format("Required fuel for request- %d\n", calcRequiredFuelToRequest(trip.getKey())));
+                    if (trip.getKey().isRequestByStartTime()) {
+                        str.append(String.format("Starting hour- %s\n\n", trip.getKey().getStartTime()));
+                    } else {
+                        str.append(String.format("Arrival hour- %s\n\n", trip.getKey().getStartTime()));
+                    }
+                } else {
+                    str.append("This trip request isn't matched yet\n\n");
+                }
             }
-            else {
-                str.append("This trip request isn't matched yet\n\n");
+        }
+        return str.toString();
+    }
+
+    public String getAllNotMatchedRequestsTrip() {
+        StringBuilder str = new StringBuilder();
+
+        if (tripRequestUtil.getAllRequestTrips().size() > 0) {
+            str.append("Here are all the requests trip that didn't match yet\n");
+        } else {
+            str.append("There are no requests trip that didn't match yet\n");
+            return str.toString();
+        }
+
+        for (Map.Entry<TripRequest, Integer> trip : tripRequestUtil.getAllRequestTrips().entrySet()) {
+            if (!trip.getKey().isMatched()) {
+                str.append(String.format("Request ID- %d\n", trip.getKey().getRequestID()));
+                str.append(String.format("Name of requester- %s\n", trip.getKey().getNameOfOwner()));
+                str.append(String.format("Source stations- %s\n", trip.getKey().getSourceStation()));
+                str.append(String.format("Destination stations- %s\n", trip.getKey().getDestinationStation()));
+                if (trip.getKey().isRequestByStartTime()) {
+                    str.append(String.format("Starting hour- %s\n\n", trip.getKey().getStartTime()));
+                } else {
+                    str.append(String.format("Arrival hour- %s\n\n", trip.getKey().getStartTime()));
+                }
             }
         }
         return str.toString();
@@ -190,20 +238,18 @@ public class EngineManager {
         String destinationStation = tripRequest.getDestinationStation();
         StringBuilder str = new StringBuilder();
 
-        for(int i = 0; i < stations.length; i++) {
+        for (int i = 0; i < stations.length; i++) {
             if (!start) {
-                if(stations[i].equals(sourceStation)) {
+                if (stations[i].equals(sourceStation)) {
                     start = true;
                     str.append(stations[i]);
                     str.append(",");
                 }
-            }
-            else {
-                if(stations[i].equals(destinationStation)) {
+            } else {
+                if (stations[i].equals(destinationStation)) {
                     str.append(stations[i]);
                     break;
-                }
-                else {
+                } else {
                     str.append(stations[i]);
                     str.append(",");
                 }
@@ -219,46 +265,41 @@ public class EngineManager {
 
     public TripRequest addNewTripRequest(String[] inputs) {
         TripRequest newRequest = null;
-        double Hour = Integer.parseInt(inputs[3].split(":")[0]);
-        double Minutes = Integer.parseInt(inputs[3].split(":")[1]);
-        while(Minutes > 1) {
-            Minutes = Minutes/10;
-        }
-        Hour += Minutes;
-        newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], Hour, inputs[4].equals("s"));
+        int hour = Integer.parseInt(inputs[3].split(":")[0]);
+        int minutes = Integer.parseInt(inputs[3].split(":")[1]);
+        int day = Integer.parseInt(inputs[5]);
+        newRequest = new TripRequest(inputs[0], inputs[1], inputs[2], minutes, hour, day, inputs[4].equals("S"));
         tripRequestUtil.addRequestTrip(newRequest);
         return newRequest;
     }
 
     public TripSuggest addNewTripSuggest(String[] inputs) {
-
-        TripSuggest newSuggest = null;
-        int startHour = Integer.parseInt(inputs[3].split(":")[0]);
+        int hour = Integer.parseInt(inputs[3].split(":")[0]);
+        int minutes = Integer.parseInt(inputs[3].split(":")[1]);
         Route newTripSuggestRoute = new Route();
         String stringPath = setInputPathToSystemStylePath(inputs[1]);
         newTripSuggestRoute.setPath(stringPath);
-        int departureDayNumber = 0;
+        int day = 0;
         int ppk = 0;
-        int tripScheduleTypeInt = 0;
-        int driverCapacity = 0;
+        int scheduleTypeInt = 0;
+        int tripCapacity = 0;
 
         try {
-            departureDayNumber = Integer.parseInt(inputs[2]);
-            tripScheduleTypeInt = Integer.parseInt(inputs[4]);
+            day = Integer.parseInt(inputs[2]);
+            scheduleTypeInt = Integer.parseInt(inputs[4]);
             ppk = Integer.parseInt(inputs[5]);
-            driverCapacity = Integer.parseInt(inputs[6]);
-            newSuggest = new TripSuggest(inputs[0], newTripSuggestRoute, departureDayNumber, startHour,
-                    tripScheduleTypeInt , ppk, driverCapacity);        }
-        catch (NumberFormatException e) {
+            tripCapacity = Integer.parseInt(inputs[6]);
+        } catch (NumberFormatException e) {
             addErrorMessageToMenuOrder("NumberFormatException occur ");
         }
+        TripSuggest tripSuggest = new TripSuggest(inputs[0], newTripSuggestRoute, minutes, hour, day, scheduleTypeInt, ppk, tripCapacity);
 
-        tripSuggestUtil.addSuggestTrip(newSuggest);
+        tripSuggestUtil.addSuggestTrip(tripSuggest);
 
-        return newSuggest;
+        return tripSuggest;
     }
 
-    public String getRequestValidationSuccessMessage () {
+    public String getRequestValidationSuccessMessage() {
         return tripRequestUtil.getValidationSuccessMessage();
     }
 
@@ -267,8 +308,8 @@ public class EngineManager {
     }
 
     public int getLengthBetweenStations(String pathFrom, String pathTo) {
-        for(Path path : transPool.getMapDescriptor().getPaths().getPath()) {
-            if(path.getFrom().equals(pathFrom) && path.getTo().equals(pathTo)) {
+        for (Path path : transPool.getMapDescriptor().getPaths().getPath()) {
+            if (path.getFrom().equals(pathFrom) && path.getTo().equals(pathTo)) {
                 return path.getLength();
             }
         }
@@ -276,52 +317,12 @@ public class EngineManager {
     }
 
     public int getRequiredFuelToPath(String pathFrom, String pathTo) {
-        for(Path path : transPool.getMapDescriptor().getPaths().getPath()) {
-            if(path.getFrom().equals(pathFrom) && path.getTo().equals(pathTo)) {
-                return path.getLength()/path.getFuelConsumption();
+        for (Path path : transPool.getMapDescriptor().getPaths().getPath()) {
+            if (path.getFrom().equals(pathFrom) && path.getTo().equals(pathTo)) {
+                return path.getLength() / path.getFuelConsumption();
             }
         }
         return -1;
-    }
-
-    public double calcArrivalHourToRoute(String pathFrom, String pathTo, double startingHour) {
-        double arrivalHour = startingHour;
-        for(Path path : transPool.getMapDescriptor().getPaths().getPath()) {
-            if(path.getFrom().equals(pathFrom) && path.getTo().equals(pathTo)) {
-                arrivalHour +=  (double) path.getLength()/path.getSpeedLimit();
-                break;
-            }
-        }
-        return arrivalHour;
-    }
-
-    public String getAllNotMatchedRequestsTrip() {
-        StringBuilder str = new StringBuilder();
-
-        if(tripRequestUtil.getAllRequestTrips().size() > 0) {
-            str.append("Here are all the requests trip that didn't match yet\n");
-        }
-        else {
-            str.append("There are no requests trip that didn't match yet\n");
-            return str.toString();
-        }
-
-        for(Map.Entry<TripRequest, Integer> trip : tripRequestUtil.getAllRequestTrips().entrySet()) {
-            if(!trip.getKey().isMatched()) {
-                str.append(String.format("Request ID- %d\n", trip.getKey().getRequestID()));
-                str.append(String.format("Name of requester- %s\n", trip.getKey().getNameOfOwner()));
-                str.append(String.format("Source stations- %s\n", trip.getKey().getSourceStation()));
-                str.append(String.format("Destination stations- %s\n", trip.getKey().getDestinationStation()));
-                if(trip.getKey().getIsStartTime()) {
-                    str.append(String.format("Starting hour- %s\n\n", trip.getKey().getTimeStr()));
-                }
-                else {
-                    str.append(String.format("Arrival hour- %s\n\n", trip.getKey().getTimeStr()));
-                }
-
-            }
-        }
-        return str.toString();
     }
 
     public boolean validateRequestIDIsExist(String input) {
@@ -329,29 +330,51 @@ public class EngineManager {
         return tripRequestUtil.isRequestIDExist(requestID);
     }
 
-    public TripSuggest[] findPotentialMatchToRequestTrip(String input) {
-        return matchingUtil.findPotentialMatchToRequestTrip(input);
+    public List<RoadTrip> getPotentialRoadTripsToRequest(String input) {
+        matchingUtil = new MatchingUtil();
+        return matchingUtil.findRoadTripsMatchToRequestTrip(input);
     }
 
-    public String convertPotentialSuggestedTripsToString(TripSuggest[] potentialSuggestedTrips, String requestID) {
-        TripRequest tripRequest = getTripRequestByID(Integer.parseInt(requestID));
-        StringBuilder str = new StringBuilder();
-        str.append("\nPotential suggested trips:\n");
-
-        if(potentialSuggestedTrips.length == 0) {
-            str.append("The system couldn't found suggested trips to you trip request, sorry.\n");
-            return str.toString();
-        }
-
-        for(TripSuggest trip : potentialSuggestedTrips) {
-            if(trip != null) {
-                str.append(String.format("Trip ID - %d\n", trip.getSuggestID()));
-                str.append(String.format("Trip owner name - %s\n", trip.getTripOwnerName()));
-                str.append(String.format("Trip price - %d\n", trip.getTripPrice()));
-                str.append(String.format("Trip estimate time to arrival - %s\n", convertDoubleTimeToStrTime(trip.getArrivalHourToSpecificStation(tripRequest.getDestinationStation()))));
-                str.append(String.format("Required fuel to your trip- %d\n", calcRequiredFuelToRequest(trip, tripRequest)));
+    public double calcMinutesToRoute(String pathFrom, String pathTo) {
+        boolean isPathOneWay;
+        double retVal = 0;
+        for (Path path : transPool.getMapDescriptor().getPaths().getPath()) {
+            if (path.getFrom().equals(pathFrom) && path.getTo().equals(pathTo)) {
+                return (double) path.getLength() / path.getSpeedLimit();
+            } else {
+                try {
+                    isPathOneWay = path.isOneWay();
+                } catch (NullPointerException e) {
+                    isPathOneWay = false;
+                }
+                if (!isPathOneWay) {
+                    if (path.getTo().equals(pathFrom) && path.getFrom().equals(pathTo)) {
+                        return (double) path.getLength() / path.getSpeedLimit();
+                    }
+                }
             }
         }
+        return 0;
+    }
+
+    public String convertPotentialSuggestedTripsToString(List<RoadTrip> potentialSuggestedTrips, String requestID) {
+        TripRequest tripRequest = getTripRequestByID(Integer.parseInt(requestID));
+        StringBuilder str = new StringBuilder();
+        int index = 1;
+
+
+        if (potentialSuggestedTrips.size() == 0) {
+            str.append("The system couldn't found suggested trips to you trip request, sorry.\n");
+            return str.toString();
+        } else {
+            str.append("\nPotential suggested trips:\n");
+            for (RoadTrip trip : potentialSuggestedTrips) {
+                str.append(String.format("%d- \n", index));
+                str.append(trip.toString());
+                index++;
+            }
+        }
+
         return str.toString();
     }
 
@@ -380,23 +403,26 @@ public class EngineManager {
         validator.setNullableMenuErrorMessage();
     }
 
-    public String matchRequestToSuggest(String input, TripSuggest[] potentialSuggestedTrips, String requestIDAndAmountToMatch) {
+    public String matchTripRequest(String input, List<RoadTrip> potentialRoadTrips, String
+            requestIDAndAmountToMatch) {
         String[] inputs = requestIDAndAmountToMatch.split(",");
         int requestID = Integer.parseInt(inputs[0]);
-        int suggestedTripID = Integer.parseInt(input);
-        TripSuggest tripSuggest = null;
-        for(int i = 0; i < potentialSuggestedTrips.length; i++) {
-            if(potentialSuggestedTrips[i].getSuggestID() == suggestedTripID) {
-                tripSuggest = potentialSuggestedTrips[i];
+        int roadTripIndex = Integer.parseInt(input);
+        RoadTrip roadTrip = null;
+
+        for (int i = 0; i < potentialRoadTrips.size(); i++) {
+            if (potentialRoadTrips.get(i).getIndex() == roadTripIndex) {
+                roadTrip = potentialRoadTrips.get(i);
                 break;
             }
         }
         TripRequest tripRequest = tripRequestUtil.getTripRequestByID(requestID);
-        return matchingUtil.matchRequestToSuggest(tripSuggest, tripRequest);
+        matches.put(tripRequest, roadTrip);
+        return SUCCESS_MATCHING;
     }
 
     public void addErrorMessageToMenuOrder(String errorMessage) {
-        if(this.menuOrderErrorMessage == null) {
+        if (this.menuOrderErrorMessage == null) {
             this.menuOrderErrorMessage = new LinkedList<>();
         }
         menuOrderErrorMessage.add(errorMessage);
@@ -404,7 +430,7 @@ public class EngineManager {
 
 
     public String setInputPathToSystemStylePath(String dotPath) {
-        return dotPath.replace('-',',');
+        return dotPath.replace('-', ',');
     }
 
 //---------------------------- RequestValidator Section ----------------------------
@@ -413,7 +439,7 @@ public class EngineManager {
         return validator.validateTripRequestInput(inputs);
     }
 
-    public String getRequestValidationErrorMessage () {
+    public String getRequestValidationErrorMessage() {
         return validator.getAddNewTripRequestErrorMessage();
     }
 
@@ -425,7 +451,7 @@ public class EngineManager {
         return validator.getChooseRequestAndAmountOfSuggestedTripsErrorMessage();
     }
 
-    public void deleteChooseRequestAndAmountErrorMessage () {
+    public void deleteChooseRequestAndAmountErrorMessage() {
         validator.deleteChooseRequestAndAmountErrorMessage();
     }
 
@@ -441,12 +467,13 @@ public class EngineManager {
         return validator.getChoosePotentialTripInputErrorMessage();
     }
 
-    public boolean validateChoosePotentialTripInput(String input, TripSuggest[] potentialSuggestedTrips) {
+    public boolean validateChoosePotentialTripInput(String input, List<RoadTrip> potentialSuggestedTrips) {
         return validator.validateChoosePotentialTripInput(input, potentialSuggestedTrips);
     }
 
-//---------------------------- SuggestValidator Section ----------------------------
-    public boolean validateTripSuggestInput(String[] inputTripSuggestString, HashSet<String> allStationsLogicNames) {
+    //---------------------------- SuggestValidator Section ----------------------------
+    public boolean validateTripSuggestInput(String[]
+                                                    inputTripSuggestString, HashSet<String> allStationsLogicNames) {
         return validator.validateTripSuggestInput(inputTripSuggestString, allStationsLogicNames);
     }
 
@@ -454,7 +481,7 @@ public class EngineManager {
         return validator.getAddNewTripSuggestErrorMessage();
     }
 
-    public String getSuggestValidationSuccesMessage() {
+    public String getSuggestValidationSuccessMessage() {
         return validator.getSuggestValidationSuccessMessage();
     }
 
@@ -468,9 +495,136 @@ public class EngineManager {
 
     public static String convertDoubleTimeToStrTime(double time) {
         String[] vals = String.valueOf(time).split("\\.");
-        if(vals[1].length() == 1) {
+        if (vals[1].length() == 1) {
             vals[1] += "0";
         }
         return vals[0] + ":" + vals[1];
     }
+
+    public void moveTimeForward() {
+        TimeManager.getInstance().moveTimeForward(1);
+    }
+
+    public void moveTimeBack() {
+        TimeManager.getInstance().moveTimeBack(1);
+    }
+
+    public Map<TripSuggest, String> getCurrentTripsSuggestAndStation() {
+        Map<TripSuggest, String> mapToRet = new HashMap<>();
+        Map<TripSuggest, Integer> suggestedTrips = tripSuggestUtil.getAllSuggestedTrips();
+        TripSuggest currTrip;
+
+        for (Map.Entry<TripSuggest, Integer> entry : suggestedTrips.entrySet()) {
+            currTrip = entry.getKey();
+            if (checkIfTripActiveNow(currTrip)) {
+                String currStation = findTripCurrentStation(currTrip);
+                mapToRet.put(currTrip, currStation);
+            }
+        }
+        return null;
+    }
+
+
+    public static String findTripCurrentStation(TripSuggest trip) {
+        Time timeSystem = TimeManager.getInstance().getCurrTime();
+        int hourSystem = timeSystem.getHours();
+        int minutesSystem = timeSystem.getMinutes();
+
+        String prevStation = trip.getTripRoute().split(",")[0];
+        String[] tripRoute = trip.getTripRoute().split(",");
+        Time currTripTime;
+        int currTripHour;
+        int currTripMinutes;
+
+        for (String station : tripRoute) {
+            currTripTime = trip.getArrivalHourToSpecificStation(station);
+            currTripHour = currTripTime.getHours();
+            currTripMinutes = currTripTime.getMinutes();
+
+            if (currTripHour > hourSystem) {
+                return prevStation;
+            } else if (currTripHour == hourSystem) {
+                if (currTripMinutes > minutesSystem) {
+                    return prevStation;
+                } else if (currTripMinutes == minutesSystem) {
+                    return station;
+                }
+            } else {
+                return prevStation;
+            }
+            prevStation = station;
+        }
+
+        return null;
+    }
+
+
+    private boolean checkIfTripActiveNow(TripSuggest currTrip) {
+        Time time = TimeManager.getInstance().getCurrTime();
+        int day = time.getDay();
+        int hours = time.getHours();
+        int minutes = time.getMinutes();
+
+        if (checkIfTripActivateOnDAy(currTrip, day)) {
+            if (checkTripOnHour(currTrip, hours, minutes)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkTripOnHour(TripSuggest currTrip, int hoursSystem, int minutesSystem) {
+        Time startingTime = currTrip.getStartingTime();
+        int startingHour = startingTime.getHours();
+        int startingMinutes = startingTime.getMinutes();
+        Time arrivalTime = currTrip.getArrivalTime();
+        int arrivalHour = arrivalTime.getHours();
+        int arrivalMinutes = arrivalTime.getMinutes();
+
+        if (arrivalHour < hoursSystem) {
+            return false;
+        } else if (arrivalHour == hoursSystem) {
+            if (arrivalMinutes < minutesSystem) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            if (startingHour < hoursSystem) {
+                return true;
+            } else if (startingHour == hoursSystem) {
+                if (startingMinutes < minutesSystem) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+    }
+
+    private boolean checkIfTripActivateOnDAy(TripSuggest trip, int currentDaySystem) {
+        int tripDay = trip.getStartingDay();
+        TripSuggest.RecurrencesTypes recurrences = trip.getRecurrencesType();
+
+        if (recurrences.equals(TripSuggest.RecurrencesTypes.ONE_TIME_ONLY)) {
+            return trip.getStartingDay() == currentDaySystem;
+        } else {
+            while (tripDay <= currentDaySystem) {
+                if (tripDay == currentDaySystem) {
+                    return true;
+                } else {
+                    tripDay += trip.getRecurrencesType().getValue();
+                }
+            }
+            return false;
+        }
+    }
+
+    public List<String> getAllPlannedTripsOwnerNames() {
+        return suggestTripOwners;
+    }
 }
+
+
