@@ -55,7 +55,7 @@ public class EngineManager {
             tripRequestUtil = new TripRequestsUtil();
             matchingUtil = new MatchingUtil();
             validator = Validator.getInstance();
-            dateSystemManger = dateSystemManger.getInstance();
+            dateSystemManger = dateSystemManger.getDateSystemMangerInstance();
         }
         return engineManagerInstance;
     }

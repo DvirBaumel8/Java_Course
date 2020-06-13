@@ -47,6 +47,7 @@ public class HeaderController {
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "XML Load Successfully");
                 successAlert.showAndWait();
                 xmlStage.close();
+                mainController.setDateSystemMangerString();
         }
         else{
             Alert errorAlert = new Alert(Alert.AlertType.ERROR, "XML doesnt Load Successfully");

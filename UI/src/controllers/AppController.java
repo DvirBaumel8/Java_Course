@@ -167,4 +167,28 @@ public class AppController {
 
         return matchingErrors;
     }
+
+    public void setDateSystemMangerString() {
+       String time = transPoolManager.getEngineManager().getDateSystemManger().getTimeFormatInsanceForUI();
+       liveMapController.setDateSystemMangerString(time);
+    }
+
+    public String setDateString5Min(boolean isForward) {
+        return transPoolManager.getEngineManager().getDateSystemManger().setDateString5Min(isForward);
+    }
+
+    public String setDateString30Min(boolean isForward) {
+        return transPoolManager.getEngineManager().getDateSystemManger().setDateString30Min(isForward);
+    }
+
+    public String setDateString1Hour(boolean isForward) {
+        return transPoolManager.getEngineManager().getDateSystemManger().setDateString1Hour(isForward);
+    }
+
+    public String setDateString2Hours(boolean isForward) {
+        return transPoolManager.getEngineManager().getDateSystemManger().setDateString2Hours(isForward);
+    }
+    public String setDateString1Day(boolean isForward) {
+        return transPoolManager.getEngineManager().getDateSystemManger().setDateString1Day(isForward);
+    }
 }

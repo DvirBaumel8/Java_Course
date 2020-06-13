@@ -8,9 +8,9 @@
 <?import javafx.scene.text.Font?>
 
 <ScrollPane minHeight="100" minWidth="200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HeaderController">
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="970.0" styleClass="header" stylesheets="@../../../../UI/src/CSS/header.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="1390.0" styleClass="header" stylesheets="@../../../../UI/src/CSS/header.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="38.0" prefWidth="67.0" text="Exit" translateX="910.0" onAction="#exitButtonActionListener">
+      <Button fx:id="exitButton" mnemonicParsing="false" onAction="#exitButtonActionListener" prefHeight="45.0" prefWidth="71.0" text="Exit" translateX="1300.0">
          <VBox.margin>
             <Insets bottom="5.0" left="5.0" right="10.0" top="10.0" />
          </VBox.margin>
@@ -18,9 +18,9 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </Button>
-      <Label contentDisplay="CENTER" minHeight="40.0" minWidth="350.0" prefHeight="75.0" prefWidth="369.0" text="TransPool App" translateX="300.0">
+      <Label contentDisplay="CENTER" minHeight="40.0" minWidth="350.0" prefHeight="85.0" prefWidth="410.0" text="TransPool App" translateX="450.0">
          <font>
-            <Font size="48.0" />
+            <Font size="56.0" />
          </font>
          <VBox.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -29,7 +29,7 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </Label>
-      <Button fx:id="loadXMLButton" mnemonicParsing="false" prefHeight="39.0" prefWidth="88.0" text="Load XML" translateX="3.0" translateY="1.0" onAction="#loadXMLButtonActionListener">
+      <Button fx:id="loadXMLButton" mnemonicParsing="false" onAction="#loadXMLButtonActionListener" prefHeight="48.0" prefWidth="99.0" text="Load XML" translateX="3.0" translateY="-4.0">
          <VBox.margin>
             <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
          </VBox.margin>

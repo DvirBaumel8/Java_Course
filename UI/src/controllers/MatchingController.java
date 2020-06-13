@@ -99,7 +99,7 @@ public class MatchingController {
     public void updateMatchingAccordion(String requestId, String suggestId) {
         String matchingTextArea = matchingAccordion.getPanes().get(0).getText();
         StringBuilder matchingTextAreaBuilder = new StringBuilder(matchingTextArea);
-        matchingTextAreaBuilder.append("requestId,suggestId" + System.lineSeparator());
+        matchingTextAreaBuilder.append(requestId + ',' + suggestId +  System.lineSeparator());
         TitledPane matchingTitledPane= new TitledPane("Matching Trip List", new TextArea(matchingTextAreaBuilder.toString()));
         matchingAccordion.getPanes().set(0,matchingTitledPane);
     }
