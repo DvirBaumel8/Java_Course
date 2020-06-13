@@ -1,6 +1,8 @@
 package controllers;
 
+import Manager.EngineManager;
 import Manager.TransPoolManager;
+import Time.Time;
 import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
 import javafx.application.Platform;
@@ -30,9 +32,12 @@ public class AppController {
 
     private TransPoolManager transPoolManager;
 
+    private EngineManager engine;
+
 
     @FXML
     public void initialize() {
+        engine = EngineManager.getEngineManagerInstance();
         if (headerComponentController != null && tripRequestController != null && tripSuggestController != null) {
             headerComponentController.setMainController(this);
             tripRequestController.setMainController(this);
@@ -40,7 +45,7 @@ public class AppController {
             matchingController.setMainController(this);
             liveMapController.setMainController(this);
         }
-        transPoolManager.getTransPoolManagerInstance();
+        transPoolManager = transPoolManager.getTransPoolManagerInstance();
     }
 
     public void setHeaderComponentController(HeaderController headerComponentController) {
@@ -81,7 +86,7 @@ public class AppController {
         StringBuilder errors = new StringBuilder();
         TripRequest newRequest = null;
         try {
-            boolean isValidInput = this.transPoolManager.getEngineManager().validateTripRequestInput(inputTripRequestString);
+            boolean isValidInput = engine.validateTripRequestInput(inputTripRequestString);
             if (isValidInput) {
                 newRequest = this.transPoolManager.addNewTripRequestSuccess(inputTripRequestString);
                 tripRequestController.addNewTripRequestAccordion(newRequest);
@@ -103,14 +108,14 @@ public class AppController {
         StringBuilder errors = new StringBuilder();
         TripSuggest newSuggest = null;
         try {
-            HashSet<String> allStationsLogicNames = this.transPoolManager.getEngineManager().getAllLogicStationsName();
-            boolean isValidInput = this.transPoolManager.getEngineManager()
-                    .validateTripSuggestInput(inputTripSuggestString,allStationsLogicNames);
+            HashSet<String> allStationsLogicNames = engine.getAllLogicStationsName();
+            boolean isValidInput = engine.validateTripSuggestInput(inputTripSuggestString,allStationsLogicNames);
             if (isValidInput) {
                 newSuggest = this.transPoolManager.addNewTripSuggestSuccess(inputTripSuggestString);
                 tripSuggestController.addNewTripSuggestAccordion(newSuggest);
                 tripSuggestController.closeAddNewTripSuggestStage();
-            } else {
+            }
+              else {
                 errors = new StringBuilder(this.transPoolManager.getAddNewTripSuggestErrorMessage());
                 this.getAlertErrorWindow(errors.toString());
             }
@@ -126,9 +131,9 @@ public class AppController {
     public List<String> CheckPathForXML(String myPathToTheXMLFile) {
             List<String> xmlErrors = new ArrayList<>();
             try {
-                xmlErrors = this.transPoolManager.getEngineManager().LoadXML(myPathToTheXMLFile, xmlErrors);
+                xmlErrors = engine.LoadXML(myPathToTheXMLFile, xmlErrors);
                 if(xmlErrors.isEmpty()) {
-                    this.transPoolManager.setIsXMLLoaded(true);
+                    TransPoolManager.setIsXMLLoaded(true);
                     transPoolManager = transPoolManager.getTransPoolManagerInstance();
                 }
             } catch (Exception e) {
@@ -155,7 +160,7 @@ public class AppController {
     public List<String> matchingAction(String inputMatchingString) {
         List<String> matchingErrors = new LinkedList<>();
         try {
-            matchingErrors = transPoolManager.getEngineManager().validateChooseRequestAndAmountOfSuggestedTripsInput(inputMatchingString);
+            matchingErrors = engine.validateChooseRequestAndAmountOfSuggestedTripsInput(inputMatchingString);
 
             if (matchingErrors.isEmpty()) {
                 matchingErrors = transPoolManager.matchTripRequestToTripSuggestActions(inputMatchingString);
@@ -168,27 +173,31 @@ public class AppController {
         return matchingErrors;
     }
 
-    public void setDateSystemMangerString() {
-       String time = transPoolManager.getEngineManager().getDateSystemManger().getTimeFormatInsanceForUI();
-       liveMapController.setDateSystemMangerString(time);
+    public void setTime() {
+       String timeStr = engine.getCurrentSystemTime().toString();
+       liveMapController.setTimeLabel(timeStr);
     }
 
-    public String setDateString5Min(boolean isForward) {
-        return transPoolManager.getEngineManager().getDateSystemManger().setDateString5Min(isForward);
+    public void setDateString5Min(boolean isForward) {
+        engine.moveTimeForward(1);
     }
 
-    public String setDateString30Min(boolean isForward) {
-        return transPoolManager.getEngineManager().getDateSystemManger().setDateString30Min(isForward);
+    public void setDateString30Min(boolean isForward) {
+        engine.moveTimeForward(2);
     }
 
-    public String setDateString1Hour(boolean isForward) {
-        return transPoolManager.getEngineManager().getDateSystemManger().setDateString1Hour(isForward);
+    public void setDateString1Hour(boolean isForward) {
+        engine.moveTimeForward(3);
     }
 
-    public String setDateString2Hours(boolean isForward) {
-        return transPoolManager.getEngineManager().getDateSystemManger().setDateString2Hours(isForward);
+    public void setDateString2Hours(boolean isForward) {
+        engine.moveTimeForward(4);
     }
-    public String setDateString1Day(boolean isForward) {
-        return transPoolManager.getEngineManager().getDateSystemManger().setDateString1Day(isForward);
+    public void setDateString1Day(boolean isForward) {
+        engine.moveTimeForward(5);
+    }
+
+    public String getCurrentTime() {
+        return engine.getCurrentSystemTime().toString();
     }
 }

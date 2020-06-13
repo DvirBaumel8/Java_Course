@@ -11,7 +11,7 @@ public class LiveMapController {
     @FXML private Label timeLabel;
 
     @FXML private Button forwardPreviousButton;
-    boolean isForward = true;
+    private boolean isForward = true;
 
     @FXML private Button fiveMinButton;
 
@@ -27,32 +27,32 @@ public class LiveMapController {
 
     @FXML
     void fiveMinButtonActionListener() {
-        String timeToShow = mainController.setDateString5Min(this.isForward);
-        //this.setDateSystemMangerString(timeToShow);
+        mainController.setDateString5Min(isForward);
+        setTimeLabel(mainController.getCurrentTime());
     }
 
     @FXML
     void halfHourMinButtonActionListener() {
-        String timeToShow = mainController.setDateString30Min(this.isForward);
-        //this.setDateSystemMangerString(timeToShow);
+        mainController.setDateString30Min(isForward);
+        setTimeLabel(mainController.getCurrentTime());
     }
 
     @FXML
     void oneHourButtonActionListener() {
-        String timeToShow = mainController.setDateString1Hour(this.isForward);
-        //this.setDateSystemMangerString(timeToShow);
+        mainController.setDateString1Hour(isForward);
+        setTimeLabel(mainController.getCurrentTime());
     }
 
     @FXML
     void twoHoursButtonActionListener() {
-        String timeToShow = mainController.setDateString2Hours(this.isForward);
-        //this.setDateSystemMangerString(timeToShow);
+        mainController.setDateString2Hours(isForward);
+        setTimeLabel(mainController.getCurrentTime());
     }
 
     @FXML
     void oneDayButtonActionListener() {
-        String timeToShow = mainController.setDateString1Day(this.isForward);
-       // this.setDateSystemMangerString(timeToShow);
+        mainController.setDateString1Day(isForward);
+        setTimeLabel(mainController.getCurrentTime());
     }
 
     @FXML
@@ -71,7 +71,7 @@ public class LiveMapController {
     }
 
 
-    public void setDateSystemMangerString(String time) {
+    public void setTimeLabel(String time) {
         timeLabel.setText("Time:"+time);
     }
 

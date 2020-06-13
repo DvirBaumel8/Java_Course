@@ -1,6 +1,5 @@
 package Manager;
 
-import DateSystem.DateSystemManger;
 import MatchingUtil.MatchingUtil;
 import MatchingUtil.RoadTrip;
 import Time.Time;
@@ -22,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class EngineManager {
+    private static TimeManager timeManager;
     private static EngineManager engineManagerInstance;
     private TransPool transPool;
     private static TripRequestsUtil tripRequestUtil;
@@ -30,26 +30,12 @@ public class EngineManager {
     private static Validator validator;
     private static List<String> suggestTripOwners;
     private static Map<TripRequest, RoadTrip> matches;
-
-    private static DateSystemManger dateSystemManger = null;
-
-    public DateSystemManger getDateSystemManger() {
-        return dateSystemManger;
-    }
-
     public TripRequestsUtil getTripRequestUtil() {
         return tripRequestUtil;
     }
-
     public TripSuggestUtil getTripSuggestUtil() {
         return tripSuggestUtil;
     }
-
-
-    public void setDateSystemManger(DateSystemManger dateSystemManger) {
-        this.dateSystemManger = dateSystemManger;
-    }
-
     private List<String> menuOrderErrorMessage;
     private static final String SUCCESS_MATCHING = "Your trip request was match to trip suggested successfully\n";
 
@@ -63,6 +49,7 @@ public class EngineManager {
             tripRequestUtil = new TripRequestsUtil();
             validator = Validator.getInstance();
             matches = new HashMap<>();
+            timeManager = TimeManager.getInstance();
         }
         return engineManagerInstance;
     }
@@ -501,12 +488,12 @@ public class EngineManager {
         return vals[0] + ":" + vals[1];
     }
 
-    public void moveTimeForward() {
-        TimeManager.getInstance().moveTimeForward(1);
+    public void moveTimeForward(int choose) {
+        timeManager.moveTimeForward(choose);
     }
 
-    public void moveTimeBack() {
-        TimeManager.getInstance().moveTimeBack(1);
+    public void moveTimeBack(int choose) {
+        timeManager.moveTimeBack(choose);
     }
 
     public Map<TripSuggest, String> getCurrentTripsSuggestAndStation() {
@@ -524,9 +511,12 @@ public class EngineManager {
         return null;
     }
 
+    public Time getCurrentSystemTime() {
+        return timeManager.getCurrTime();
+    }
 
     public static String findTripCurrentStation(TripSuggest trip) {
-        Time timeSystem = TimeManager.getInstance().getCurrTime();
+        Time timeSystem = timeManager.getCurrTime();
         int hourSystem = timeSystem.getHours();
         int minutesSystem = timeSystem.getMinutes();
 
@@ -560,7 +550,7 @@ public class EngineManager {
 
 
     private boolean checkIfTripActiveNow(TripSuggest currTrip) {
-        Time time = TimeManager.getInstance().getCurrTime();
+        Time time = timeManager.getCurrTime();
         int day = time.getDay();
         int hours = time.getHours();
         int minutes = time.getMinutes();

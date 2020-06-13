@@ -29,29 +29,34 @@ public class Time {
             case 1: {
                 minutes += 5;
                 handleCircle();
+                break;
             }
 
             //30 minutes
             case 2: {
                 minutes += 30;
                 handleCircle();
+                break;
             }
 
             //60 minutes
             case 3: {
                 hours += 1;
                 handleCircle();
+                break;
             }
 
             //120 minutes
             case 4: {
                 hours += 2;
                 handleCircle();
+                break;
             }
 
             //a day
             case 5: {
                 day += 1;
+                break;
             }
         }
     }

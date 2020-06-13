@@ -1,10 +1,5 @@
 package Routes;
 
-import DateSystem.DateSystemManger;
-
-import java.util.Calendar;
-import java.util.Date;
-
 public class CommonResourcesPaths {
     public final static String APP_FXML_LIGHT_RESOURCE = "/resources/fxml/AppFxml.fxml";
     //public final static String APP_FXML_LIGHT_RESOURCE = "/examples/advance/nested/subcomponents/app/code/app.fxml";
