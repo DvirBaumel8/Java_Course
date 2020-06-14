@@ -1,6 +1,7 @@
 package TripRequests;
 
 import Manager.EngineManager;
+import MatchingUtil.RoadTrip;
 import Time.Time;
 import TripSuggestUtil.TripSuggest;
 import com.sun.xml.internal.bind.v2.TODO;
@@ -11,7 +12,7 @@ public class TripRequest {
     private String sourceStation;
     private String destinationStation;
     private boolean isMatched;
-    private TripSuggest matchTrip;
+    private RoadTrip matchTrip;
     private boolean requestByStartTime;
     private Time startTime;
     private Time arrivalTime;
@@ -61,26 +62,12 @@ public class TripRequest {
             RequestID = requestID;
         }
 
-        public TripSuggest getMatchTrip () {
+        public RoadTrip getMatchTrip () {
             return matchTrip;
         }
 
         public boolean isRequestByStartTime() {
             return requestByStartTime;
-        }
-
-        public void addRatingToSuggestTrip(int rating, String literalRating, boolean isLiteralRatingExist) {
-            if(matchTrip == null) {
-                //ToDO - return an error that tripRequest can't rate drivers before matching.
-            }
-            else {
-                if(isLiteralRatingExist) {
-                    matchTrip.addRatingToDriver(rating, literalRating);
-                }
-                else {
-                    matchTrip.addRatingToDriver(rating);
-                }
-            }
         }
 
         public Time getStartTime() {
