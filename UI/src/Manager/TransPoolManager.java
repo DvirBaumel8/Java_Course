@@ -62,18 +62,6 @@ public class TransPoolManager {
         return errors;
     }
 
-    public List<String> matchTripRequestToTripSuggestActions(String requestIDAndAmountToMatch) {
-        List<String> matchingErrors = new LinkedList<>();
-        String input = null;
-        //List<RoadTrip> potentialSuggestedTrips = engineManager.findPotentialMatchToRequestTrip(requestIDAndAmountToMatch);
-//        if (potentialSuggestedTrips == null) {
-//            matchingErrors.add("Sorry, there is no potential trips to be matched for your request in the system");
-//        } else {
-//            input = getValidChooseOfSuggestedTrip(requestIDAndAmountToMatch, potentialSuggestedTrips);
-//        }
-        return matchingErrors;
-    }
-
     public static EngineManager getEngineManager() {
         return engineManager;
     }

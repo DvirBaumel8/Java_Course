@@ -317,11 +317,6 @@ public class EngineManager {
         return tripRequestUtil.isRequestIDExist(requestID);
     }
 
-    public List<RoadTrip> getPotentialRoadTripsToRequest(String input) {
-        matchingUtil = new MatchingUtil();
-        return matchingUtil.findRoadTripsMatchToRequestTrip(input);
-    }
-
     public double calcMinutesToRoute(String pathFrom, String pathTo) {
         boolean isPathOneWay;
         double retVal = 0;
@@ -390,8 +385,7 @@ public class EngineManager {
         validator.setNullableMenuErrorMessage();
     }
 
-    public String matchTripRequest(String input, List<RoadTrip> potentialRoadTrips, String
-            requestIDAndAmountToMatch) {
+    public String matchTripRequest(String input, List<RoadTrip> potentialRoadTrips, String requestIDAndAmountToMatch) {
         String[] inputs = requestIDAndAmountToMatch.split(",");
         int requestID = Integer.parseInt(inputs[0]);
         int roadTripIndex = Integer.parseInt(input);
@@ -614,6 +608,10 @@ public class EngineManager {
 
     public List<String> getAllPlannedTripsOwnerNames() {
         return suggestTripOwners;
+    }
+
+    public List<RoadTrip> findPotentialSuggestedTripsToMatch(String inputMatchingString) {
+        return matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
     }
 }
 
