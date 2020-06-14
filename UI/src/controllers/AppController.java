@@ -1,8 +1,8 @@
 package controllers;
 
+import MatchingUtil.RoadTrip;
 import Manager.EngineManager;
 import Manager.TransPoolManager;
-import MatchingUtil.RoadTrip;
 import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
 import javafx.application.Platform;
@@ -170,19 +170,23 @@ public class AppController {
     }
 
     public List<String> matchingAction(String inputMatchingString) {
-        List<String> matchingErrors = new LinkedList<>();
+        List<String> validationsErrors = new LinkedList<>();
         try {
-            matchingErrors = engine.validateChooseRequestAndAmountOfSuggestedTripsInput(inputMatchingString);
+            validationsErrors = engine.validateChooseRequestAndAmountOfSuggestedTripsInput(inputMatchingString);
 
-            if (matchingErrors.isEmpty()) {
-                matchingErrors = transPoolManager.matchTripRequestToTripSuggestActions(inputMatchingString);
+            if (validationsErrors.isEmpty()) {
+                List<RoadTrip> roadTrips = engine.findPotentialSuggestedTripsToMatch(inputMatchingString);
+                //Ohad - Todo display the suggested road trips to user + Total trip cost, arrival/start time (depend on the user choice) average fuel amount in the road.
+                String userPotentialSuggestChoice = "1"; //TODO
+                String response = engine.matchTripRequest(userPotentialSuggestChoice, roadTrips, inputMatchingString);
+                //TODo - Success message
             }
         }
         catch (Exception e) {
-            matchingErrors.add(e.getMessage());
+            validationsErrors.add(e.getMessage());
         }
 
-        return matchingErrors;
+        return validationsErrors;
     }
 
     public void setTime() {

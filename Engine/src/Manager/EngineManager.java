@@ -30,7 +30,6 @@ public class EngineManager {
     private static Validator validator;
     private static List<String> suggestTripOwners;
     private static Map<TripRequest, RoadTrip> matches;
-
     public TripRequestsUtil getTripRequestUtil() {
         return tripRequestUtil;
     }
@@ -41,10 +40,6 @@ public class EngineManager {
     private static final String SUCCESS_MATCHING = "Your trip request was match to trip suggested successfully\n";
 
     private EngineManager() {
-    }
-
-    public static Map<TripRequest, RoadTrip> getMatches() {
-        return matches;
     }
 
     public static EngineManager getEngineManagerInstance() {
@@ -153,76 +148,6 @@ public class EngineManager {
         return tripSuggestUtil.getTripID(trip);
     }
 
-    public String getAllTripRequests() {
-        StringBuilder str = new StringBuilder();
-        if (tripRequestUtil.getAllRequestTrips().size() > 0) {
-            str.append("All requested trips:\n");
-        } else {
-            str.append("There are no trip requests\n");
-            return str.toString();
-        }
-
-        for (Map.Entry<TripRequest, Integer> trip : tripRequestUtil.getAllRequestTrips().entrySet()) {
-            str.append(String.format("Trip ID- %d\n", getRequestTripID(trip.getKey())));
-            str.append(String.format("Trip requester- %s\n", trip.getKey().getNameOfOwner()));
-            str.append(String.format("Trip source station- %s\nTrip destination station - %s\n", trip.getKey().getSourceStation(), trip.getKey().getDestinationStation()));
-            if (trip.getKey().isRequestByStartTime()) {
-                str.append(String.format("Trip starting hour- %s\n", trip.getKey().getStartTime().toString()));
-                if (trip.getKey().getIsStartTime()) {
-                    str.append(String.format("Trip starting hour- %s\n", trip.getKey().getStartTime().toString()));
-                } else {
-                    str.append(String.format("Trip arrival hour- %s\n", trip.getKey().getArrivalTime().toString()));
-                }
-
-                if (trip.getKey().isMatched()) {
-                    str.append("This request is already match to suggested trip, here are the details of the trip: \n");
-                    str.append(String.format("Trip Match ID- %d\n", trip.getKey().getMatchTrip().getSuggestID()));
-                    str.append(String.format("Trip Match owner name- %s\n", trip.getKey().getMatchTrip().getTripOwnerName()));
-                    str.append(String.format("Trip Match price- %d\n", trip.getKey().getMatchTrip().getTripPrice()));
-                    str.append(String.format("Required fuel for request- %d\n", calcRequiredFuelToRequest(trip.getKey())));
-                    if (trip.getKey().isRequestByStartTime()) {
-                        str.append(String.format("Starting hour- %s\n\n", trip.getKey().getStartTime()));
-                    } else {
-                        str.append(String.format("Arrival hour- %s\n\n", trip.getKey().getStartTime()));
-                    }
-                } else {
-                    str.append("This trip request isn't matched yet\n\n");
-                }
-            }
-        }
-        return str.toString();
-    }
-
-    public String getAllNotMatchedRequestsTrip() {
-        StringBuilder str = new StringBuilder();
-
-        if (tripRequestUtil.getAllRequestTrips().size() > 0) {
-            str.append("Here are all the requests trip that didn't match yet\n");
-        } else {
-            str.append("There are no requests trip that didn't match yet\n");
-            return str.toString();
-        }
-
-        for (Map.Entry<TripRequest, Integer> trip : tripRequestUtil.getAllRequestTrips().entrySet()) {
-            if (!trip.getKey().isMatched()) {
-                str.append(String.format("Request ID- %d\n", trip.getKey().getRequestID()));
-                str.append(String.format("Name of requester- %s\n", trip.getKey().getNameOfOwner()));
-                str.append(String.format("Source stations- %s\n", trip.getKey().getSourceStation()));
-                str.append(String.format("Destination stations- %s\n", trip.getKey().getDestinationStation()));
-                if (trip.getKey().isRequestByStartTime()) {
-                    str.append(String.format("Starting hour- %s\n\n", trip.getKey().getStartTime()));
-                } else {
-                    str.append(String.format("Arrival hour- %s\n\n", trip.getKey().getStartTime()));
-                }
-            }
-        }
-        return str.toString();
-    }
-
-    private int calcRequiredFuelToRequest(TripRequest tripRequest) {
-        return calcRequiredFuelToRequest(tripRequest.getMatchTrip(), tripRequest);
-    }
-
     private String findRouteToRequest(TripSuggest tripSuggest, TripRequest tripRequest) {
         String[] stations = tripSuggest.getTripRoute().split(",");
         boolean start = false;
@@ -322,11 +247,6 @@ public class EngineManager {
         return tripRequestUtil.isRequestIDExist(requestID);
     }
 
-    public List<RoadTrip> getPotentialRoadTripsToRequest(String input) {
-        matchingUtil = new MatchingUtil();
-        return matchingUtil.findRoadTripsMatchToRequestTrip(input);
-    }
-
     public double calcMinutesToRoute(String pathFrom, String pathTo) {
         boolean isPathOneWay;
         double retVal = 0;
@@ -395,8 +315,7 @@ public class EngineManager {
         validator.setNullableMenuErrorMessage();
     }
 
-    public String matchTripRequest(String input, List<RoadTrip> potentialRoadTrips, String
-            requestIDAndAmountToMatch) {
+    public String matchTripRequest(String input, List<RoadTrip> potentialRoadTrips, String requestIDAndAmountToMatch) {
         String[] inputs = requestIDAndAmountToMatch.split(",");
         int requestID = Integer.parseInt(inputs[0]);
         int roadTripIndex = Integer.parseInt(input);
@@ -619,6 +538,10 @@ public class EngineManager {
 
     public List<String> getAllPlannedTripsOwnerNames() {
         return suggestTripOwners;
+    }
+
+    public List<RoadTrip> findPotentialSuggestedTripsToMatch(String inputMatchingString) {
+        return matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
     }
 }
 

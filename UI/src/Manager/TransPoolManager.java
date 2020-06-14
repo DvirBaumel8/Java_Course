@@ -9,7 +9,7 @@ import java.util.*;
 public class TransPoolManager {
     private static EngineManager engineManager;
     private static TransPoolManager transPoolManagerInstance;
-
+    private Scanner scanner = new Scanner(System.in);
     private static boolean isXMLLoaded = false;
 
     public static final short INPUT_EXIT = 7;
@@ -60,18 +60,6 @@ public class TransPoolManager {
         String errors = engineManager.getSuggestValidationErrorMessage();
         engineManager.deleteNewTripSuggestErrorMessage();
         return errors;
-    }
-
-    public List<String> matchTripRequestToTripSuggestActions(String requestIDAndAmountToMatch) {
-        List<String> matchingErrors = new LinkedList<>();
-        String input = null;
-        //List<RoadTrip> potentialSuggestedTrips = engineManager.findPotentialMatchToRequestTrip(requestIDAndAmountToMatch);
-//        if (potentialSuggestedTrips == null) {
-//            matchingErrors.add("Sorry, there is no potential trips to be matched for your request in the system");
-//        } else {
-//            input = getValidChooseOfSuggestedTrip(requestIDAndAmountToMatch, potentialSuggestedTrips);
-//        }
-        return matchingErrors;
     }
 
     public static EngineManager getEngineManager() {
