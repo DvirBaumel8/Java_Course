@@ -1,4 +1,6 @@
 package controllers;
+import MatchingUtil.RoadTrip;
+import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class TripSuggestController {
     private AppController mainController;
@@ -28,12 +31,16 @@ public class TripSuggestController {
     static final int INPUT_ADD_TRIP_SUGGEST_SIZE = 7;
     Stage addTripSuggestStage = null;
 
+    Stage rankStage = null;
+    TextField rankingTextField = null;
+
+
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
     }
 
     public TripSuggestController() {
-        this.inputAddTripSuggest = new ArrayList<>(INPUT_ADD_TRIP_SUGGEST_SIZE);;
+        this.inputAddTripSuggest = new ArrayList<>(INPUT_ADD_TRIP_SUGGEST_SIZE);
     }
 
     @FXML
@@ -46,6 +53,61 @@ public class TripSuggestController {
         }
     }
 
+
+    @FXML
+    void rankTripSuggestButtonActionListener() {
+        if(mainController.isXMLLoaded() && mainController.getMatchingAccordion() != null) {
+            getRankTripSuggestWindow();
+        }
+        else {
+            mainController.getAlertErrorWindow("XML doesnt load yet / No match available");
+        }
+    }
+
+    void getRankTripSuggestWindow() {
+        rankStage = new Stage();
+        VBox rankWindow = new VBox();
+        javafx.geometry.Insets margin = new javafx.geometry.Insets(10,10,10,10);
+        rankWindow.setSpacing(10);
+
+        Map<TripRequest, RoadTrip> matchingTripSuggests = mainController.getAllMatchingTripSuggestMap();
+
+        Label rankLabel = new Label("Rank your suggest driver from the following suggest trips which have match:"
+                + System.lineSeparator() +  System.lineSeparator() +
+                matchingTripSuggests.toString() +
+                System.lineSeparator() + System.lineSeparator() +
+                "In the following way:" + System.lineSeparator() +
+                "Separated numbers with , :" + System.lineSeparator() +
+                "Suggest ID, Rank number between 1 to 5 (1-Basa 5-Sababa)" + System.lineSeparator() +
+                "For example:" + System.lineSeparator() +
+                "1,4 (1 - suggest trip id, 4 - almost sababa)");
+        rankWindow.setPrefWidth(600);
+        rankWindow.getChildren().add(rankLabel);
+
+        rankingTextField = new TextField("1,4");
+        rankWindow.getChildren().add(rankingTextField);
+
+        Button matchingLoadButton= new Button("Rank");
+        rankingTextField.setPrefWidth(50);
+        matchingLoadButton.setTranslateX(165);
+        matchingLoadButton.setOnAction(this::rankLoadButtonAction);
+        rankWindow.getChildren().add(matchingLoadButton);
+
+        rankWindow.setMargin(rankLabel, margin);
+        rankWindow.setMargin(rankingTextField, margin);
+        rankWindow.setMargin(matchingLoadButton, margin);
+
+        Scene scene = new Scene(rankWindow, 600, 400);
+
+        rankStage.setTitle("Matching Action");
+        rankStage.setScene(scene);
+        rankStage.show();
+    }
+
+    private void rankLoadButtonAction(ActionEvent event) {
+
+    }
+
     private void addInputTripSuggestButtonAction(ActionEvent event) {
         String[] inputTripSuggestString = new String[INPUT_ADD_TRIP_SUGGEST_SIZE];
         int index = 0;
@@ -55,6 +117,16 @@ public class TripSuggestController {
         }
         mainController.addTripSuggestAction(inputTripSuggestString);
     }
+
+        public void loadTripSuggestFromXML() {
+           Map<TripSuggest, Integer> initTripSuggest = mainController.getTripSuggestMap();
+               if(!initTripSuggest.isEmpty()) {
+                 initTripSuggest.forEach((tripSuggest,tripSuggestID) -> {
+                addNewTripSuggestAccordion(tripSuggest);
+                 });
+              }
+            }
+
 
     void getAddTripSuggestWindow() {
         addTripSuggestStage = new Stage();

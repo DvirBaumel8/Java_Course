@@ -30,6 +30,7 @@ public class EngineManager {
     private static Validator validator;
     private static List<String> suggestTripOwners;
     private static Map<TripRequest, RoadTrip> matches;
+
     public TripRequestsUtil getTripRequestUtil() {
         return tripRequestUtil;
     }
@@ -40,6 +41,10 @@ public class EngineManager {
     private static final String SUCCESS_MATCHING = "Your trip request was match to trip suggested successfully\n";
 
     private EngineManager() {
+    }
+
+    public static Map<TripRequest, RoadTrip> getMatches() {
+        return matches;
     }
 
     public static EngineManager getEngineManagerInstance() {

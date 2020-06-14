@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
@@ -9,17 +10,18 @@
 
 <ScrollPane maxHeight="-Infinity" minHeight="420" minWidth="100" prefHeight="607.0" prefWidth="162.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TripSuggestController">
 <content>
-   <VBox id="vbox"  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="603.0" prefWidth="157.0" spacing="5.0" styleClass="vbox" stylesheets="@../../CSS/vbox.css">
+   <VBox id="vbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="603.0" prefWidth="157.0" spacing="5.0" styleClass="vbox" stylesheets="@../../CSS/vbox.css">
       <children>
          <Label prefHeight="31.0" prefWidth="150.0" text="Trip Suggest List" underline="true">
             <font>
                <Font size="18.0" />
             </font>
          </Label>
+         <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="49.0" text="Rank" translateX="90.0"
+                 onAction="#rankTripSuggestButtonActionListener"/>
          <Button alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#addTripSuggestButtonActionListener"
-                 prefHeight="25.0" prefWidth="61.0" text="Add" textAlignment="JUSTIFY" textOverrun="CLIP" translateX="25.0" translateY="-10.0">
-            <font>
-               <Font size="12.0" />
+                 prefHeight="28.0" prefWidth="74.0" text="Add" textAlignment="JUSTIFY" textOverrun="CLIP" translateX="-10.0" translateY="-47.0">            <font>
+               <Font size="15.0" />
             </font>
             <VBox.margin>
                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
@@ -28,7 +30,7 @@
                <Insets right="22.0" top="5.0" />
             </padding>
          </Button>
-         <Accordion fx:id="tripSuggestAccordion" translateY="-20.0">
+         <Accordion fx:id="tripSuggestAccordion" translateY="-50.0">
             <panes>
 
             </panes>

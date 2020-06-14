@@ -1,4 +1,5 @@
 package controllers;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -102,5 +103,9 @@ public class MatchingController {
         matchingTextAreaBuilder.append(requestId + ',' + suggestId +  System.lineSeparator());
         TitledPane matchingTitledPane= new TitledPane("Matching Trip List", new TextArea(matchingTextAreaBuilder.toString()));
         matchingAccordion.getPanes().set(0,matchingTitledPane);
+    }
+
+    public Accordion getMatchingAccordion() {
+        return matchingAccordion;
     }
 }

@@ -2,7 +2,7 @@ package controllers;
 
 import Manager.EngineManager;
 import Manager.TransPoolManager;
-import Time.Time;
+import MatchingUtil.RoadTrip;
 import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
 import javafx.application.Platform;
@@ -128,6 +128,18 @@ public class AppController {
         //tripRequestController.addTripRequestButtonActionListener();
     }
 
+    public Map<TripSuggest, Integer> getTripSuggestMap() {
+        return this.transPoolManager.getEngineManager().getTripSuggestUtil().getAllSuggestedTrips();
+    }
+
+    public Map<TripRequest, RoadTrip> getAllMatchingTripSuggestMap() {
+        return this.transPoolManager.getEngineManager().getMatches();
+    }
+
+    public void loadInitTripSuggestFromXML() {
+        tripSuggestController.loadTripSuggestFromXML();
+    }
+
     public List<String> CheckPathForXML(String myPathToTheXMLFile) {
             List<String> xmlErrors = new ArrayList<>();
             try {
@@ -206,8 +218,9 @@ public class AppController {
                 engine.moveTimeBack(choose);
             }
             catch (Exception ex) {
-                //TODO
-                //Ohad - display error message that the time can't be lower then day 1 at 00:00
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Time can't be lower then day 1 at 00:00");
+                errorAlert.setContentText(ex.getMessage());
+                errorAlert.showAndWait();
             }
 
         }
@@ -216,4 +229,9 @@ public class AppController {
     public String getCurrentTime() {
         return engine.getCurrentSystemTime().toString();
     }
+
+    public Accordion getMatchingAccordion() {
+        return matchingController.getMatchingAccordion();
+    }
+
 }

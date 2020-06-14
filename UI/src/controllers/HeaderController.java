@@ -48,6 +48,7 @@ public class HeaderController {
                 successAlert.showAndWait();
                 xmlStage.close();
                 mainController.setTime();
+                mainController.loadInitTripSuggestFromXML();
         }
         else {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR, "XML doesnt Load Successfully");

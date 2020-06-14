@@ -1,7 +1,6 @@
 package controllers;
 
 import TripRequests.TripRequest;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -142,13 +141,13 @@ public class TripRequestController {
 
         //-----------------------------------------------------
 
-        Label timeTypeLabel = new Label("-s to choose start time, a to choose arrival time:5");
+        Label timeTypeLabel = new Label("-S to choose start time, A to choose arrival time:");
         timeTypeLabel.setTranslateX(15);
         timeTypeLabel.setTextFill(Color.web("#0076a3"));
         timeTypeLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(timeTypeLabel);
 
-        inputAddTripRequest.add(new TextField("s"));
+        inputAddTripRequest.add(new TextField("S"));
         inputAddTripRequest.get(4).setMaxWidth(250);
         inputAddTripRequest.get(4).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(4));

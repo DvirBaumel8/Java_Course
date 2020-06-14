@@ -9,7 +9,7 @@ import java.util.*;
 public class TransPoolManager {
     private static EngineManager engineManager;
     private static TransPoolManager transPoolManagerInstance;
-    private Scanner scanner = new Scanner(System.in);
+
     private static boolean isXMLLoaded = false;
 
     public static final short INPUT_EXIT = 7;
