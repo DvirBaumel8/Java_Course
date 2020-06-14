@@ -42,6 +42,10 @@ public class EngineManager {
     private EngineManager() {
     }
 
+    public static Map<TripRequest, RoadTrip> getMatches() {
+        return matches;
+    }
+
     public static EngineManager getEngineManagerInstance() {
         if (engineManagerInstance == null) {
             engineManagerInstance = new EngineManager();
@@ -544,5 +548,3 @@ public class EngineManager {
         return matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
     }
 }
-
-
