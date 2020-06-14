@@ -179,22 +179,38 @@ public class AppController {
     }
 
     public void setDateString5Min(boolean isForward) {
-        engine.moveTimeForward(1);
+        moveTime(isForward, 1);
     }
 
     public void setDateString30Min(boolean isForward) {
-        engine.moveTimeForward(2);
+        moveTime(isForward, 2);
     }
 
     public void setDateString1Hour(boolean isForward) {
-        engine.moveTimeForward(3);
+        moveTime(isForward, 3);
     }
 
     public void setDateString2Hours(boolean isForward) {
-        engine.moveTimeForward(4);
+        moveTime(isForward, 4);
     }
     public void setDateString1Day(boolean isForward) {
-        engine.moveTimeForward(5);
+        moveTime(isForward, 5);
+    }
+
+    private void moveTime(boolean forward, int choose) {
+        if(forward) {
+            engine.moveTimeForward(choose);
+        }
+        else {
+            try {
+                engine.moveTimeBack(choose);
+            }
+            catch (Exception ex) {
+                //TODO
+                //Ohad - display error message that the time can't be lower then day 1 at 00:00
+            }
+
+        }
     }
 
     public String getCurrentTime() {

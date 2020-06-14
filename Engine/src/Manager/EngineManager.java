@@ -492,7 +492,7 @@ public class EngineManager {
         timeManager.moveTimeForward(choose);
     }
 
-    public void moveTimeBack(int choose) {
+    public void moveTimeBack(int choose) throws Exception {
         timeManager.moveTimeBack(choose);
     }
 

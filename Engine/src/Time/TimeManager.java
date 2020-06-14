@@ -22,14 +22,8 @@ public class TimeManager {
         currTime.moveTimeForward(choose);
     }
 
-    public void moveTimeBack(int choose) {
-        try {
-            currTime.moveTimeBack(choose);
-        }
-        catch (Exception e) {
-            //TODO
-        }
-
+    public void moveTimeBack(int choose) throws Exception {
+        currTime.moveTimeBack(choose);
     }
 
     public Time getCurrTime() {
