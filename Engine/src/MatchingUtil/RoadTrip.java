@@ -41,5 +41,9 @@ public class RoadTrip {
         return str.toString();
     }
 
+    public List<TripSuggest> getRatedTripSuggested() {
+        return ratedTripSuggested;
+    }
+
 
 }
