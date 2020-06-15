@@ -271,4 +271,7 @@ public class AppController {
     }
 
 
+    public void rankDriver(String input) {
+        engine.rankDriver(input);
+    }
 }

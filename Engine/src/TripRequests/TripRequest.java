@@ -77,5 +77,9 @@ public class TripRequest {
     public void setMatched(boolean matched) {
         isMatched = matched;
     }
+
+    public void setMatchTrip(RoadTrip matchTrip) {
+        this.matchTrip = matchTrip;
+    }
 }
 

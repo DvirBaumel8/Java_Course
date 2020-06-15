@@ -242,7 +242,6 @@ public class TripSuggest {
     }
 
     public void addRatingToDriver(int rating, String literalRating) {
-        driverRating.addOneToNumOfRatings();
         driverRating.addRatingToDriver(rating, literalRating);
     }
 

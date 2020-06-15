@@ -359,6 +359,7 @@ public class EngineManager {
         TripRequest tripRequest = tripRequestUtil.getTripRequestByID(requestID);
         matches.put(tripRequest, roadTrip);
         tripRequest.setMatched(true);
+        tripRequest.setMatchTrip(roadTrip);
         return SUCCESS_MATCHING;
     }
 
@@ -685,5 +686,16 @@ public class EngineManager {
             return errors;
         }
         return errors;
+    }
+
+    public void rankDriver(String input) {
+        String[] elements = input.split(",");
+        TripSuggest suggest = tripSuggestUtil.getTripSuggestByID(Integer.parseInt(elements[0]));
+        if(elements[2].isEmpty()) {
+            suggest.addRatingToDriver(Integer.parseInt(elements[1]));
+        }
+        else {
+            suggest.addRatingToDriver(Integer.parseInt(elements[1]), elements[2]);
+        }
     }
 }
