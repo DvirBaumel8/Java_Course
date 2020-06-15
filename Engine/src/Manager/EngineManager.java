@@ -575,14 +575,9 @@ public class EngineManager {
         return tripRequestUtil.getTripRequestByID(id);
     }
 
-<<<<<<< HEAD
     public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestIDstr) throws Exception {
-        int requestID;
-=======
-    public List<String> getAllTripSuggestThatPartOfRequestRoadTrip(String requestIDstr) {
         int requestID = 0;
         List<String> retVal = new ArrayList<>();
->>>>>>> 13b333e426994fcf1945bbce74872fc0284610a1
         try {
             requestID = Integer.parseInt(requestIDstr);
         }

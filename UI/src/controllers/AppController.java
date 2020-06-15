@@ -84,6 +84,7 @@ public class AppController {
 
     public void addTripRequestAction(String[] inputTripRequestString) {
         StringBuilder errors = new StringBuilder();
+        List<String> errorList = new LinkedList<>();
         TripRequest newRequest = null;
         try {
             boolean isValidInput = engine.validateTripRequestInput(inputTripRequestString);
@@ -93,19 +94,22 @@ public class AppController {
                 tripRequestController.closeAddNewTripRequestStage();
             } else {
                 errors = new StringBuilder(this.transPoolManager.getAddNewTripRequestErrorMessage());
-                this.getAlertErrorWindow(errors.toString());
+                errorList.add(errors.toString());
+                this.getAlertErrorWindow(errorList);
             }
         }
          catch (Exception e) {
                 errors.append(e.getMessage());
                 errors.append(this.transPoolManager.getAddNewTripRequestErrorMessage());
-                this.getAlertErrorWindow(errors.toString());
+                errorList.add(errors.toString());
+                this.getAlertErrorWindow(errorList);
             }
         //tripRequestController.addTripRequestButtonActionListener();
     }
 
     public void addTripSuggestAction(String[] inputTripSuggestString) {
         StringBuilder errors = new StringBuilder();
+        List<String> errorsList = new LinkedList<>();
         TripSuggest newSuggest = null;
         try {
             HashSet<String> allStationsLogicNames = engine.getAllLogicStationsName();
@@ -117,13 +121,14 @@ public class AppController {
             }
               else {
                 errors = new StringBuilder(this.transPoolManager.getAddNewTripSuggestErrorMessage());
-                this.getAlertErrorWindow(errors.toString());
+                errorsList.add(errors.toString());
+                this.getAlertErrorWindow(errorsList);
             }
         }
         catch (Exception e) {
-            errors.append(e.getMessage());
-            errors.append(this.transPoolManager.getAddNewTripRequestErrorMessage());
-            this.getAlertErrorWindow(errors.toString());
+            errors = new StringBuilder(this.transPoolManager.getAddNewTripSuggestErrorMessage());
+            errorsList.add(errors.toString());
+            this.getAlertErrorWindow(errorsList);
         }
         //tripRequestController.addTripRequestButtonActionListener();
     }
@@ -161,9 +166,18 @@ public class AppController {
       return  this.transPoolManager.getEngineManager().getAllStationsName();
     }
 
-    public void getAlertErrorWindow(String message) {
-        Alert errorAlert = new Alert(Alert.AlertType.ERROR, message);
+    public void getAlertErrorWindow(List<String> message) {
+        StringBuilder stringBuilder = new StringBuilder();
+        message.forEach((mess) -> {
+            stringBuilder.append(mess + System.lineSeparator());
+        });
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR, stringBuilder.toString());
         errorAlert.showAndWait();
+    }
+
+    public void getSuccessWindow(String message) {
+        Alert successAlert = new Alert(Alert.AlertType.INFORMATION, message);
+        successAlert.showAndWait();
     }
 
     public List<String> matchingAction(String inputMatchingString) {
@@ -248,7 +262,7 @@ public class AppController {
         return engine.getAllMatchedTripRequest();
     }
 
-    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestId) {
+    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestId) throws Exception {
         return engine.getTripSuggestIdsFromTripRequestWhichNotRankYet(requestId);
     }
 

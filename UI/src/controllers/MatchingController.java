@@ -32,7 +32,9 @@ public class MatchingController {
             getMatchingWindow();
         }
         else {
-            mainController.getAlertErrorWindow("XML doesnt load yet - please load one");
+            List<String> errors = new LinkedList<>();
+            errors.add("XML doesnt load yet - please load one");
+            mainController.getAlertErrorWindow(errors);
         }
     }
 
@@ -93,7 +95,7 @@ public class MatchingController {
                    for(String error : matchingErrors) {
                     errorAlert.setContentText(error);
                     }
-                    errorAlert.showAndWait();
+               errorAlert.showAndWait();
         }
     }
 

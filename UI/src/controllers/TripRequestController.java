@@ -19,6 +19,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class TripRequestController {
     private AppController mainController;
@@ -47,7 +49,9 @@ public class TripRequestController {
             getAddTripRequestWindow();
         }
         else {
-            mainController.getAlertErrorWindow("XML doesnt load yet - please load one");
+            List<String> errors = new LinkedList<>();
+            errors.add("XML doesnt load yet - please load one");
+            mainController.getAlertErrorWindow(errors);
         }
     }
 

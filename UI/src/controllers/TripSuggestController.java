@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +54,9 @@ public class TripSuggestController {
             getAddTripSuggestWindow();
         }
         else {
-            mainController.getAlertErrorWindow("XML doesnt load yet - please load one");
+            List<String> errors = new LinkedList<>();
+            errors.add("XML doesnt load yet - please load one");
+            mainController.getAlertErrorWindow(errors);
         }
     }
 
@@ -64,7 +67,9 @@ public class TripSuggestController {
                 getRankTripSuggestMainWindow();
         }
         else {
-            mainController.getAlertErrorWindow("XML doesnt load yet / No match available");
+            List<String> errors = new LinkedList<>();
+            errors.add("XML doesnt load yet / No match available");
+            mainController.getAlertErrorWindow(errors);
         }
     }
 
@@ -118,7 +123,7 @@ public class TripSuggestController {
             try {
                 rankSuggestID = requestIdToRankSuggestIdTextField.getText();
                 errors = mainController.validateRequestIdForRank(rankSuggestID);
-                if  (errors != null){
+                if  (errors == null) {
                     rankSuggestIdByRequestIdWindow();
                     rankMainStage.close();
                 }
@@ -127,13 +132,15 @@ public class TripSuggestController {
                 }
             }
             catch (Exception e) {
-                mainController.getAlertErrorWindow("You didnt choose rankRequestID from the following options, please try again.");
-
-
+                if(errors.isEmpty()) {
+                    errors = new LinkedList<>();
+                    errors.add("You didnt choose rankRequestID from the following options, please try again.");
+                }
+                mainController.getAlertErrorWindow(errors);
             }
     }
 
-    void rankSuggestIdByRequestIdWindow() {
+    void rankSuggestIdByRequestIdWindow() throws Exception {
         rankSuggestIdByTripRequestStage = new Stage();
         VBox rankSuggestIdByTripRequestWindow = new VBox();
         javafx.geometry.Insets margin = new javafx.geometry.Insets(5,5,5,5);
@@ -141,8 +148,7 @@ public class TripSuggestController {
 
         ScrollPane scrollPaneRankSuggestIdByTripRequestWindow = new ScrollPane();
 
-        List<String> tripSuggestIdsFromRequestId = mainController.
-                getTripSuggestIdsFromTripRequestWhichNotRankYet(suggestIdToRankFromRequestIdRoadTrips.getText());
+        List<String> tripSuggestIdsFromRequestId = mainController.getTripSuggestIdsFromTripRequestWhichNotRankYet(suggestIdToRankFromRequestIdRoadTrips.getText());
 
         Label rankLabel = new Label("Here is all the trip suggest id from the following trip request road trips:"
                 + System.lineSeparator() +  System.lineSeparator() +
@@ -194,16 +200,25 @@ public class TripSuggestController {
             suggestIdToRankStr = suggestIdToRankFromRequestIdRoadTrips.getText();
             if(mainController.validateSuggestIdForRank(suggestIdToRankStr)) {
                 errors = mainController.validateInputOfRatingDriverOfSuggestIDAndRating(suggestIdToRankStr);
-                if(!errors.isEmpty()) {
-
+                if(errors.isEmpty()) {
+                    mainController.getSuccessWindow("Ranking succeed");
+                }
+                else {
+                    mainController.getAlertErrorWindow(errors);
                 }
             }
             else {
+                errors = new LinkedList<>();
+                errors.add("Suggest Id is'nt valid for rank");
                 throw new Exception();
             }
         }
         catch (Exception e) {
-            mainController.getAlertErrorWindow("You didnt choose rankSuggestID from the following options, please try again.");
+            if(errors.isEmpty()) {
+                errors = new LinkedList<>();
+                errors.add("You didnt choose rankSuggestID from the following options, please try again.");
+            }
+            mainController.getAlertErrorWindow(errors);
         }
     }
 
