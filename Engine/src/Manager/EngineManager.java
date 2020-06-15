@@ -37,6 +37,7 @@ public class EngineManager {
         return tripSuggestUtil;
     }
     private List<String> menuOrderErrorMessage;
+    private static List<RoadTrip> potentialCacheList;
     private static final String SUCCESS_MATCHING = "Your trip request was match to trip suggested successfully\n";
 
     private EngineManager() {
@@ -54,6 +55,7 @@ public class EngineManager {
             validator = Validator.getInstance();
             matches = new HashMap<>();
             timeManager = TimeManager.getInstance();
+            potentialCacheList = new ArrayList<>();
         }
         return engineManagerInstance;
     }
@@ -338,21 +340,42 @@ public class EngineManager {
         validator.setNullableMenuErrorMessage();
     }
 
-    public String matchTripRequest(String input, List<RoadTrip> potentialRoadTrips, String requestIDAndAmountToMatch) {
+    public String matchTripRequest(String input, String requestIDAndAmountToMatch) {
+        if(!validaRoadTripChoice(input)) {
+            return "Your choice wasn't a number";
+        }
         String[] inputs = requestIDAndAmountToMatch.split(",");
         int requestID = Integer.parseInt(inputs[0]);
         int roadTripIndex = Integer.parseInt(input);
         RoadTrip roadTrip = null;
 
-        for (int i = 0; i < potentialRoadTrips.size(); i++) {
-            if (potentialRoadTrips.get(i).getIndex() == roadTripIndex) {
-                roadTrip = potentialRoadTrips.get(i);
+        for (int i = 0; i < potentialCacheList.size(); i++) {
+            if (i + 1 == roadTripIndex) {
+                roadTrip = potentialCacheList.get(i);
                 break;
             }
         }
         TripRequest tripRequest = tripRequestUtil.getTripRequestByID(requestID);
         matches.put(tripRequest, roadTrip);
         return SUCCESS_MATCHING;
+    }
+
+    private boolean validaRoadTripChoice(String inputStr) {
+        int input = 0;
+
+        try {
+            input = Integer.parseInt(inputStr);
+        }
+        catch (Exception ex) {
+            return false;
+        }
+        if(input < 1) {
+            return false;
+        }
+        else if(potentialCacheList.size() < input){
+            return false;
+        }
+        return true;
     }
 
     public void addErrorMessageToMenuOrder(String errorMessage) {
@@ -563,8 +586,26 @@ public class EngineManager {
         return suggestTripOwners;
     }
 
-    public List<RoadTrip> findPotentialSuggestedTripsToMatch(String inputMatchingString) {
-        return matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
+    public List<String> findPotentialSuggestedTripsToMatch(String inputMatchingString) {
+        potentialCacheList = matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
+
+        int requestID = Integer.parseInt(inputMatchingString.split(",")[0]);
+        return convertToStr(potentialCacheList, tripRequestUtil.getTripRequestByID(requestID));
+    }
+
+    private List<String> convertToStr(List<RoadTrip> potentialCacheList, TripRequest tripRequest) {
+        List<String> potentialRoadTripsStr = new ArrayList<>();
+        int index = 0;
+        for(RoadTrip roadTrip : potentialCacheList) {
+            index++;
+            if(tripRequest.isRequestByStartTime()) {
+                potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nArrival time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getArrivalTime(), roadTrip.getRequiredFuel()));
+            }
+            else {
+                potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nStarting time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getStartTime(), roadTrip.getRequiredFuel()));
+            }
+        }
+        return potentialRoadTripsStr;
     }
 
     public List<String> getAllMatchedTripRequest() {
@@ -575,7 +616,7 @@ public class EngineManager {
         return tripRequestUtil.getTripRequestByID(id);
     }
 
-    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestIDstr) throws Exception {
+    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestIDstr) {
         int requestID = 0;
         List<String> retVal = new ArrayList<>();
         try {

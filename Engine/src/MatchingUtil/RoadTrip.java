@@ -1,5 +1,6 @@
 package MatchingUtil;
 
+import Time.Time;
 import TripSuggestUtil.TripSuggest;
 
 import java.util.ArrayList;
@@ -9,8 +10,10 @@ import java.util.Map;
 
 public class RoadTrip {
     private Map<TripSuggest,String> participantSuggestTripsToRoadPart;
+    private double totalCost;
+    private double requiredFuel;
+    private Time startArrivalTime;
     private String RoadStory;
-    private int index;
     private List<TripSuggest> ratedTripSuggested;
 
     public RoadTrip() {
@@ -18,8 +21,20 @@ public class RoadTrip {
         ratedTripSuggested = new ArrayList<>();
     }
 
-    public int getIndex() {
-        return index;
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public double getRequiredFuel() {
+        return requiredFuel;
+    }
+
+    public Time getStartArrivalTime() {
+        return startArrivalTime;
+    }
+
+    public String getRoadStory() {
+        return RoadStory;
     }
 
     public Map<TripSuggest, String> getParticipantSuggestTripsToRoadPart() {
