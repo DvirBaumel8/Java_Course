@@ -186,10 +186,10 @@ public class AppController {
             validationsErrors = engine.validateChooseRequestAndAmountOfSuggestedTripsInput(inputMatchingString);
 
             if (validationsErrors.isEmpty()) {
-                List<RoadTrip> roadTrips = engine.findPotentialSuggestedTripsToMatch(inputMatchingString);
+                List<String> roadTrips = engine.findPotentialSuggestedTripsToMatch(inputMatchingString);
                 //Ohad - Todo display the suggested road trips to user + Total trip cost, arrival/start time (depend on the user choice) average fuel amount in the road.
                 String userPotentialSuggestChoice = "1"; //TODO
-                String response = engine.matchTripRequest(userPotentialSuggestChoice, roadTrips, inputMatchingString);
+                String response = engine.matchTripRequest(userPotentialSuggestChoice, inputMatchingString);
                 //TODo - Success message
             }
         }
@@ -262,7 +262,7 @@ public class AppController {
         return engine.getAllMatchedTripRequest();
     }
 
-    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestId) throws Exception {
+    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestId) {
         return engine.getTripSuggestIdsFromTripRequestWhichNotRankYet(requestId);
     }
 

@@ -55,6 +55,7 @@ public class EngineManager {
             validator = Validator.getInstance();
             matches = new HashMap<>();
             timeManager = TimeManager.getInstance();
+            matchingUtil = new MatchingUtil();
             potentialCacheList = new ArrayList<>();
         }
         return engineManagerInstance;
@@ -357,6 +358,7 @@ public class EngineManager {
         }
         TripRequest tripRequest = tripRequestUtil.getTripRequestByID(requestID);
         matches.put(tripRequest, roadTrip);
+        tripRequest.setMatched(true);
         return SUCCESS_MATCHING;
     }
 
@@ -588,7 +590,6 @@ public class EngineManager {
 
     public List<String> findPotentialSuggestedTripsToMatch(String inputMatchingString) {
         potentialCacheList = matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
-
         int requestID = Integer.parseInt(inputMatchingString.split(",")[0]);
         return convertToStr(potentialCacheList, tripRequestUtil.getTripRequestByID(requestID));
     }
@@ -599,7 +600,8 @@ public class EngineManager {
         for(RoadTrip roadTrip : potentialCacheList) {
             index++;
             if(tripRequest.isRequestByStartTime()) {
-                potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nArrival time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getArrivalTime(), roadTrip.getRequiredFuel()));
+                potentialRoadTripsStr.add(String.format("Index %d:\n", index));
+                //potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nArrival time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getArrivalTime(), roadTrip.getRequiredFuel()));
             }
             else {
                 potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nStarting time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getStartTime(), roadTrip.getRequiredFuel()));
@@ -627,10 +629,10 @@ public class EngineManager {
         }
         TripRequest request = getTripRequestByID(requestID);
         RoadTrip requestRoadTrip = request.getMatchTrip();
-        Map<TripSuggest, String> participantsSuggestedTripsMap = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
+        Map<TripSuggest, String[]> participantsSuggestedTripsMap = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
         List<TripSuggest> participantsSuggestedTripsList = new ArrayList<>();
 
-        for(Map.Entry<TripSuggest,String> entry : participantsSuggestedTripsMap.entrySet()) {
+        for(Map.Entry<TripSuggest,String[]> entry : participantsSuggestedTripsMap.entrySet()) {
             participantsSuggestedTripsList.add(entry.getKey());
         }
         List<TripSuggest> ratedSuggestedTrips = request.getMatchTrip().getRatedTripSuggested();

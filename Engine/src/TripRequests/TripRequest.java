@@ -73,5 +73,9 @@ public class TripRequest {
     public Time getArrivalTime() {
         return arrivalTime;
     }
+
+    public void setMatched(boolean matched) {
+        isMatched = matched;
+    }
 }
 

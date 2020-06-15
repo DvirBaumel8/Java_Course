@@ -123,7 +123,7 @@ public class TripSuggestController {
             try {
                 rankSuggestID = requestIdToRankSuggestIdTextField.getText();
                 errors = mainController.validateRequestIdForRank(rankSuggestID);
-                if  (errors == null) {
+                if (errors.size() == 0) {
                     rankSuggestIdByRequestIdWindow();
                     rankMainStage.close();
                 }
@@ -140,7 +140,7 @@ public class TripSuggestController {
             }
     }
 
-    void rankSuggestIdByRequestIdWindow() throws Exception {
+    void rankSuggestIdByRequestIdWindow() {
         rankSuggestIdByTripRequestStage = new Stage();
         VBox rankSuggestIdByTripRequestWindow = new VBox();
         javafx.geometry.Insets margin = new javafx.geometry.Insets(5,5,5,5);
