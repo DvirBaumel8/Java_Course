@@ -73,39 +73,43 @@ public class Time {
     }
 
     public void moveTimeBack(int timeToBack) throws Exception {
-        switch (timeToBack) {
-            //5 minutes
-            case 1: {
-                minutes -= 5;
-                break;
-            }
-
-            //30 minutes
-            case 2: {
-                minutes -= 30;
-                break;
-            }
-
-            //60 minutes
-            case 3: {
-                hours -= 1;
-                break;
-            }
-
-            //120 minutes
-            case 4: {
-                hours -= 2;
-                break;
-            }
-
-            //a day
-            case 5: {
-                day -= 1;
-                break;
-            }
-        }
         try {
-            handleMinus();
+            switch (timeToBack) {
+                //5 minutes
+                case 1: {
+                    minutes -= 5;
+                    handleMinusMinutes();
+                    break;
+                }
+
+                //30 minutes
+                case 2: {
+                    minutes -= 30;
+                    handleMinusMinutes();
+                    break;
+                }
+
+                //60 minutes
+                case 3: {
+                    hours -= 1;
+                    handleMinusHours();
+                    break;
+                }
+
+                //120 minutes
+                case 4: {
+                    hours -= 2;
+                    handleMinusHours();
+                    break;
+                }
+
+                //a day
+                case 5: {
+                    day -= 1;
+                    handleZeroDay();
+                    break;
+                }
+            }
         }
         catch (Exception ex) {
             moveTimeForward(timeToBack);
@@ -114,11 +118,25 @@ public class Time {
 
     }
 
-    private void handleMinus() throws Exception {
-        //Todo - bug!!!
+    private void handleZeroDay() throws Exception {
         if(day == 0) {
             throw new Exception("Move time back failed");
         }
+    }
+
+    private void handleMinusHours() throws Exception {
+        if(hours < 0) {
+            if(day > 1) {
+                day--;
+                hours += 24;
+            }
+            else {
+                throw new Exception("Move time back failed");
+            }
+        }
+    }
+
+    private void handleMinusMinutes() throws Exception {
         if(minutes < 0) {
             if(hours == 0) {
                 if(day <= 1) {
