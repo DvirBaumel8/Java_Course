@@ -1,6 +1,5 @@
 package controllers;
-import MatchingUtil.RoadTrip;
-import TripRequests.TripRequest;
+
 import TripSuggestUtil.TripSuggest;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

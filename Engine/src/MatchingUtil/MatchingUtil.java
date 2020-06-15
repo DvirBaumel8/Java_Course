@@ -36,11 +36,12 @@ public class MatchingUtil {
 
         if(tripRequest.isRequestByStartTime()) {
             findPotentialMatchesToStartTime(potentialSuggestedTrips, suggestedAmountTrips);
+
         }
         else {
             findPotentialMatchToArrivalTime(potentialSuggestedTrips, suggestedAmountTrips);
         }
-        int counter = 0;
+        calcRoadTripsValues(potentialSuggestedTrips);
 
 //        for(Map.Entry<TripSuggest, Integer> trip : suggestedTrips.entrySet()) {
 //            if(checkIFSuggestedTripIncludeRequestStations(requestTrip.getSourceStation(), requestTrip.getDestinationStation(), trip.getKey())) {
@@ -63,8 +64,18 @@ public class MatchingUtil {
         return potentialSuggestedTrips;
     }
 
-    private void findPotentialMatchToArrivalTime(List<RoadTrip> potentialSuggestedTrips, int suggestedAmountTrips) {
+    private void calcRoadTripsValues(List<RoadTrip> potentialSuggestedTrips) {
+        for(RoadTrip roadTrip : potentialSuggestedTrips) {
+            calcRoadTripValues(roadTrip);
+        }
+    }
 
+    private void calcRoadTripValues(RoadTrip roadTrip) {
+        //roadTrip.
+    }
+
+    private void findPotentialMatchToArrivalTime(List<RoadTrip> potentialSuggestedTrips, int suggestedAmountTrips) {
+//
     }
 
     private void findPotentialMatchesToStartTime(List<RoadTrip> potentialSuggestedTrips, int suggestedAmountTrips) {
