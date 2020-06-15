@@ -66,6 +66,9 @@ public class TripRequestsUtil {
                 retVal.add(String.format("Trip ID - %d, Owner name - %s \n)", entry.getKey().getRequestID(), entry.getKey().getNameOfOwner()));
             }
         }
+        if(retVal.size() ==0) {
+            retVal.add("System didn't find a matched trips request");
+        }
         return retVal;
     }
 
