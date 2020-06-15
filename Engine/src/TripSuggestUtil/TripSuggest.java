@@ -97,7 +97,7 @@ public class TripSuggest {
         return retVal;
     }
 
-    private int calcRequiredFuel(Route route) {
+    public int calcRequiredFuel(Route route) {
         return TripSuggestUtil.calcRequiredFuel(route.getPath());
     }
 

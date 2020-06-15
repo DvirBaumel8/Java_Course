@@ -3,6 +3,7 @@ package MatchingUtil;
 import Manager.EngineManager;
 import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
+import XML.XMLLoading.jaxb.schema.generated.Route;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,24 +83,21 @@ public class MatchingUtil {
     }
 
     private void findPotentialMatchesToStartTime(List<RoadTrip> potentialSuggestedTrips, int suggestedAmountTrips) {
-        String[] string1 = new String[2];
-        string1[0] = "A";
-        string1[1] = "B";
-        String[] string2 = new String[2];
-        string1[0] = "B";
-        string1[1] = "C";
-        String[] string3 = new String[2];
-        string1[0] = "C";
-        string1[1] = "D";
-        String[][] strings = new String[3][2];
-        strings[0] = string1;
-        strings[1] = string2;
-        strings[2] = string3;
+        Route[] routes = new Route[3];
+        Route route1 = new Route();
+        route1.setPath("A,B");
+        Route route2 = new Route();
+        route1.setPath("B,C");
+        Route route3 = new Route();
+        route1.setPath("C,D");
+        routes[0] = route1;
+        routes[1] = route2;
+        routes[2] = route3;
         int index=0;
         RoadTrip currRoadTrip;
         for(TripSuggest suggest : suggestedTrips) {
             currRoadTrip = new RoadTrip();
-            currRoadTrip.addSuggestToRoadTrip(suggest, strings[index]);
+            currRoadTrip.addSuggestToRoadTrip(suggest, routes[index]);
             potentialSuggestedTrips.add(currRoadTrip);
             index++;
         }

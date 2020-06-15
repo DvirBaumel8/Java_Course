@@ -526,10 +526,10 @@ public class EngineManager {
         }
         TripRequest request = getTripRequestByID(requestID);
         RoadTrip requestRoadTrip = request.getMatchTrip();
-        Map<TripSuggest, String[]> participantsSuggestedTripsMap = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
+        Map<TripSuggest, Route> participantsSuggestedTripsMap = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
         List<TripSuggest> participantsSuggestedTripsList = new ArrayList<>();
 
-        for(Map.Entry<TripSuggest,String[]> entry : participantsSuggestedTripsMap.entrySet()) {
+        for(Map.Entry<TripSuggest,Route> entry : participantsSuggestedTripsMap.entrySet()) {
             participantsSuggestedTripsList.add(entry.getKey());
         }
         List<TripSuggest> ratedSuggestedTrips = request.getMatchTrip().getRatedTripSuggested();
