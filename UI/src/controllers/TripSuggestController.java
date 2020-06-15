@@ -1,6 +1,5 @@
 package controllers;
-import MatchingUtil.RoadTrip;
-import TripRequests.TripRequest;
+
 import TripSuggestUtil.TripSuggest;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -31,7 +30,7 @@ public class TripSuggestController {
 
 
     private ArrayList<TextField> inputAddTripSuggest = null;
-    static final int INPUT_ADD_TRIP_SUGGEST_SIZE = 7;
+    private static final int INPUT_ADD_TRIP_SUGGEST_SIZE = 7;
     private Stage addTripSuggestStage = null;
 
     private Stage rankMainStage = null;
@@ -60,7 +59,6 @@ public class TripSuggestController {
             mainController.getAlertErrorWindow(errors);
         }
     }
-
 
     @FXML
     void rankTripSuggestButtonActionListener() {
@@ -124,7 +122,7 @@ public class TripSuggestController {
             try {
                 rankSuggestID = requestIdToRankSuggestIdTextField.getText();
                 errors = mainController.validateRequestIdForRank(rankSuggestID);
-                if  (errors == null) {
+                if (errors.size() == 0) {
                     rankSuggestIdByRequestIdWindow();
                     rankMainStage.close();
                 }
@@ -141,7 +139,7 @@ public class TripSuggestController {
             }
     }
 
-    void rankSuggestIdByRequestIdWindow() throws Exception {
+    void rankSuggestIdByRequestIdWindow() {
         rankSuggestIdByTripRequestStage = new Stage();
         VBox rankSuggestIdByTripRequestWindow = new VBox();
         javafx.geometry.Insets margin = new javafx.geometry.Insets(5,5,5,5);
@@ -149,7 +147,7 @@ public class TripSuggestController {
 
         ScrollPane scrollPaneRankSuggestIdByTripRequestWindow = new ScrollPane();
 
-        List<String> tripSuggestIdsFromRequestId = mainController.getTripSuggestIdsFromTripRequestWhichNotRankYet(suggestIdToRankFromRequestIdRoadTrips.getText());
+        List<String> tripSuggestIdsFromRequestId = mainController.getTripSuggestIdsFromTripRequestWhichNotRankYet(requestIdToRankSuggestIdTextField.getText());
 
         Label rankLabel = new Label("Here is all the trip suggest id from the following trip request road trips:"
                 + System.lineSeparator() +  System.lineSeparator() +
@@ -165,13 +163,6 @@ public class TripSuggestController {
         rankLabel.setTranslateX(10);
         rankSuggestIdByTripRequestWindow.getChildren().add(rankLabel);
 
-        suggestIdToRankFromRequestIdRoadTrips = new TextField("Suggest id Number, Rank Digit , Notes");
-        suggestIdToRankFromRequestIdRoadTrips.setMaxWidth(240);
-        suggestIdToRankFromRequestIdRoadTrips.setPrefWidth(240);
-        suggestIdToRankFromRequestIdRoadTrips.setTranslateY(5);
-        suggestIdToRankFromRequestIdRoadTrips.setTranslateX(10);
-        rankSuggestIdByTripRequestWindow.getChildren().add(suggestIdToRankFromRequestIdRoadTrips);
-
         Button suggestIdToRankFromRequestIdButton= new Button("Rank suggest id by road trips");
         suggestIdToRankFromRequestIdButton.setPrefWidth(210);
         suggestIdToRankFromRequestIdButton.setMaxWidth(210);
@@ -179,6 +170,13 @@ public class TripSuggestController {
         suggestIdToRankFromRequestIdButton.setTranslateY(10);
         suggestIdToRankFromRequestIdButton.setOnAction(this::rankSuggestIdByRequestIdRoadTripsAction);
         rankSuggestIdByTripRequestWindow.getChildren().add(suggestIdToRankFromRequestIdButton);
+
+        suggestIdToRankFromRequestIdRoadTrips = new TextField("Suggest id Number, Rank Digit , Notes");
+        suggestIdToRankFromRequestIdRoadTrips.setMaxWidth(240);
+        suggestIdToRankFromRequestIdRoadTrips.setPrefWidth(240);
+        suggestIdToRankFromRequestIdRoadTrips.setTranslateY(5);
+        suggestIdToRankFromRequestIdRoadTrips.setTranslateX(10);
+        rankSuggestIdByTripRequestWindow.getChildren().add(suggestIdToRankFromRequestIdRoadTrips);
 
         rankSuggestIdByTripRequestWindow.setMargin(rankLabel, margin);
         rankSuggestIdByTripRequestWindow.setMargin(suggestIdToRankFromRequestIdRoadTrips, margin);
@@ -202,8 +200,13 @@ public class TripSuggestController {
             inputs = suggestIdToRankFromRequestIdRoadTrips.getText().split(",");
                 errors = mainController.validateInputOfRatingDriverOfSuggestIDAndRating(inputs[0],inputs[1],inputs[2]);
                 if(errors.isEmpty()) {
+                    mainController.rankDriver(suggestIdToRankStr);
                     mainController.getSuccessWindow("Ranking succeed");
+<<<<<<< HEAD
                     this.setSuggestIdAccordionForRanking(suggestIdToRankStr);
+=======
+                    //Todo - close ranking window
+>>>>>>> c55c93535e1eb68c81dc6d72905260a7553069d7
                 }
                 else {
                     mainController.getAlertErrorWindow(errors);

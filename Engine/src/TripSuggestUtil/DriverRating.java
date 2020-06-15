@@ -36,7 +36,7 @@ public class DriverRating {
 
     public void addRatingToDriver(int rating, String literalRating) {
         addOneToNumOfRatings();
-        ratingAVG = (ratingAVG + rating)/2.0;
+        ratingAVG = (ratingAVG + rating)/numOfRatings;
         literallyRatings.add(literalRating);
     }
 

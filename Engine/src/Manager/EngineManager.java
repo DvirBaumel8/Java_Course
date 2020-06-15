@@ -30,9 +30,6 @@ public class EngineManager {
     private static Validator validator;
     private static List<String> suggestTripOwners;
     private static Map<TripRequest, RoadTrip> matches;
-    public TripRequestsUtil getTripRequestUtil() {
-        return tripRequestUtil;
-    }
     public TripSuggestUtil getTripSuggestUtil() {
         return tripSuggestUtil;
     }
@@ -43,10 +40,6 @@ public class EngineManager {
     private EngineManager() {
     }
 
-    public static Map<TripRequest, RoadTrip> getMatches() {
-        return matches;
-    }
-
     public static EngineManager getEngineManagerInstance() {
         if (engineManagerInstance == null) {
             engineManagerInstance = new EngineManager();
@@ -55,6 +48,7 @@ public class EngineManager {
             validator = Validator.getInstance();
             matches = new HashMap<>();
             timeManager = TimeManager.getInstance();
+            matchingUtil = new MatchingUtil();
             potentialCacheList = new ArrayList<>();
         }
         return engineManagerInstance;
@@ -100,32 +94,6 @@ public class EngineManager {
         return str.toString();
     }
 
-    public String getAllSuggestedTrips() {
-        StringBuilder str = new StringBuilder();
-        if (tripSuggestUtil.getAllSuggestedTrips().size() > 0) {
-            str.append("All suggested trips: \n");
-        } else {
-            str.append("There are no suggested trips");
-            return str.toString();
-        }
-
-        int index = 1;
-        for (Map.Entry<TripSuggest, Integer> trip : tripSuggestUtil.getAllSuggestedTrips().entrySet()) {
-            str.append(String.format("%d- \n", index));
-            index++;
-            str.append(String.format("Trip ID- %d\n", getSuggestTripID(trip.getKey())));
-            str.append(String.format("Trip Owner- %s\n", trip.getKey().getTripOwnerName()));
-            str.append(String.format("Trip Route- %s\n", trip.getKey().getTripRoute()));
-            str.append(String.format("Trip Price- %s\n", trip.getKey().getTripPrice()));
-            str.append(String.format("Trip starting hour- %s\nTrip arrival hour - %s\n", trip.getKey().getStartingTime().toString(), trip.getKey().getArrivalTime().toString()));
-            str.append(String.format("Trip available sits- %s\n", trip.getKey().getRemainingCapacity()));
-            str.append(String.format("Exists passengers trip:\n %s\n", getListOfAllTripPassengersID(trip.getKey())));
-            str.append(String.format("Required fuel to trip- %s.L\n", trip.getKey().getRequiredFuel()));
-            str.append(String.format("Stations to stop-  \n%s\n", trip.getKey().getStationsDetailsAsString()));
-        }
-        return str.toString();
-    }
-
     public HashSet<String> getAllLogicStationsName() {
         HashSet<String> hashSet = new HashSet<>();
         List<Stop> stops = transPool.getMapDescriptor().getStops().getStop();
@@ -133,25 +101,6 @@ public class EngineManager {
             hashSet.add(stop.getName());
         }
         return hashSet;
-    }
-
-    private String getListOfAllTripPassengersID(TripSuggest trip) {
-        StringBuilder str = new StringBuilder();
-        int index = 1;
-
-        for (Integer id : trip.getPassengers()) {
-            str.append(String.format("%d: Passenger ID - %d\n", index, id));
-            index++;
-        }
-
-        if (index == 1) {
-            str.append("empty");
-        }
-        return str.toString();
-    }
-
-    private Integer getSuggestTripID(TripSuggest trip) {
-        return tripSuggestUtil.getTripID(trip);
     }
 
     private String findRouteToRequest(TripSuggest tripSuggest, TripRequest tripRequest) {
@@ -180,10 +129,6 @@ public class EngineManager {
         }
 
         return str.toString();
-    }
-
-    private Integer getRequestTripID(TripRequest trip) {
-        return tripRequestUtil.getTripID(trip);
     }
 
     public TripRequest addNewTripRequest(String[] inputs) {
@@ -220,10 +165,6 @@ public class EngineManager {
         tripSuggestUtil.addSuggestTrip(tripSuggest);
 
         return tripSuggest;
-    }
-
-    public String getRequestValidationSuccessMessage() {
-        return tripRequestUtil.getValidationSuccessMessage();
     }
 
     public TransPool getTransPool() {
@@ -328,21 +269,9 @@ public class EngineManager {
         return tripSuggestUtil.getAllSuggestedTrips();
     }
 
-    public boolean validateMenuInput(String input) {
-        return validator.validateMenuInput(input);
-    }
-
-    public StringBuilder getMenuErrorMessage() {
-        return validator.getMenuErrorMessage();
-    }
-
-    public void setNullableMenuErrorMessage() {
-        validator.setNullableMenuErrorMessage();
-    }
-
     public String matchTripRequest(String input, String requestIDAndAmountToMatch) {
         if(!validaRoadTripChoice(input)) {
-            return "Your choice wasn't a number";
+            return null;
         }
         String[] inputs = requestIDAndAmountToMatch.split(",");
         int requestID = Integer.parseInt(inputs[0]);
@@ -357,7 +286,9 @@ public class EngineManager {
         }
         TripRequest tripRequest = tripRequestUtil.getTripRequestByID(requestID);
         matches.put(tripRequest, roadTrip);
-        return SUCCESS_MATCHING;
+        tripRequest.setMatched(true);
+        tripRequest.setMatchTrip(roadTrip);
+        return roadTrip.getRoadStory();
     }
 
     private boolean validaRoadTripChoice(String inputStr) {
@@ -404,14 +335,6 @@ public class EngineManager {
         return validator.validateChooseRequestAndAmountOfSuggestedTripsInput(input);
     }
 
-    public String getChooseRequestAndAmountOfSuggestedTripsErrorMessage() {
-        return validator.getChooseRequestAndAmountOfSuggestedTripsErrorMessage();
-    }
-
-    public void deleteChooseRequestAndAmountErrorMessage() {
-        validator.deleteChooseRequestAndAmountErrorMessage();
-    }
-
     public void deleteNewTripRequestErrorMessage() {
         validator.deleteErrorMessageOfAddNewTripRequest();
     }
@@ -436,26 +359,6 @@ public class EngineManager {
 
     public String getSuggestValidationErrorMessage() {
         return validator.getAddNewTripSuggestErrorMessage();
-    }
-
-    public String getSuggestValidationSuccessMessage() {
-        return validator.getSuggestValidationSuccessMessage();
-    }
-
-    public void deleteSuggestTripValidationErrorMessage() {
-        validator.deleteSuggestTripErrorMessage();
-    }
-
-    public String getXMLValidationsSuccessMessage() {
-        return XMLValidationsImpl.getValidXmlMessage();
-    }
-
-    public static String convertDoubleTimeToStrTime(double time) {
-        String[] vals = String.valueOf(time).split("\\.");
-        if (vals[1].length() == 1) {
-            vals[1] += "0";
-        }
-        return vals[0] + ":" + vals[1];
     }
 
     public void moveTimeForward(int choose) {
@@ -588,7 +491,6 @@ public class EngineManager {
 
     public List<String> findPotentialSuggestedTripsToMatch(String inputMatchingString) {
         potentialCacheList = matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
-
         int requestID = Integer.parseInt(inputMatchingString.split(",")[0]);
         return convertToStr(potentialCacheList, tripRequestUtil.getTripRequestByID(requestID));
     }
@@ -599,7 +501,8 @@ public class EngineManager {
         for(RoadTrip roadTrip : potentialCacheList) {
             index++;
             if(tripRequest.isRequestByStartTime()) {
-                potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nArrival time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getArrivalTime(), roadTrip.getRequiredFuel()));
+                potentialRoadTripsStr.add(String.format("Index %d:\n", index));
+                //potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nArrival time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getArrivalTime(), roadTrip.getRequiredFuel()));
             }
             else {
                 potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nStarting time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getStartTime(), roadTrip.getRequiredFuel()));
@@ -610,10 +513,6 @@ public class EngineManager {
 
     public List<String> getAllMatchedTripRequest() {
        return tripRequestUtil.getAllMatchedTripRequestAsString();
-    }
-
-    public TripRequest getTripRequestByID(Integer id) {
-        return tripRequestUtil.getTripRequestByID(id);
     }
 
     public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestIDstr) {
@@ -627,10 +526,10 @@ public class EngineManager {
         }
         TripRequest request = getTripRequestByID(requestID);
         RoadTrip requestRoadTrip = request.getMatchTrip();
-        Map<TripSuggest, String> participantsSuggestedTripsMap = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
+        Map<TripSuggest, String[]> participantsSuggestedTripsMap = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
         List<TripSuggest> participantsSuggestedTripsList = new ArrayList<>();
 
-        for(Map.Entry<TripSuggest,String> entry : participantsSuggestedTripsMap.entrySet()) {
+        for(Map.Entry<TripSuggest,String[]> entry : participantsSuggestedTripsMap.entrySet()) {
             participantsSuggestedTripsList.add(entry.getKey());
         }
         List<TripSuggest> ratedSuggestedTrips = request.getMatchTrip().getRatedTripSuggested();
@@ -680,5 +579,16 @@ public class EngineManager {
             return errors;
         }
         return errors;
+    }
+
+    public void rankDriver(String input) {
+        String[] elements = input.split(",");
+        TripSuggest suggest = tripSuggestUtil.getTripSuggestByID(Integer.parseInt(elements[0]));
+        if(elements[2].isEmpty()) {
+            suggest.addRatingToDriver(Integer.parseInt(elements[1]));
+        }
+        else {
+            suggest.addRatingToDriver(Integer.parseInt(elements[1]), elements[2]);
+        }
     }
 }

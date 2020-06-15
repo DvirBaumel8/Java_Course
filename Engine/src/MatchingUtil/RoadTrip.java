@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RoadTrip {
-    private Map<TripSuggest,String> participantSuggestTripsToRoadPart;
+    private Map<TripSuggest,String[]> participantSuggestTripsToRoadPart;
     private double totalCost;
     private double requiredFuel;
     private Time startArrivalTime;
@@ -37,14 +37,14 @@ public class RoadTrip {
         return RoadStory;
     }
 
-    public Map<TripSuggest, String> getParticipantSuggestTripsToRoadPart() {
+    public Map<TripSuggest, String[]> getParticipantSuggestTripsToRoadPart() {
         return participantSuggestTripsToRoadPart;
     }
 
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        for(Map.Entry<TripSuggest, String> entry : participantSuggestTripsToRoadPart.entrySet()) {
+        for(Map.Entry<TripSuggest, String[]> entry : participantSuggestTripsToRoadPart.entrySet()) {
             //Print Road trip story
             //        str.append(String.format("Trip ID - %d\n", trip.getSuggestID()));
 //        str.append(String.format("Trip owner name - %s\n", trip.getTripOwnerName()));
@@ -60,5 +60,20 @@ public class RoadTrip {
         return ratedTripSuggested;
     }
 
+    public void addSuggestToRoadTrip(TripSuggest suggest, String[] stations) {
+        this.participantSuggestTripsToRoadPart.put(suggest, stations);
+    }
 
+
+    public void calcTotalCost() {
+    }
+
+    public void calcRequiredFuel() {
+    }
+
+    public void calcStartArrivalTime() {
+    }
+
+    public void buildRoadTripStory() {
+    }
 }

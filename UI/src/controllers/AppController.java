@@ -34,7 +34,6 @@ public class AppController {
 
     private EngineManager engine;
 
-
     @FXML
     public void initialize() {
         engine = EngineManager.getEngineManagerInstance();
@@ -180,6 +179,29 @@ public class AppController {
         successAlert.showAndWait();
     }
 
+<<<<<<< HEAD
+=======
+    public List<String> matchingAction(String inputMatchingString) {
+        List<String> validationsErrors = new LinkedList<>();
+        try {
+            validationsErrors = engine.validateChooseRequestAndAmountOfSuggestedTripsInput(inputMatchingString);
+
+            if (validationsErrors.isEmpty()) {
+                List<String> roadTrips = engine.findPotentialSuggestedTripsToMatch(inputMatchingString);
+                //Ohad - Todo display the suggested road trips to user + Total trip cost, arrival/start time (depend on the user choice) average fuel amount in the road.
+                String userPotentialSuggestChoice = "1"; //TODO
+                boolean response = engine.matchTripRequest(userPotentialSuggestChoice, inputMatchingString);
+                //TODo - Success message
+            }
+        }
+        catch (Exception e) {
+            validationsErrors.add(e.getMessage());
+        }
+
+        return validationsErrors;
+    }
+
+>>>>>>> c55c93535e1eb68c81dc6d72905260a7553069d7
     public void setTime() {
        String timeStr = engine.getCurrentSystemTime().toString();
        liveMapController.setTimeLabel(timeStr);
@@ -200,6 +222,7 @@ public class AppController {
     public void setDateString2Hours(boolean isForward) {
         moveTime(isForward, 4);
     }
+
     public void setDateString1Day(boolean isForward) {
         moveTime(isForward, 5);
     }
@@ -242,7 +265,7 @@ public class AppController {
         return engine.getAllMatchedTripRequest();
     }
 
-    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestId) throws Exception {
+    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestId) {
         return engine.getTripSuggestIdsFromTripRequestWhichNotRankYet(requestId);
     }
 
@@ -271,4 +294,7 @@ public class AppController {
     }
 
 
+    public void rankDriver(String input) {
+        engine.rankDriver(input);
+    }
 }

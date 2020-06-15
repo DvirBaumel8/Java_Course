@@ -36,11 +36,12 @@ public class MatchingUtil {
 
         if(tripRequest.isRequestByStartTime()) {
             findPotentialMatchesToStartTime(potentialSuggestedTrips, suggestedAmountTrips);
+
         }
         else {
             findPotentialMatchToArrivalTime(potentialSuggestedTrips, suggestedAmountTrips);
         }
-        int counter = 0;
+        calcRoadTripsValues(potentialSuggestedTrips);
 
 //        for(Map.Entry<TripSuggest, Integer> trip : suggestedTrips.entrySet()) {
 //            if(checkIFSuggestedTripIncludeRequestStations(requestTrip.getSourceStation(), requestTrip.getDestinationStation(), trip.getKey())) {
@@ -57,25 +58,59 @@ public class MatchingUtil {
 //                }
 //            }
 //        }
-        if(counter == 0) {
-            return null;
-        }
+//        if(counter == 0) {
+//            return null;
+//        }
         return potentialSuggestedTrips;
     }
 
-    private void findPotentialMatchToArrivalTime(List<RoadTrip> potentialSuggestedTrips, int suggestedAmountTrips) {
+    private void calcRoadTripsValues(List<RoadTrip> potentialSuggestedTrips) {
+        for(RoadTrip roadTrip : potentialSuggestedTrips) {
+            calcRoadTripValues(roadTrip);
+        }
+    }
 
+    private void calcRoadTripValues(RoadTrip roadTrip) {
+        roadTrip.calcTotalCost();
+        roadTrip.calcRequiredFuel();
+        roadTrip.calcStartArrivalTime();
+        roadTrip.buildRoadTripStory();
+    }
+
+    private void findPotentialMatchToArrivalTime(List<RoadTrip> potentialSuggestedTrips, int suggestedAmountTrips) {
+//
     }
 
     private void findPotentialMatchesToStartTime(List<RoadTrip> potentialSuggestedTrips, int suggestedAmountTrips) {
-        int counter = 0;
-        for (TripSuggest trip : suggestedTrips) {
-            if (checkIfTripIncludeSourceStation(trip)) { //trip suggest get to request start station
-                if (checkIfTripArrivalHourToRequestSourceStationIsEquals(trip, tripRequest)) {
-                    if (checkIfTripCanBeMatch(trip, tripRequest)) {
-                        counter++;
-                        if (counter == suggestedAmountTrips) {
-                            break;
+        String[] string1 = new String[2];
+        string1[0] = "A";
+        string1[1] = "B";
+        String[] string2 = new String[2];
+        string1[0] = "B";
+        string1[1] = "C";
+        String[] string3 = new String[2];
+        string1[0] = "C";
+        string1[1] = "D";
+        String[][] strings = new String[3][2];
+        strings[0] = string1;
+        strings[1] = string2;
+        strings[2] = string3;
+        int index=0;
+        RoadTrip currRoadTrip;
+        for(TripSuggest suggest : suggestedTrips) {
+            currRoadTrip = new RoadTrip();
+            currRoadTrip.addSuggestToRoadTrip(suggest, strings[index]);
+            potentialSuggestedTrips.add(currRoadTrip);
+            index++;
+        }
+//        int counter = 0;
+//        for (TripSuggest trip : suggestedTrips) {
+//            if (checkIfTripIncludeSourceStation(trip)) { //trip suggest get to request start station
+//                if (checkIfTripArrivalHourToRequestSourceStationIsEquals(trip, tripRequest)) {
+//                    if (checkIfTripCanBeMatch(trip, tripRequest)) {
+//                        counter++;
+//                        if (counter == suggestedAmountTrips) {
+//                            break;
 //                            for (Map.Entry<TripSuggest, Integer> trip : suggestedTrips.entrySet()) {
 //                                if (checkIFSuggestedTripIncludeRequestStations(requestTrip.getSourceStation(), requestTrip.getDestinationStation(), trip.getKey())) {
 //                                    if ((!requestTrip.getIsStartTime() && requestTrip.getRequestRequiredTime() == trip.getKey().getArrivalHourToSpecificStation(requestTrip.getDestinationStation())) || (requestTrip.getIsStartTime() && checkRequestTimeToSuggestTrip(requestTrip, trip.getKey()))) {
@@ -92,15 +127,15 @@ public class MatchingUtil {
 //                                            String[] shortRoute = shortcutRootToRequestSourceDest(trip.getTripRoute(), tripRequest.getSourceStation());
 //                                            handleShortRouteAction(potentialSuggestedTrips, tripRequest, trip, shortRoute, suggestedAmountTrips);
 //                                        }
-//                                    }
-//                                }
-//                            }
-
-                        }
-                    }
-                }
-            }
-        }
+////                                    }
+////                                }
+////                            }
+//
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     private boolean checkIfTripCanBeMatch(TripSuggest tripSuggest, TripRequest requestTrip) {

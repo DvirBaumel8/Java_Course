@@ -73,5 +73,13 @@ public class TripRequest {
     public Time getArrivalTime() {
         return arrivalTime;
     }
+
+    public void setMatched(boolean matched) {
+        isMatched = matched;
+    }
+
+    public void setMatchTrip(RoadTrip matchTrip) {
+        this.matchTrip = matchTrip;
+    }
 }
 
