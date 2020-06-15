@@ -21,6 +21,7 @@ public class MatchingController {
 
     Stage mainMatchingStage = null;
     TextField matchingTextField = null;
+    String[] inputsMainMatchingStage = null;
 
     Stage potentialSuggestedTripsToMatchStage = null;
     TextField suggestedTripsToMatchTextField = null;
@@ -61,7 +62,7 @@ public class MatchingController {
         matchingWindow.getChildren().add(matchingTextField);
 
         Button matchingLoadButton= new Button("Match");
-        matchingTextField.setPrefWidth(100);
+        matchingLoadButton.setPrefWidth(100);
         matchingLoadButton.setTranslateX(165);
         matchingLoadButton.setOnAction(this::matchingLoadButtonAction);
         matchingWindow.getChildren().add(matchingLoadButton);
@@ -78,30 +79,18 @@ public class MatchingController {
     }
 
     private void matchingLoadButtonAction(ActionEvent event) {
-        String matchingInput = matchingTextField.getText();
-        List<String> potentialSuggestedTripsToMatch = new LinkedList<>();
 
             try {
-                //potentialSuggestedTripsToMatch = mainController.getPotentialSuggestedTripsToMatch(matchingInput);
-                //if(potentialSuggestedTripsToMatch.size() > 0) {
-                    getPotentialSuggestedIdsToMatchWindow(potentialSuggestedTripsToMatch);
-                    mainMatchingStage.close();
-                    mainController.validateAndActionOfPotentialSuggestedTripsToMatch(suggestedTripsToMatchTextField.getText());
-                //}
-                String[] inputs = matchingInput.split(",");
-                this.updateMatchingAccordion(inputs[0], inputs[1]);
-                Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Matching Succeed");
-                successAlert.showAndWait();
+                getPotentialSuggestedTripsToMatchWindow();
                 mainMatchingStage.close();
-
                 }
             catch (Exception e){
-              Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Matching doesnt Succeed");
+              Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Matching doesnt Succeed" + e.getMessage());
               errorAlert.showAndWait();
         }
     }
 
-    public void getPotentialSuggestedIdsToMatchWindow(List<String> potentialSuggestedTripsToMatch)  {
+    public void getPotentialSuggestedTripsToMatchWindow()  {
         potentialSuggestedTripsToMatchStage = new Stage();
         VBox potentialSuggestedTripsToMatchWindow = new VBox();
         javafx.geometry.Insets margin = new javafx.geometry.Insets(10,10,10,10);
@@ -109,21 +98,23 @@ public class MatchingController {
 
         ScrollPane scrollPanePotentialSuggestedTripsToMatch = new ScrollPane();
 
-        Label potentialSuggestedIdsToMatchLabel = new Label("Choose suggest id to match from the following options:" + System.lineSeparator() +
+        List<String> potentialSuggestedTripsToMatch = mainController.getPotentialSuggestedTripsToMatch(suggestedTripsToMatchTextField.getText());
+
+        Label potentialSuggestedIdsToMatchLabel = new Label("Choose index to match from the following options:" + System.lineSeparator() +
                  System.lineSeparator() + potentialSuggestedTripsToMatch.toString() +
                 System.lineSeparator() + System.lineSeparator() +
-                "insert here the desired suggest id for match:");
+                "insert here the desired index for match:");
         potentialSuggestedIdsToMatchLabel.setPrefWidth(400);
 
         potentialSuggestedTripsToMatchWindow.getChildren().add(potentialSuggestedIdsToMatchLabel);
 
-        suggestedTripsToMatchTextField = new TextField("1,4");
+        suggestedTripsToMatchTextField = new TextField("1");
         potentialSuggestedTripsToMatchWindow.getChildren().add(matchingTextField);
 
         Button suggestedTripsToMatchButton= new Button("Match");
         suggestedTripsToMatchButton.setPrefWidth(100);
         suggestedTripsToMatchButton.setTranslateX(165);
-        suggestedTripsToMatchButton.setOnAction(this::matchingLoadButtonAction);
+        suggestedTripsToMatchButton.setOnAction(this::suggestedTripsToMatchButtonAction);
         potentialSuggestedTripsToMatchWindow.getChildren().add(suggestedTripsToMatchButton);
 
         potentialSuggestedTripsToMatchWindow.setMargin(potentialSuggestedIdsToMatchLabel, margin);
@@ -139,6 +130,22 @@ public class MatchingController {
         mainMatchingStage.show();
     }
 
+    public void suggestedTripsToMatchButtonAction(ActionEvent event) {
+        try {
+            String roadTripForRequestId = mainController.
+                    matchTripRequestObject(suggestedTripsToMatchTextField.getText(),matchingTextField.getText());
+            if(!roadTripForRequestId.isEmpty()) {
+                this.updateMatchingAccordion(inputsMainMatchingStage[0], roadTripForRequestId);
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Matching Succeed");
+                successAlert.showAndWait();
+                potentialSuggestedTripsToMatchStage.close();
+            }
+        }
+        catch (Exception e) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Matching doesnt Succeed");
+            errorAlert.showAndWait();
+        }
+    }
 
     public void updateMatchingAccordion(String requestId, String suggestId) {
         String matchingTextArea = matchingAccordion.getPanes().get(0).getText();
@@ -153,6 +160,6 @@ public class MatchingController {
     }
 
     public String getOptionalSuggestIdsForMatch() {
-
+        return "x";
     }
 }

@@ -180,31 +180,6 @@ public class AppController {
         successAlert.showAndWait();
     }
 
-    public List<String> getPotentialSuggestedTripsToMatch(String inputMatchingString) {
-        List<String> validationsErrors = new LinkedList<>();
-        try {
-            validationsErrors = engine.validateChooseRequestAndAmountOfSuggestedTripsInput(inputMatchingString);
-
-            if (validationsErrors.isEmpty()) {
-                List<RoadTrip> roadTrips = engine.findPotentialSuggestedTripsToMatch(inputMatchingString);
-                matchingController.getOptionalSuggestIdsForMatch();
-                //Ohad - Todo display the suggested road trips to user + Total trip cost, arrival/start time (depend on the user choice) average fuel amount in the road.
-                String userPotentialSuggestChoice = "1"; //TODO
-                String response = engine.matchTripRequest(userPotentialSuggestChoice, roadTrips, inputMatchingString);
-                //TODo - Success message
-            }
-        }
-        catch (Exception e) {
-            validationsErrors.add(e.getMessage());
-        }
-
-        return validationsErrors;
-    }
-
-    public void validateAndActionOfPotentialSuggestedTripsToMatch(String indexToMatch) {
-
-    }
-
     public void setTime() {
        String timeStr = engine.getCurrentSystemTime().toString();
        liveMapController.setTimeLabel(timeStr);
@@ -271,7 +246,29 @@ public class AppController {
         return engine.getTripSuggestIdsFromTripRequestWhichNotRankYet(requestId);
     }
 
-    public List<String> validateInputOfRatingDriverOfSuggestIDAndRating(String requestId) {
-        return engine.validateInputOfRatingDriverOfSuggestIDAndRating(requestId);
+    public List<String> validateInputOfRatingDriverOfSuggestIDAndRating(String requestId, String rank,
+                                                                String review) {
+        return engine.validateInputOfRatingDriverOfSuggestIDAndRating(requestId, rank, review);
     }
+
+    public List<String> getPotentialSuggestedTripsToMatch(String inputMatchingString) {
+        List<String> validationsErrors = new LinkedList<>();
+        try {
+            validationsErrors = engine.validateChooseRequestAndAmountOfSuggestedTripsInput(inputMatchingString);
+
+            if (validationsErrors.isEmpty()) {
+                return engine.findPotentialSuggestedTripsToMatch(inputMatchingString);
+            }
+        }
+        catch (Exception e) {
+            validationsErrors.add(e.getMessage());
+        }
+        return validationsErrors;
+    }
+
+    public String matchTripRequestObject(String secondInput, String firstInput) {
+        return engine.matchTripRequest(secondInput, firstInput);
+    }
+
+
 }

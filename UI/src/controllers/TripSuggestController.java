@@ -194,13 +194,13 @@ public class TripSuggestController {
     }
 
     private void rankSuggestIdByRequestIdRoadTripsAction(ActionEvent event) {
+        String[] inputs = null;
         String suggestIdToRankStr = null;
         List<String> errors = null;
 
         try {
-            suggestIdToRankStr = suggestIdToRankFromRequestIdRoadTrips.getText();
-            if(mainController.validateSuggestIdForRank(suggestIdToRankStr)) {
-                errors = mainController.validateInputOfRatingDriverOfSuggestIDAndRating(suggestIdToRankStr);
+            inputs = suggestIdToRankFromRequestIdRoadTrips.getText().split(",");
+                errors = mainController.validateInputOfRatingDriverOfSuggestIDAndRating(inputs[0],inputs[1],inputs[2]);
                 if(errors.isEmpty()) {
                     mainController.getSuccessWindow("Ranking succeed");
                     this.setSuggestIdAccordionForRanking(suggestIdToRankStr);
@@ -208,12 +208,7 @@ public class TripSuggestController {
                 else {
                     mainController.getAlertErrorWindow(errors);
                 }
-            }
-            else {
-                errors = new LinkedList<>();
-                errors.add("Suggest Id is'nt valid for rank");
-                throw new Exception();
-            }
+
         }
         catch (Exception e) {
             if(errors.isEmpty()) {

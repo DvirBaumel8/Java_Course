@@ -652,18 +652,15 @@ public class EngineManager {
         return retVal;
     }
     //TripSuggestID, rate, description
-    public List<String> validateInputOfRatingDriverOfSuggestIDAndRating(String input) {
-        String[] elements = input.split(",");
-        String tripSuggestIDStr = elements[0];
-        String rateStr = elements[1];
-        String description = elements[2];
+    public List<String> validateInputOfRatingDriverOfSuggestIDAndRating(String tripSuggestId,
+                            String rateStr, String description) {
         List<String> errors = new ArrayList<>();
 
         int suggestID = 0;
         int rate;
 
         try {
-            suggestID = Integer.parseInt(tripSuggestIDStr);
+            suggestID = Integer.parseInt(tripSuggestId);
         }
         catch (Exception ex) {
             errors.add("Trip suggest ID isn't a number.\n");
