@@ -30,7 +30,7 @@ public class TripSuggestController {
 
 
     private ArrayList<TextField> inputAddTripSuggest = null;
-    static final int INPUT_ADD_TRIP_SUGGEST_SIZE = 7;
+    private static final int INPUT_ADD_TRIP_SUGGEST_SIZE = 7;
     private Stage addTripSuggestStage = null;
 
     private Stage rankMainStage = null;
@@ -59,7 +59,6 @@ public class TripSuggestController {
             mainController.getAlertErrorWindow(errors);
         }
     }
-
 
     @FXML
     void rankTripSuggestButtonActionListener() {
@@ -203,6 +202,7 @@ public class TripSuggestController {
                 if(errors.isEmpty()) {
                     mainController.rankDriver(suggestIdToRankStr);
                     mainController.getSuccessWindow("Ranking succeed");
+                    //Todo - close ranking window
                 }
                 else {
                     mainController.getAlertErrorWindow(errors);
