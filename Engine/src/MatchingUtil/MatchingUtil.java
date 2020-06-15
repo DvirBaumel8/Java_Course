@@ -37,7 +37,6 @@ public class MatchingUtil {
 
         if(tripRequest.isRequestByStartTime()) {
             findPotentialMatchesToStartTime(potentialSuggestedTrips, suggestedAmountTrips);
-
         }
         else {
             findPotentialMatchToArrivalTime(potentialSuggestedTrips, suggestedAmountTrips);
@@ -83,13 +82,13 @@ public class MatchingUtil {
     }
 
     private void findPotentialMatchesToStartTime(List<RoadTrip> potentialSuggestedTrips, int suggestedAmountTrips) {
-        Route[] routes = new Route[3];
+        Route[] routes = new Route[suggestedAmountTrips];
         Route route1 = new Route();
         route1.setPath("A,B");
         Route route2 = new Route();
-        route1.setPath("B,C");
+        route2.setPath("B,C");
         Route route3 = new Route();
-        route1.setPath("C,D");
+        route3.setPath("C,D");
         routes[0] = route1;
         routes[1] = route2;
         routes[2] = route3;

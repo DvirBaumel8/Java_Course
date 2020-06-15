@@ -79,7 +79,6 @@ public class MatchingController {
     }
 
     private void matchingLoadButtonAction(ActionEvent event) {
-
             try {
                 getPotentialSuggestedTripsToMatchWindow();
                 mainMatchingStage.close();
@@ -98,7 +97,7 @@ public class MatchingController {
 
         ScrollPane scrollPanePotentialSuggestedTripsToMatch = new ScrollPane();
 
-        List<String> potentialSuggestedTripsToMatch = mainController.getPotentialSuggestedTripsToMatch(suggestedTripsToMatchTextField.getText());
+        List<String> potentialSuggestedTripsToMatch = mainController.getPotentialSuggestedTripsToMatch(matchingTextField.getText());
 
         Label potentialSuggestedIdsToMatchLabel = new Label("Choose index to match from the following options:" + System.lineSeparator() +
                  System.lineSeparator() + potentialSuggestedTripsToMatch.toString() +
