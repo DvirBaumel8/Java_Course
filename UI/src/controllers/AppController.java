@@ -238,4 +238,13 @@ public class AppController {
         return matchingController.getMatchingAccordion();
     }
 
+    public boolean validateRequestIdForRank(String requestId) {
+
+        return true;
+    }
+
+    public boolean validateSuggestIdForRank(String suggestId) {
+        return true;
+    }
+
 }
