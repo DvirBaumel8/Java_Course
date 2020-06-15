@@ -132,9 +132,6 @@ public class AppController {
         return this.transPoolManager.getEngineManager().getTripSuggestUtil().getAllSuggestedTrips();
     }
 
-    public Map<TripRequest, RoadTrip> getAllMatchingTripSuggestMap() {
-        return this.transPoolManager.getEngineManager().getMatches();
-    }
 
     public void loadInitTripSuggestFromXML() {
         tripSuggestController.loadTripSuggestFromXML();
@@ -250,4 +247,5 @@ public class AppController {
     public List<String> getAllMatchingTripRequestForRank() {
         return engine.getAllMatchedTripRequest();
     }
+
 }

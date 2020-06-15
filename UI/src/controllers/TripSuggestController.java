@@ -61,7 +61,7 @@ public class TripSuggestController {
     @FXML
     void rankTripSuggestButtonActionListener() {
         if(mainController.isXMLLoaded() && mainController.getMatchingAccordion() != null) {
-            getRankTripSuggestMainWindow();
+                getRankTripSuggestMainWindow();
         }
         else {
             mainController.getAlertErrorWindow("XML doesnt load yet / No match available");
@@ -75,10 +75,10 @@ public class TripSuggestController {
         rankMainWindowVBox.setSpacing(10);
         ScrollPane scrollRankMainWindow = new ScrollPane();
 
-       // Map<TripRequest, RoadTrip> matchingTripRequests = mainController.getAllMatchingTripSuggestMap();
+        List<String> matchingTripRequests = mainController.getAllMatchingTripRequestForRank();
 
         Label tripRequestIdsLabel = new Label("Here is all the trip request which have match:" + System.lineSeparator() + System.lineSeparator() +
-
+                matchingTripRequests.toString() +
                 System.lineSeparator() + System.lineSeparator() +
                 "Please copy request id from the following options," + System.lineSeparator() +
                 "Which you would like to rank his drivers:");
@@ -145,7 +145,7 @@ public class TripSuggestController {
 
         Label rankLabel = new Label("Here is all the trip suggest id from the following trip request road trips:"
                 + System.lineSeparator() +  System.lineSeparator() +
-                matchingTripRequests.toString() ג
+                matchingTripRequests.toString() +
                 System.lineSeparator() + System.lineSeparator() +
                 "Please follow the following steps to rank:" + System.lineSeparator() +
                 "Copy The input to the text field in the following way:" + System.lineSeparator() +
