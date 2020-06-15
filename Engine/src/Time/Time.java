@@ -104,10 +104,21 @@ public class Time {
                 break;
             }
         }
-        handleMinus();
+        try {
+            handleMinus();
+        }
+        catch (Exception ex) {
+            moveTimeForward(timeToBack);
+            throw new Exception("Move time back failed.");
+        }
+
     }
 
     private void handleMinus() throws Exception {
+        //Todo - bug!!!
+        if(day == 0) {
+            throw new Exception("Move time back failed");
+        }
         if(minutes < 0) {
             if(hours == 0) {
                 if(day <= 1) {

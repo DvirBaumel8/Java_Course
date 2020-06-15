@@ -1,6 +1,8 @@
 package TripRequests;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TripRequestsUtil {
@@ -36,6 +38,17 @@ public class TripRequestsUtil {
         return requestTrips.containsValue(requestID);
     }
 
+    public boolean isRequestIDExistInMatchedRequestTrips(Integer requestID) {
+        List<TripRequest> matchedRequestTrips =  getAllMatchedTripRequest();
+
+        for(TripRequest request : matchedRequestTrips) {
+            if(request.getRequestID() == requestID) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public TripRequest getTripRequestByID(int requestID) {
         for(Map.Entry<TripRequest, Integer> trip : requestTrips.entrySet()) {
             if(trip.getValue() == requestID) {
@@ -43,5 +56,27 @@ public class TripRequestsUtil {
             }
         }
         return null;
+    }
+
+    public List<String> getAllMatchedTripRequestAsString() {
+        List<String> retVal = new ArrayList<>();
+
+        for(Map.Entry<TripRequest, Integer> entry : requestTrips.entrySet()) {
+            if(entry.getKey().isMatched()) {
+                retVal.add(String.format("Trip ID - %d, Owner name - %s \n)", entry.getKey().getRequestID(), entry.getKey().getNameOfOwner()));
+            }
+        }
+        return retVal;
+    }
+
+    public List<TripRequest> getAllMatchedTripRequest() {
+        List<TripRequest> retVal = new ArrayList<>();
+
+        for(Map.Entry<TripRequest, Integer> entry : requestTrips.entrySet()) {
+            if(entry.getKey().isMatched()) {
+                retVal.add(entry.getKey());
+            }
+        }
+        return retVal;
     }
 }
