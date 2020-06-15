@@ -575,4 +575,62 @@ public class EngineManager {
         return tripRequestUtil.getTripRequestByID(id);
     }
 
+    public List<TripSuggest> getAllTripSuggestThatPartOfRequestRoadTrip(String requestIDstr) throws Exception {
+        int requestID;
+        try {
+            requestID = Integer.parseInt(requestIDstr);
+        }
+        catch (Exception ex) {
+            throw new Exception("Your choice wasn't a number.\n");
+        }
+        TripRequest request = getTripRequestByID(requestID);
+        RoadTrip requestRoadTrip = request.getMatchTrip();
+        Map<TripSuggest, String> participantsSuggestedTripsMap = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
+        List<TripSuggest> participantsSuggestedTripsList = new ArrayList<>();
+
+        for(Map.Entry<TripSuggest,String> entry : participantsSuggestedTripsMap.entrySet()) {
+            participantsSuggestedTripsList.add(entry.getKey());
+        }
+        List<TripSuggest> ratedSuggestedTrips = request.getMatchTrip().getRatedTripSuggested();
+        List<TripSuggest> retList = new ArrayList<>();
+        for(TripSuggest suggest : participantsSuggestedTripsList) {
+            if(!ratedSuggestedTrips.contains(suggest)) {
+                retList.add(suggest);
+            }
+        }
+        return retList;
+    }
+    //TripSuggestID, rate, description
+    public List<String> validateInputOfRatingDriverOfSuggestIDAndRating(String input) {
+        String[] elements = input.split(",");
+        String tripSuggestIDStr = elements[0];
+        String rateStr = elements[1];
+        String description = elements[2];
+        List<String> errors = new ArrayList<>();
+
+        int suggestID = 0;
+        int rate;
+
+        try {
+            suggestID = Integer.parseInt(tripSuggestIDStr);
+        }
+        catch (Exception ex) {
+            errors.add("Trip suggest ID isn't a number.\n");
+        }
+        try {
+            rate = Integer.parseInt(rateStr);
+        }
+        catch (Exception ex) {
+            errors.add("Rating isn't a number.");
+            return errors;
+        }
+        if(tripSuggestUtil.getTripSuggestByID(suggestID) == null) {
+            errors.add("Trip suggest isn't exist.\n");
+        }
+        if(rate < 1 || rate > 5) {
+            errors.add("Please insert a number between 1-5 for rating.\n");
+            return errors;
+        }
+        return errors;
+    }
 }
