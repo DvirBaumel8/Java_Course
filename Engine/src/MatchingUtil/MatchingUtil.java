@@ -41,7 +41,7 @@ public class MatchingUtil {
         else {
             findPotentialMatchToArrivalTime(potentialSuggestedTrips, suggestedAmountTrips);
         }
-        calcRoadTripsValues(potentialSuggestedTrips);
+        //calcRoadTripsValues(potentialSuggestedTrips);
 
 //        for(Map.Entry<TripSuggest, Integer> trip : suggestedTrips.entrySet()) {
 //            if(checkIFSuggestedTripIncludeRequestStations(requestTrip.getSourceStation(), requestTrip.getDestinationStation(), trip.getKey())) {
