@@ -63,6 +63,7 @@ public class Main extends Application {
         MatchingController matchingController = fxmlLoader.getController();
 
         //--------------------------------------------------------------------
+        Graph graph = new Graph();
 
         fxmlLoader = new FXMLLoader();
         url = getClass().getResource(route.LIVEMAP_fXML_RESOURCE);
