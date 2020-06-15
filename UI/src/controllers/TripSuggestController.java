@@ -141,11 +141,12 @@ public class TripSuggestController {
 
         ScrollPane scrollPaneRankSuggestIdByTripRequestWindow = new ScrollPane();
 
-         List<String> matchingTripRequests = mainController.getAllMatchingTripRequestForRank();
+        List<String> tripSuggestIdsFromRequestId = mainController.
+                getTripSuggestIdsFromTripRequestWhichNotRankYet(suggestIdToRankFromRequestIdRoadTrips.getText());
 
         Label rankLabel = new Label("Here is all the trip suggest id from the following trip request road trips:"
                 + System.lineSeparator() +  System.lineSeparator() +
-                matchingTripRequests.toString() +
+                tripSuggestIdsFromRequestId.toString() +
                 System.lineSeparator() + System.lineSeparator() +
                 "Please follow the following steps to rank:" + System.lineSeparator() +
                 "Copy The input to the text field in the following way:" + System.lineSeparator() +
@@ -186,12 +187,16 @@ public class TripSuggestController {
     }
 
     private void rankSuggestIdByRequestIdRoadTripsAction(ActionEvent event) {
-        String suggestIdToRankStr =  null;
+        String suggestIdToRankStr = null;
+        List<String> errors = null;
 
         try {
             suggestIdToRankStr = suggestIdToRankFromRequestIdRoadTrips.getText();
             if(mainController.validateSuggestIdForRank(suggestIdToRankStr)) {
+                errors = mainController.validateInputOfRatingDriverOfSuggestIDAndRating(suggestIdToRankStr);
+                if(!errors.isEmpty()) {
 
+                }
             }
             else {
                 throw new Exception();

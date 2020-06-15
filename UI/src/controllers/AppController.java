@@ -248,4 +248,13 @@ public class AppController {
         return engine.getAllMatchedTripRequest();
     }
 
+    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestId) {
+        return engine.getTripSuggestIdsFromTripRequestWhichNotRankYet(requestId);
+    }
+
+    public List<String> validateInputOfRatingDriverOfSuggestIDAndRating(String requestId) {
+        return engine.validateInputOfRatingDriverOfSuggestIDAndRating(requestId);
+    }
+
+
 }
