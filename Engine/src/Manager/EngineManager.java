@@ -269,9 +269,9 @@ public class EngineManager {
         return tripSuggestUtil.getAllSuggestedTrips();
     }
 
-    public boolean matchTripRequest(String input, String requestIDAndAmountToMatch) {
+    public String matchTripRequest(String input, String requestIDAndAmountToMatch) {
         if(!validaRoadTripChoice(input)) {
-            return false;
+            return null;
         }
         String[] inputs = requestIDAndAmountToMatch.split(",");
         int requestID = Integer.parseInt(inputs[0]);
@@ -288,7 +288,7 @@ public class EngineManager {
         matches.put(tripRequest, roadTrip);
         tripRequest.setMatched(true);
         tripRequest.setMatchTrip(roadTrip);
-        return true;
+        return roadTrip.getRoadStory();
     }
 
     private boolean validaRoadTripChoice(String inputStr) {

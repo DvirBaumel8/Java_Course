@@ -71,7 +71,10 @@ public class MatchingUtil {
     }
 
     private void calcRoadTripValues(RoadTrip roadTrip) {
-        //roadTrip.
+        roadTrip.calcTotalCost();
+        roadTrip.calcRequiredFuel();
+        roadTrip.calcStartArrivalTime();
+        roadTrip.buildRoadTripStory();
     }
 
     private void findPotentialMatchToArrivalTime(List<RoadTrip> potentialSuggestedTrips, int suggestedAmountTrips) {

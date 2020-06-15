@@ -188,7 +188,7 @@ public class AppController {
                 List<String> roadTrips = engine.findPotentialSuggestedTripsToMatch(inputMatchingString);
                 //Ohad - Todo display the suggested road trips to user + Total trip cost, arrival/start time (depend on the user choice) average fuel amount in the road.
                 String userPotentialSuggestChoice = "1"; //TODO
-                String response = engine.matchTripRequest(userPotentialSuggestChoice, inputMatchingString);
+                boolean response = engine.matchTripRequest(userPotentialSuggestChoice, inputMatchingString);
                 //TODo - Success message
             }
         }
@@ -219,6 +219,7 @@ public class AppController {
     public void setDateString2Hours(boolean isForward) {
         moveTime(isForward, 4);
     }
+
     public void setDateString1Day(boolean isForward) {
         moveTime(isForward, 5);
     }

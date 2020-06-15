@@ -65,4 +65,15 @@ public class RoadTrip {
     }
 
 
+    public void calcTotalCost() {
+    }
+
+    public void calcRequiredFuel() {
+    }
+
+    public void calcStartArrivalTime() {
+    }
+
+    public void buildRoadTripStory() {
+    }
 }
