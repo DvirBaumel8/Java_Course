@@ -238,13 +238,16 @@ public class AppController {
         return matchingController.getMatchingAccordion();
     }
 
-    public boolean validateRequestIdForRank(String requestId) {
-
-        return true;
+    public List<String> validateRequestIdForRank(String requestId) {
+        return engine.validateRequestIDExistInMatchedRequestTrip(requestId);
     }
 
     public boolean validateSuggestIdForRank(String suggestId) {
+
         return true;
     }
 
+    public List<String> getAllMatchingTripRequestForRank() {
+        return engine.getAllMatchedTripRequest();
+    }
 }

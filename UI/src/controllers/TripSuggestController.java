@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class TripSuggestController {
@@ -113,9 +114,11 @@ public class TripSuggestController {
 
     private void validateAndActionRequestIdInputForRank(ActionEvent event) {
             String rankSuggestID = null;
+            List<String> errors = null;
             try {
                 rankSuggestID = requestIdToRankSuggestIdTextField.getText();
-                if(mainController.validateRequestIdForRank(rankSuggestID)) {
+                errors = mainController.validateRequestIdForRank(rankSuggestID);
+                if  (errors != null){
                     rankSuggestIdByRequestIdWindow();
                     rankMainStage.close();
                 }
@@ -138,32 +141,33 @@ public class TripSuggestController {
 
         ScrollPane scrollPaneRankSuggestIdByTripRequestWindow = new ScrollPane();
 
-        // Map<TripRequest, RoadTrip> matchingTripRequests = mainController.getAllMatchingTripSuggestMap();
+         List<String> matchingTripRequests = mainController.getAllMatchingTripRequestForRank();
 
         Label rankLabel = new Label("Here is all the trip suggest id from the following trip request road trips:"
                 + System.lineSeparator() +  System.lineSeparator() +
-
+                matchingTripRequests.toString() ג
                 System.lineSeparator() + System.lineSeparator() +
                 "Please follow the following steps to rank:" + System.lineSeparator() +
-                "Copy the Suggest id number and the Rank digit in the following way:" + System.lineSeparator() +
-                "SuggestId Number , Rank Number" + System.lineSeparator() +
+                "Copy The input to the text field in the following way:" + System.lineSeparator() +
+                "SuggestId Number , Rank Number , Review" + System.lineSeparator() +
                 "Rank Digit: between 1 to 5, 1 - Basa | 5 - Sababa" + System.lineSeparator() +
-                "SuggestId Number: for the trip suggest id list");
+                "SuggestId Number: for the trip suggest id list" + System.lineSeparator() +
+                "Review: review on the driver");
         rankLabel.setTranslateY(20);
         rankLabel.setTranslateX(10);
         rankSuggestIdByTripRequestWindow.getChildren().add(rankLabel);
 
-        suggestIdToRankFromRequestIdRoadTrips = new TextField("Suggest id Number, Rank Digit");
-        suggestIdToRankFromRequestIdRoadTrips.setMaxWidth(210);
-        suggestIdToRankFromRequestIdRoadTrips.setPrefWidth(210);
+        suggestIdToRankFromRequestIdRoadTrips = new TextField("Suggest id Number, Rank Digit , Notes");
+        suggestIdToRankFromRequestIdRoadTrips.setMaxWidth(240);
+        suggestIdToRankFromRequestIdRoadTrips.setPrefWidth(240);
         suggestIdToRankFromRequestIdRoadTrips.setTranslateY(5);
         suggestIdToRankFromRequestIdRoadTrips.setTranslateX(10);
         rankSuggestIdByTripRequestWindow.getChildren().add(suggestIdToRankFromRequestIdRoadTrips);
 
         Button suggestIdToRankFromRequestIdButton= new Button("Rank suggest id by road trips");
-        suggestIdToRankFromRequestIdButton.setPrefWidth(200);
-        suggestIdToRankFromRequestIdButton.setMaxWidth(200);
-        suggestIdToRankFromRequestIdButton.setTranslateX(110);
+        suggestIdToRankFromRequestIdButton.setPrefWidth(210);
+        suggestIdToRankFromRequestIdButton.setMaxWidth(210);
+        suggestIdToRankFromRequestIdButton.setTranslateX(120);
         suggestIdToRankFromRequestIdButton.setTranslateY(10);
         suggestIdToRankFromRequestIdButton.setOnAction(this::rankSuggestIdByRequestIdRoadTripsAction);
         rankSuggestIdByTripRequestWindow.getChildren().add(suggestIdToRankFromRequestIdButton);
@@ -174,7 +178,7 @@ public class TripSuggestController {
 
         scrollPaneRankSuggestIdByTripRequestWindow.setContent(rankSuggestIdByTripRequestWindow);
 
-        Scene scene = new Scene(scrollPaneRankSuggestIdByTripRequestWindow, 470, 350);
+        Scene scene = new Scene(scrollPaneRankSuggestIdByTripRequestWindow, 480, 350);
 
         rankSuggestIdByTripRequestStage.setTitle("Matching Action - choose suggest id");
         rankSuggestIdByTripRequestStage.setScene(scene);
