@@ -251,6 +251,25 @@ public class EngineManager {
         return tripRequestUtil.isRequestIDExist(requestID);
     }
 
+    public List<String> validateRequestIDExistInMatchedRequestTrip(String input) {
+        List<String> errors = new ArrayList<>();
+        int id;
+        try {
+            id = Integer.parseInt(input);
+        }
+        catch (Exception ex) {
+            errors.add("Your choice wasn't a number\n");
+            return errors;
+        }
+        if(tripRequestUtil.isRequestIDExistInMatchedRequestTrips(id)) {
+            return errors;
+        }
+        else {
+            errors.add("Trip request ID isn't exist in the previous list.\n");
+            return errors;
+        }
+    }
+
     public double calcMinutesToRoute(String pathFrom, String pathTo) {
         boolean isPathOneWay;
         double retVal = 0;
@@ -547,4 +566,13 @@ public class EngineManager {
     public List<RoadTrip> findPotentialSuggestedTripsToMatch(String inputMatchingString) {
         return matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
     }
+
+    public List<String> getAllMatchedTripRequest() {
+       return tripRequestUtil.getAllMatchedTripRequestAsString();
+    }
+
+    public TripRequest getTripRequestByID(Integer id) {
+        return tripRequestUtil.getTripRequestByID(id);
+    }
+
 }
