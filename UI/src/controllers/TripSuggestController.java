@@ -2,6 +2,7 @@ package controllers;
 import MatchingUtil.RoadTrip;
 import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -202,6 +203,7 @@ public class TripSuggestController {
                 errors = mainController.validateInputOfRatingDriverOfSuggestIDAndRating(suggestIdToRankStr);
                 if(errors.isEmpty()) {
                     mainController.getSuccessWindow("Ranking succeed");
+                    this.setSuggestIdAccordionForRanking(suggestIdToRankStr);
                 }
                 else {
                     mainController.getAlertErrorWindow(errors);
@@ -220,6 +222,15 @@ public class TripSuggestController {
             }
             mainController.getAlertErrorWindow(errors);
         }
+    }
+
+    void setSuggestIdAccordionForRanking(String suggestId) {
+        ObservableList<TitledPane> observableList = tripSuggestAccordion.getPanes();
+
+        observableList.forEach((suggestIdTitledPane) -> {
+            //if(suggestIdTitledPane.getContent().getAccessibleText())
+                String check = suggestIdTitledPane.getContent().getAccessibleText();
+        });
     }
 
     /*

@@ -180,13 +180,14 @@ public class AppController {
         successAlert.showAndWait();
     }
 
-    public List<String> matchingAction(String inputMatchingString) {
+    public List<String> getPotentialSuggestedTripsToMatch(String inputMatchingString) {
         List<String> validationsErrors = new LinkedList<>();
         try {
             validationsErrors = engine.validateChooseRequestAndAmountOfSuggestedTripsInput(inputMatchingString);
 
             if (validationsErrors.isEmpty()) {
                 List<RoadTrip> roadTrips = engine.findPotentialSuggestedTripsToMatch(inputMatchingString);
+                matchingController.getOptionalSuggestIdsForMatch();
                 //Ohad - Todo display the suggested road trips to user + Total trip cost, arrival/start time (depend on the user choice) average fuel amount in the road.
                 String userPotentialSuggestChoice = "1"; //TODO
                 String response = engine.matchTripRequest(userPotentialSuggestChoice, roadTrips, inputMatchingString);
@@ -198,6 +199,10 @@ public class AppController {
         }
 
         return validationsErrors;
+    }
+
+    public void validateAndActionOfPotentialSuggestedTripsToMatch(String indexToMatch) {
+
     }
 
     public void setTime() {
@@ -269,6 +274,4 @@ public class AppController {
     public List<String> validateInputOfRatingDriverOfSuggestIDAndRating(String requestId) {
         return engine.validateInputOfRatingDriverOfSuggestIDAndRating(requestId);
     }
-
-
 }

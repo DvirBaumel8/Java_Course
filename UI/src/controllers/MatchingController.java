@@ -16,11 +16,15 @@ public class MatchingController {
     @FXML
     private Button matchingButton;
 
-    Stage matchingStage = null;
-    TextField matchingTextField = null;
-
     @FXML
     Accordion matchingAccordion;
+
+    Stage mainMatchingStage = null;
+    TextField matchingTextField = null;
+
+    Stage potentialSuggestedTripsToMatchStage = null;
+    TextField suggestedTripsToMatchTextField = null;
+
 
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
@@ -29,7 +33,7 @@ public class MatchingController {
     @FXML
     void matchingButtonActionListener() {
         if (mainController.isXMLLoaded()) {
-            getMatchingWindow();
+            getMainMatchingWindow();
         }
         else {
             List<String> errors = new LinkedList<>();
@@ -38,8 +42,8 @@ public class MatchingController {
         }
     }
 
-    public void getMatchingWindow()  {
-        matchingStage = new Stage();
+    public void getMainMatchingWindow()  {
+        mainMatchingStage = new Stage();
         VBox matchingWindow = new VBox();
         javafx.geometry.Insets margin = new javafx.geometry.Insets(10,10,10,10);
         matchingWindow.setSpacing(10);
@@ -68,46 +72,87 @@ public class MatchingController {
 
         Scene scene = new Scene(matchingWindow, 400, 200);
 
-        matchingStage.setTitle("Matching Action");
-        matchingStage.setScene(scene);
-        matchingStage.show();
+        mainMatchingStage.setTitle("Matching Action");
+        mainMatchingStage.setScene(scene);
+        mainMatchingStage.show();
     }
 
     private void matchingLoadButtonAction(ActionEvent event) {
         String matchingInput = matchingTextField.getText();
-        List<String> matchingErrors = new LinkedList<>();
+        List<String> potentialSuggestedTripsToMatch = new LinkedList<>();
 
             try {
-                matchingErrors = mainController.matchingAction(matchingInput);
-                if(matchingErrors.isEmpty()) {
-                    String[] inputs = matchingInput.split(",");
-                    this.updateMatchingAccordion(inputs[0], inputs[1]);
-                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Matching Succeed");
-                    successAlert.showAndWait();
-                    matchingStage.close();
-                }
-                else {
-                    throw new Exception();
-                }
+                //potentialSuggestedTripsToMatch = mainController.getPotentialSuggestedTripsToMatch(matchingInput);
+                //if(potentialSuggestedTripsToMatch.size() > 0) {
+                    getPotentialSuggestedIdsToMatchWindow(potentialSuggestedTripsToMatch);
+                    mainMatchingStage.close();
+                    mainController.validateAndActionOfPotentialSuggestedTripsToMatch(suggestedTripsToMatchTextField.getText());
+                //}
+                String[] inputs = matchingInput.split(",");
+                this.updateMatchingAccordion(inputs[0], inputs[1]);
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Matching Succeed");
+                successAlert.showAndWait();
+                mainMatchingStage.close();
+
                 }
             catch (Exception e){
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Matching doesnt Succeed");
-                   for(String error : matchingErrors) {
-                    errorAlert.setContentText(error);
-                    }
-               errorAlert.showAndWait();
+              Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Matching doesnt Succeed");
+              errorAlert.showAndWait();
         }
     }
+
+    public void getPotentialSuggestedIdsToMatchWindow(List<String> potentialSuggestedTripsToMatch)  {
+        potentialSuggestedTripsToMatchStage = new Stage();
+        VBox potentialSuggestedTripsToMatchWindow = new VBox();
+        javafx.geometry.Insets margin = new javafx.geometry.Insets(10,10,10,10);
+        potentialSuggestedTripsToMatchWindow.setSpacing(10);
+
+        ScrollPane scrollPanePotentialSuggestedTripsToMatch = new ScrollPane();
+
+        Label potentialSuggestedIdsToMatchLabel = new Label("Choose suggest id to match from the following options:" + System.lineSeparator() +
+                 System.lineSeparator() + potentialSuggestedTripsToMatch.toString() +
+                System.lineSeparator() + System.lineSeparator() +
+                "insert here the desired suggest id for match:");
+        potentialSuggestedIdsToMatchLabel.setPrefWidth(400);
+
+        potentialSuggestedTripsToMatchWindow.getChildren().add(potentialSuggestedIdsToMatchLabel);
+
+        suggestedTripsToMatchTextField = new TextField("1,4");
+        potentialSuggestedTripsToMatchWindow.getChildren().add(matchingTextField);
+
+        Button suggestedTripsToMatchButton= new Button("Match");
+        suggestedTripsToMatchButton.setPrefWidth(100);
+        suggestedTripsToMatchButton.setTranslateX(165);
+        suggestedTripsToMatchButton.setOnAction(this::matchingLoadButtonAction);
+        potentialSuggestedTripsToMatchWindow.getChildren().add(suggestedTripsToMatchButton);
+
+        potentialSuggestedTripsToMatchWindow.setMargin(potentialSuggestedIdsToMatchLabel, margin);
+        potentialSuggestedTripsToMatchWindow.setMargin(suggestedTripsToMatchTextField, margin);
+        potentialSuggestedTripsToMatchWindow.setMargin(suggestedTripsToMatchButton, margin);
+
+        scrollPanePotentialSuggestedTripsToMatch.setContent(potentialSuggestedTripsToMatchWindow);
+
+        Scene scene = new Scene(scrollPanePotentialSuggestedTripsToMatch, 400, 300);
+
+        mainMatchingStage.setTitle("Matching Action - potential suggested Ids to match");
+        mainMatchingStage.setScene(scene);
+        mainMatchingStage.show();
+    }
+
 
     public void updateMatchingAccordion(String requestId, String suggestId) {
         String matchingTextArea = matchingAccordion.getPanes().get(0).getText();
         StringBuilder matchingTextAreaBuilder = new StringBuilder(matchingTextArea);
         matchingTextAreaBuilder.append(requestId + ',' + suggestId +  System.lineSeparator());
-        TitledPane matchingTitledPane= new TitledPane("Matching Trip List", new TextArea(matchingTextAreaBuilder.toString()));
+        TitledPane matchingTitledPane = new TitledPane("Matching Trip List", new TextArea(matchingTextAreaBuilder.toString()));
         matchingAccordion.getPanes().set(0,matchingTitledPane);
     }
 
     public Accordion getMatchingAccordion() {
         return matchingAccordion;
+    }
+
+    public String getOptionalSuggestIdsForMatch() {
+
     }
 }
