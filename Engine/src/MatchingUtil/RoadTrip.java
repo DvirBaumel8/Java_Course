@@ -2,20 +2,28 @@ package MatchingUtil;
 
 import TripSuggestUtil.TripSuggest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RoadTrip {
     private Map<TripSuggest,String> participantSuggestTripsToRoadPart;
     private String RoadStory;
     private int index;
+    private List<TripSuggest> ratedTripSuggested;
 
     public RoadTrip() {
         participantSuggestTripsToRoadPart = new HashMap<>();
+        ratedTripSuggested = new ArrayList<>();
     }
 
     public int getIndex() {
         return index;
+    }
+
+    public Map<TripSuggest, String> getParticipantSuggestTripsToRoadPart() {
+        return participantSuggestTripsToRoadPart;
     }
 
     @Override
