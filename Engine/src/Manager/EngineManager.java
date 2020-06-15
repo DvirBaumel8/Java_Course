@@ -575,13 +575,14 @@ public class EngineManager {
         return tripRequestUtil.getTripRequestByID(id);
     }
 
-    public List<TripSuggest> getAllTripSuggestThatPartOfRequestRoadTrip(String requestIDstr) throws Exception {
-        int requestID;
+    public List<String> getAllTripSuggestThatPartOfRequestRoadTrip(String requestIDstr) {
+        int requestID = 0;
+        List<String> retVal = new ArrayList<>();
         try {
             requestID = Integer.parseInt(requestIDstr);
         }
         catch (Exception ex) {
-            throw new Exception("Your choice wasn't a number.\n");
+            retVal.add("Your choice wasn't a number.\n");
         }
         TripRequest request = getTripRequestByID(requestID);
         RoadTrip requestRoadTrip = request.getMatchTrip();
@@ -592,13 +593,22 @@ public class EngineManager {
             participantsSuggestedTripsList.add(entry.getKey());
         }
         List<TripSuggest> ratedSuggestedTrips = request.getMatchTrip().getRatedTripSuggested();
-        List<TripSuggest> retList = new ArrayList<>();
+        List<TripSuggest> tempList = new ArrayList<>();
         for(TripSuggest suggest : participantsSuggestedTripsList) {
             if(!ratedSuggestedTrips.contains(suggest)) {
-                retList.add(suggest);
+                tempList.add(suggest);
             }
         }
-        return retList;
+
+
+        for(TripSuggest suggest : tempList) {
+            retVal.add(String.format("Suggest ID - %d, Driver Name - %s", suggest.getSuggestID(), suggest.getTripOwnerName()));
+        }
+
+        if(tempList.size() == 0) {
+            retVal.add("You already rated all drivers that part of your road trip");
+        }
+        return retVal;
     }
     //TripSuggestID, rate, description
     public List<String> validateInputOfRatingDriverOfSuggestIDAndRating(String input) {
