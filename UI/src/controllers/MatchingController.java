@@ -51,14 +51,17 @@ public class MatchingController {
 
         Label matchingLabel = new Label("Match your trip request in the following way:" + System.lineSeparator() +
                 "Separated numbers with , :" + System.lineSeparator() +
-                "Request ID, Maximum suggested trips  you want to be display" + System.lineSeparator() +
+                "Request ID, Maximum suggested trips you want to be display" + System.lineSeparator() +
                 "For example:" + System.lineSeparator() +
-                "1,4 (1 - request trip id, 4 - Maximum of amount of suggested trips)");
+                "1,4" + System.lineSeparator() +
+                "(1 - request trip id, 4 - Maximum of amount of suggested trips)");
         matchingLabel.setPrefWidth(400);
 
         matchingWindow.getChildren().add(matchingLabel);
 
         matchingTextField = new TextField("1,4");
+        matchingTextField.setPrefWidth(120);
+        matchingTextField.setMaxWidth(120);
         matchingWindow.getChildren().add(matchingTextField);
 
         Button matchingLoadButton= new Button("Match");
@@ -71,7 +74,7 @@ public class MatchingController {
         matchingWindow.setMargin(matchingTextField, margin);
         matchingWindow.setMargin(matchingLoadButton, margin);
 
-        Scene scene = new Scene(matchingWindow, 400, 200);
+        Scene scene = new Scene(matchingWindow, 450, 300);
 
         mainMatchingStage.setTitle("Matching Action");
         mainMatchingStage.setScene(scene);
@@ -93,7 +96,6 @@ public class MatchingController {
         potentialSuggestedTripsToMatchStage = new Stage();
         VBox potentialSuggestedTripsToMatchWindow = new VBox();
         javafx.geometry.Insets margin = new javafx.geometry.Insets(10,10,10,10);
-        potentialSuggestedTripsToMatchWindow.setSpacing(10);
 
         ScrollPane scrollPanePotentialSuggestedTripsToMatch = new ScrollPane();
 
@@ -102,31 +104,31 @@ public class MatchingController {
         Label potentialSuggestedIdsToMatchLabel = new Label("Choose index to match from the following options:" + System.lineSeparator() +
                  System.lineSeparator() + potentialSuggestedTripsToMatch.toString() +
                 System.lineSeparator() + System.lineSeparator() +
-                "insert here the desired index for match:");
-        potentialSuggestedIdsToMatchLabel.setPrefWidth(400);
+                "insert here the desired index for match:" + System.lineSeparator() + System.lineSeparator());
 
         potentialSuggestedTripsToMatchWindow.getChildren().add(potentialSuggestedIdsToMatchLabel);
 
         suggestedTripsToMatchTextField = new TextField("1");
+        suggestedTripsToMatchTextField.setPrefWidth(120);
+        suggestedTripsToMatchTextField.setMaxWidth(120);
         potentialSuggestedTripsToMatchWindow.getChildren().add(matchingTextField);
 
         Button suggestedTripsToMatchButton= new Button("Match");
         suggestedTripsToMatchButton.setPrefWidth(100);
-        suggestedTripsToMatchButton.setTranslateX(165);
+        suggestedTripsToMatchButton.setTranslateX(160);
         suggestedTripsToMatchButton.setOnAction(this::suggestedTripsToMatchButtonAction);
         potentialSuggestedTripsToMatchWindow.getChildren().add(suggestedTripsToMatchButton);
 
         potentialSuggestedTripsToMatchWindow.setMargin(potentialSuggestedIdsToMatchLabel, margin);
-        potentialSuggestedTripsToMatchWindow.setMargin(suggestedTripsToMatchTextField, margin);
         potentialSuggestedTripsToMatchWindow.setMargin(suggestedTripsToMatchButton, margin);
 
         scrollPanePotentialSuggestedTripsToMatch.setContent(potentialSuggestedTripsToMatchWindow);
 
-        Scene scene = new Scene(scrollPanePotentialSuggestedTripsToMatch, 400, 300);
+        Scene scene = new Scene(scrollPanePotentialSuggestedTripsToMatch, 450, 300);
 
-        mainMatchingStage.setTitle("Matching Action - potential suggested Ids to match");
-        mainMatchingStage.setScene(scene);
-        mainMatchingStage.show();
+        potentialSuggestedTripsToMatchStage.setTitle("Matching Action - potential Road Trips index to match");
+        potentialSuggestedTripsToMatchStage.setScene(scene);
+        potentialSuggestedTripsToMatchStage.show();
     }
 
     public void suggestedTripsToMatchButtonAction(ActionEvent event) {
