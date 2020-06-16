@@ -41,7 +41,7 @@ public class MatchingUtil {
         else {
             findPotentialMatchToArrivalTime(potentialSuggestedTrips, suggestedAmountTrips);
         }
-        //calcRoadTripsValues(potentialSuggestedTrips);
+        calcRoadTripsValues(potentialSuggestedTrips);
 
 //        for(Map.Entry<TripSuggest, Integer> trip : suggestedTrips.entrySet()) {
 //            if(checkIFSuggestedTripIncludeRequestStations(requestTrip.getSourceStation(), requestTrip.getDestinationStation(), trip.getKey())) {
@@ -96,6 +96,7 @@ public class MatchingUtil {
         RoadTrip currRoadTrip;
         for(TripSuggest suggest : suggestedTrips) {
             currRoadTrip = new RoadTrip();
+            currRoadTrip.setTripRequest(tripRequest);
             currRoadTrip.addSuggestToRoadTrip(suggest, routes[index]);
             potentialSuggestedTrips.add(currRoadTrip);
             index++;
@@ -303,25 +304,7 @@ public class MatchingUtil {
         return false;
     }
 
-
-
-                        public String matchRequestToRoadTrip(RoadTrip roadTrip) {
-//        if(checkIFSuggestedTripHasPassengers(roadTrip)) {
-//            matches.get(tripSuggest).add(tripRequest);
-//        }
-//        else {
-//            List<TripRequest> requestsList = new ArrayList<>();
-//            requestsList.add(tripRequest);
-//            matches.put(tripSuggest, requestsList);
-//        }
-//        tripRequest.setMatched(true);
-//        tripRequest.setMatchTrip(tripSuggest);
-//        tripSuggest.addNewPassengerToTrip(tripRequest);
-//        return SUCCESS_MATCHING;
-                            return null;
-                        }
-
-                        private boolean checkIfSuggestedTripStartAtRequestDay(TripSuggest suggest) {
+    private boolean checkIfSuggestedTripStartAtRequestDay(TripSuggest suggest) {
 //        int requestRequiredDay = tripRequest.getTripDay();
 //        int suggestStartingDay = suggest.getTripStartDay();
 //        int temp;

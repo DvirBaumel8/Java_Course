@@ -66,6 +66,7 @@ public class EngineManager {
         XMLValidationsImpl xmlValidator = new XMLValidationsImpl(transPool);
         if (xmlValidator.validateXmlFile(errors, pathToTheXMLFile)) {
             try {
+                cleanEngine();
                 tripSuggestUtil.convertPlannedTripsToSuggestedTrips(transPool.getPlannedTrips().getTransPoolTrip());
                 findAllPlannedTripsOwnerNames();
             } catch (NullPointerException e) {
@@ -73,6 +74,13 @@ public class EngineManager {
             }
         }
         return errors;
+    }
+
+    private void cleanEngine() {
+        tripSuggestUtil.getAllSuggestedTrips().clear();
+        tripRequestUtil.getAllRequestTrips().clear();
+        timeManager.setCurrentTime(new Time(0, 0, 1));
+        suggestTripOwners.clear();
     }
 
     private void findAllPlannedTripsOwnerNames() {

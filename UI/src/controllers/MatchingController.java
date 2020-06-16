@@ -124,11 +124,10 @@ public class MatchingController {
 
         scrollPanePotentialSuggestedTripsToMatch.setContent(potentialSuggestedTripsToMatchWindow);
 
-        Scene scene = new Scene(scrollPanePotentialSuggestedTripsToMatch, 450, 300);
-
-        potentialSuggestedTripsToMatchStage.setTitle("Matching Action - potential Road Trips index to match");
-        potentialSuggestedTripsToMatchStage.setScene(scene);
-        potentialSuggestedTripsToMatchStage.show();
+        Scene scene = new Scene(scrollPanePotentialSuggestedTripsToMatch, 400, 300);
+        mainMatchingStage.setTitle("Matching Action - potential suggested Ids to match");
+        mainMatchingStage.setScene(scene);
+        mainMatchingStage.show();
     }
 
     public void suggestedTripsToMatchButtonAction(ActionEvent event) {
