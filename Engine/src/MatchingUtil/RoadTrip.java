@@ -1,7 +1,9 @@
 package MatchingUtil;
 
+import Manager.EngineManager;
 import Time.Time;
 import TripSuggestUtil.TripSuggest;
+import XML.XMLLoading.jaxb.schema.generated.Route;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public class RoadTrip {
-    private Map<TripSuggest,String[]> participantSuggestTripsToRoadPart;
-    private double totalCost;
-    private double requiredFuel;
+    private Map<TripSuggest,Route> participantSuggestTripsToRoadPart;
+    private int totalCost;
+    private int requiredFuel;
     private Time startArrivalTime;
     private String RoadStory;
     private List<TripSuggest> ratedTripSuggested;
@@ -37,14 +39,14 @@ public class RoadTrip {
         return RoadStory;
     }
 
-    public Map<TripSuggest, String[]> getParticipantSuggestTripsToRoadPart() {
+    public Map<TripSuggest, Route> getParticipantSuggestTripsToRoadPart() {
         return participantSuggestTripsToRoadPart;
     }
 
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        for(Map.Entry<TripSuggest, String[]> entry : participantSuggestTripsToRoadPart.entrySet()) {
+        for(Map.Entry<TripSuggest, Route> entry : participantSuggestTripsToRoadPart.entrySet()) {
             //Print Road trip story
             //        str.append(String.format("Trip ID - %d\n", trip.getSuggestID()));
 //        str.append(String.format("Trip owner name - %s\n", trip.getTripOwnerName()));
@@ -60,20 +62,45 @@ public class RoadTrip {
         return ratedTripSuggested;
     }
 
-    public void addSuggestToRoadTrip(TripSuggest suggest, String[] stations) {
-        this.participantSuggestTripsToRoadPart.put(suggest, stations);
+    public void addSuggestToRoadTrip(TripSuggest suggest, Route route) {
+        this.participantSuggestTripsToRoadPart.put(suggest, route);
     }
 
-
     public void calcTotalCost() {
+        int cost = 0;
+        for(Map.Entry<TripSuggest,Route> entry : participantSuggestTripsToRoadPart.entrySet()) {
+            cost += calculateRoutePriceByPpk(entry.getKey().getPpk(), entry.getValue());
+        }
+
+        this.totalCost = cost;
     }
 
     public void calcRequiredFuel() {
+        int fuel = 0;
+
+        for(Map.Entry<TripSuggest,Route> entry : participantSuggestTripsToRoadPart.entrySet()) {
+            fuel += entry.getKey().calcRequiredFuel(entry.getValue());
+        }
+        this.requiredFuel = fuel;
     }
 
     public void calcStartArrivalTime() {
     }
 
     public void buildRoadTripStory() {
+    }
+
+    private int calculateRoutePriceByPpk(int ppk, Route route) {
+        int sum = 0;
+        String[] paths = route.getPath().split(",");
+        for(int i = 0; i < paths.length - 1; i++) {
+            int km = getLengthBetweenStations(paths[i], paths[i+1]);
+            sum += km * ppk;
+        }
+        return sum;
+    }
+
+    private int getLengthBetweenStations(String pathFrom, String pathTo) {
+        return EngineManager.getEngineManagerInstance().getLengthBetweenStations(pathFrom, pathTo);
     }
 }
