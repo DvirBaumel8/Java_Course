@@ -1,5 +1,6 @@
 package Manager;
 
+import GraphBuilder.GraphBuilderUtil;
 import MatchingUtil.MatchingUtil;
 import MatchingUtil.RoadTrip;
 import Time.Time;
@@ -16,6 +17,7 @@ import XML.XMLLoading.jaxb.schema.generated.Path;
 import XML.XMLLoading.jaxb.schema.generated.Route;
 import XML.XMLLoading.jaxb.schema.generated.Stop;
 import XML.XMLLoading.jaxb.schema.generated.TransPool;
+import com.fxgraph.graph.Graph;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -35,6 +37,7 @@ public class EngineManager {
     }
     private List<String> menuOrderErrorMessage;
     private static List<RoadTrip> potentialCacheList;
+    private static GraphBuilderUtil graphBuilderUtil;
     private static final String SUCCESS_MATCHING = "Your trip request was match to trip suggested successfully\n";
 
     private EngineManager() {
@@ -66,6 +69,7 @@ public class EngineManager {
         XMLValidationsImpl xmlValidator = new XMLValidationsImpl(transPool);
         if (xmlValidator.validateXmlFile(errors, pathToTheXMLFile)) {
             try {
+                graphBuilderUtil = new GraphBuilderUtil(transPool);
                 cleanEngine();
                 tripSuggestUtil.convertPlannedTripsToSuggestedTrips(transPool.getPlannedTrips().getTransPoolTrip());
                 findAllPlannedTripsOwnerNames();
@@ -598,5 +602,9 @@ public class EngineManager {
         else {
             suggest.addRatingToDriver(Integer.parseInt(elements[1]), elements[2]);
         }
+    }
+
+    public Graph getGraph() {
+        return graphBuilderUtil.createGraph(getCurrentSystemTime(), transPool);
     }
 }

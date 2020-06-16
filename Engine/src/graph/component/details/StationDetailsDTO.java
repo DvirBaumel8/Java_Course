@@ -1,4 +1,4 @@
-package LiveMap.graph.component.details;
+package graph.component.details;
 
 import java.util.List;
 

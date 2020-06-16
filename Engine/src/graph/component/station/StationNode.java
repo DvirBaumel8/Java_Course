@@ -1,7 +1,7 @@
-package LiveMap.graph.component.station;
+package graph.component.station;
 
-import LiveMap.graph.component.details.StationDetailsDTO;
-import LiveMap.graph.component.station.Visual.StationController;
+import graph.component.details.StationDetailsDTO;
+import graph.component.station.Visual.StationController;
 import com.fxgraph.cells.AbstractCell;
 import com.fxgraph.graph.Graph;
 import javafx.fxml.FXMLLoader;

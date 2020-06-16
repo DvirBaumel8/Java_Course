@@ -1,6 +1,6 @@
-package LiveMap.graph.component.coordinate;
+package graph.component.coordinate;
 
-import LiveMap.graph.component.coordinate.visual.CoordinateController;
+import graph.component.coordinate.visual.CoordinateController;
 import com.fxgraph.cells.AbstractCell;
 import com.fxgraph.graph.Graph;
 import javafx.fxml.FXMLLoader;

@@ -1,7 +1,7 @@
-package LiveMap.graph.layout;
+package graph.layout;
 
-import LiveMap.graph.component.coordinate.CoordinatesManager;
-import LiveMap.graph.component.station.StationManager;
+import graph.component.coordinate.CoordinatesManager;
+import graph.component.station.StationManager;
 import com.fxgraph.graph.Graph;
 import com.fxgraph.layout.Layout;
 

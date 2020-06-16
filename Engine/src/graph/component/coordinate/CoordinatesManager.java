@@ -1,6 +1,6 @@
-package LiveMap.graph.component.coordinate;
+package graph.component.coordinate;
 
-import LiveMap.graph.component.util.NodesManager;
+import graph.component.util.NodesManager;
 
 import java.util.function.BiFunction;
 

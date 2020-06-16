@@ -1,6 +1,6 @@
-package LiveMap.graph.component.details.Visual;
+package graph.component.details.Visual;
 
-import LiveMap.graph.component.details.StationDetailsDTO;
+import graph.component.details.StationDetailsDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 

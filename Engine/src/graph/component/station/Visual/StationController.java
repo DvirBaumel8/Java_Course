@@ -1,7 +1,7 @@
-package LiveMap.graph.component.station.Visual;
+package graph.component.station.Visual;
 
-import LiveMap.graph.component.details.StationDetailsDTO;
-import LiveMap.graph.component.details.Visual.StationDetailsController;
+import graph.component.details.StationDetailsDTO;
+import graph.component.details.Visual.StationDetailsController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

@@ -1,4 +1,4 @@
-package LiveMap.graph.component.Arrow;
+package graph.component.Arrow;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;

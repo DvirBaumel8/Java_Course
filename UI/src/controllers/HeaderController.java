@@ -49,6 +49,7 @@ public class HeaderController {
                 xmlStage.close();
                 mainController.setTime();
                 mainController.resetSystem();
+                mainController.updateLiveMap();
                 mainController.loadInitTripSuggestFromXML();
         }
         else {

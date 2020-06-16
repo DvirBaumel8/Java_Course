@@ -1,4 +1,4 @@
-package LiveMap.graph.component.coordinate.visual;
+package graph.component.coordinate.visual;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

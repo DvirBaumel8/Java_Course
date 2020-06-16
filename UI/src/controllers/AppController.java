@@ -4,9 +4,12 @@ import Manager.EngineManager;
 import Manager.TransPoolManager;
 import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
+import com.fxgraph.graph.Graph;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 
 import java.util.*;
 
@@ -32,6 +35,7 @@ public class AppController {
     private TransPoolManager transPoolManager;
 
     private EngineManager engine;
+    private BorderPane root;
 
 
     @FXML
@@ -267,5 +271,13 @@ public class AppController {
 
     public void resetSystem() {
 
+    }
+
+    public void updateLiveMap() {
+        Graph graph = engine.getGraph();
+    }
+
+    public void setRoot(BorderPane root) {
+        this.root = root;
     }
 }

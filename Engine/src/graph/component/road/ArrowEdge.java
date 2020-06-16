@@ -1,4 +1,4 @@
-package LiveMap.graph.component.road;
+package graph.component.road;
 
 import com.fxgraph.edges.Edge;
 import com.fxgraph.graph.Graph;

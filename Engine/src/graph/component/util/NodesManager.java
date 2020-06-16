@@ -1,8 +1,12 @@
-package LiveMap.graph.component.util;
+package graph.component.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class NodesManager<N> {
@@ -19,8 +23,8 @@ public class NodesManager<N> {
         return nodes.computeIfAbsent(coordinateKey, k -> factory.apply(x, y) );
     }
 
-    public Stream<N> getAllCoordinates() {
-        return nodes.values().stream();
+    public List<N> getAllCoordinates() {
+        return new ArrayList<>(nodes.values());
     }
 
     private String assembleKey(int x, int y) {
