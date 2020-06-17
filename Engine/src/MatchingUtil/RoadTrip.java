@@ -8,6 +8,7 @@ import XML.XMLLoading.jaxb.schema.generated.Route;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +22,18 @@ public class RoadTrip {
     private TripRequest tripRequest;
 
     public RoadTrip() {
-        participantSuggestTripsToRoadPart = new HashMap<>();
+        participantSuggestTripsToRoadPart = new LinkedHashMap<>();
         ratedTripSuggested = new ArrayList<>();
+    }
+
+    public RoadTrip(RoadTrip roadTrip) {
+        this.participantSuggestTripsToRoadPart = roadTrip.getParticipantSuggestTripsToRoadPart();
+        this.totalCost = getTotalCost();
+        this.requiredFuel = roadTrip.getRequiredFuel();
+        this.startArrivalTime = roadTrip.getStartArrivalTime();
+        this.RoadStory = roadTrip.getRoadStory();
+        this.ratedTripSuggested = roadTrip.getRatedTripSuggested();
+        this.tripRequest = roadTrip.getTripRequest();
     }
 
     public TripRequest getTripRequest() {
@@ -33,11 +44,11 @@ public class RoadTrip {
         this.tripRequest = tripRequest;
     }
 
-    public double getTotalCost() {
+    public int getTotalCost() {
         return totalCost;
     }
 
-    public double getRequiredFuel() {
+    public int getRequiredFuel() {
         return requiredFuel;
     }
 
@@ -51,21 +62,6 @@ public class RoadTrip {
 
     public Map<TripSuggest, Route> getParticipantSuggestTripsToRoadPart() {
         return participantSuggestTripsToRoadPart;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder str = new StringBuilder();
-        for(Map.Entry<TripSuggest, Route> entry : participantSuggestTripsToRoadPart.entrySet()) {
-            //Print Road trip story
-            //        str.append(String.format("Trip ID - %d\n", trip.getSuggestID()));
-//        str.append(String.format("Trip owner name - %s\n", trip.getTripOwnerName()));
-//        str.append(String.format("Trip price - %d\n", trip.getTripPrice()));
-//        str.append(String.format("Trip estimate time to arrival - %s\n", convertDoubleTimeToStrTime(trip.getArrivalHourToSpecificStation(tripRequest.getDestinationStation()))));
-//        str.append(String.format("Required fuel to your trip- %d\n", calcRequiredFuelToRequest(trip, tripRequest)));
-        }
-
-        return str.toString();
     }
 
     public List<TripSuggest> getRatedTripSuggested() {
@@ -131,4 +127,39 @@ public class RoadTrip {
     private int getLengthBetweenStations(String pathFrom, String pathTo) {
         return EngineManager.getEngineManagerInstance().getLengthBetweenStations(pathFrom, pathTo);
     }
+
+    public String getLastStation() {
+        Route route = null;
+        for(Map.Entry<TripSuggest,Route> entry : participantSuggestTripsToRoadPart.entrySet()) {
+            route = entry.getValue();
+        }
+
+        String[] elements =  route.getPath().split(",");
+        return elements[elements.length - 1];
+    }
+
+    public String getFirstStation() {
+        for(Map.Entry<TripSuggest,Route> entry : participantSuggestTripsToRoadPart.entrySet()) {
+            return entry.getValue().getPath().split(",")[0];
+        }
+        return "";
+    }
+
+    public List<String> getRoute() {
+        List<String> route = new ArrayList<>();
+        String[] currentElements;
+        int index = 0;
+
+        for(Map.Entry<TripSuggest,Route> routeEntry : participantSuggestTripsToRoadPart.entrySet()) {
+            currentElements = routeEntry.getValue().getPath().split(",");
+            for(String station : currentElements) {
+                route.add(station);
+            }
+
+        }
+
+        return route;
+    }
+
+
 }

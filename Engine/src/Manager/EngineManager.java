@@ -25,7 +25,7 @@ import java.util.*;
 public class EngineManager {
     private static TimeManager timeManager;
     private static EngineManager engineManagerInstance;
-    private TransPool transPool;
+    private static TransPool transPool;
     private static TripRequestsUtil tripRequestUtil;
     private static TripSuggestUtil tripSuggestUtil;
     private static MatchingUtil matchingUtil;
@@ -51,7 +51,7 @@ public class EngineManager {
             validator = Validator.getInstance();
             matches = new HashMap<>();
             timeManager = TimeManager.getInstance();
-            matchingUtil = new MatchingUtil();
+            matchingUtil = new MatchingUtil(transPool);
             potentialCacheList = new ArrayList<>();
         }
         return engineManagerInstance;
@@ -277,7 +277,7 @@ public class EngineManager {
         return tripRequestUtil.getTripRequestByID(requestID);
     }
 
-    public Map<TripSuggest, Integer> getAllSuggestedTripsMap() {
+    public Map<Integer, TripSuggest> getAllSuggestedTripsMap() {
         return tripSuggestUtil.getAllSuggestedTrips();
     }
 
@@ -383,11 +383,11 @@ public class EngineManager {
 
     public Map<TripSuggest, String> getCurrentTripsSuggestAndStation() {
         Map<TripSuggest, String> mapToRet = new HashMap<>();
-        Map<TripSuggest, Integer> suggestedTrips = tripSuggestUtil.getAllSuggestedTrips();
+        Map<Integer,TripSuggest> suggestedTrips = tripSuggestUtil.getAllSuggestedTrips();
         TripSuggest currTrip;
 
-        for (Map.Entry<TripSuggest, Integer> entry : suggestedTrips.entrySet()) {
-            currTrip = entry.getKey();
+        for (Map.Entry<Integer, TripSuggest> entry : suggestedTrips.entrySet()) {
+            currTrip = entry.getValue();
             if (checkIfTripActiveNow(currTrip)) {
                 String currStation = findTripCurrentStation(currTrip);
                 mapToRet.put(currTrip, currStation);
@@ -502,7 +502,7 @@ public class EngineManager {
     }
 
     public List<String> findPotentialSuggestedTripsToMatch(String inputMatchingString) {
-        potentialCacheList = matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
+       // potentialCacheList = matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
         int requestID = Integer.parseInt(inputMatchingString.split(",")[0]);
         return convertToStr(potentialCacheList, tripRequestUtil.getTripRequestByID(requestID));
     }

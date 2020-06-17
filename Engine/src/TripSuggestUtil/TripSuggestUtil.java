@@ -9,15 +9,11 @@ import java.util.Map;
 
 public class TripSuggestUtil {
     private int nextSuggestID;
-    private Map<TripSuggest, Integer> suggestedTrips;
+    private Map<Integer, TripSuggest> suggestedTrips;
 
     public TripSuggestUtil() {
         this.nextSuggestID = 1;
         this.suggestedTrips = new HashMap<>();
-    }
-
-    public Integer getTripID(TripSuggest trip) {
-        return suggestedTrips.get(trip);
     }
 
     public void convertPlannedTripsToSuggestedTrips (List<TransPoolTrip> plannedTrips) {
@@ -30,11 +26,11 @@ public class TripSuggestUtil {
 
     public void addSuggestTrip(TripSuggest suggestTrip) {
         suggestTrip.setSuggestID(nextSuggestID);
-        suggestedTrips.put(suggestTrip, nextSuggestID);
+        suggestedTrips.put(nextSuggestID, suggestTrip);
         nextSuggestID++;
     }
 
-    public Map<TripSuggest, Integer> getAllSuggestedTrips () {
+    public Map<Integer,TripSuggest> getAllSuggestedTrips () {
         return suggestedTrips;
     }
 
@@ -72,11 +68,6 @@ public class TripSuggestUtil {
     }
 
     public TripSuggest getTripSuggestByID(int suggestID) {
-        for(Map.Entry<TripSuggest, Integer> trip : suggestedTrips.entrySet()) {
-            if(trip.getValue() == suggestID) {
-                return trip.getKey();
-            }
-        }
-        return null;
+       return suggestedTrips.get(suggestID);
     }
 }

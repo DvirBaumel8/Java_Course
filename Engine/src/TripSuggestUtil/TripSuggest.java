@@ -7,6 +7,7 @@ import XML.XMLLoading.jaxb.schema.generated.Route;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TripSuggest {
     private int suggestID;
@@ -180,6 +181,10 @@ public class TripSuggest {
 
     public void setSuggestID(int suggestIDID) {
         this.suggestID = suggestIDID;
+    }
+
+    public Map<Object, Integer> getCapacityPerTime() {
+        return null;
     }
 
     public enum RecurrencesTypes
