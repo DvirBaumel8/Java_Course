@@ -1,3 +1,4 @@
+import com.fxgraph.graph.Graph;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -16,8 +17,6 @@ public class Main extends Application {
         Thread.currentThread().setName("main");
         launch(args);
     }
-
-
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -93,6 +92,7 @@ public class Main extends Application {
         appController.setTripSuggestComponentController(tripSuggestController);
         appController.setMatchingComponentController(matchingController);
         appController.setLiveMapComponentController(liveMapController);
+        appController.setRoot(root);
 
         Scene scene = new Scene(root, 1400, 900);
         primaryStage.setScene(scene);

@@ -48,6 +48,8 @@ public class HeaderController {
                 successAlert.showAndWait();
                 xmlStage.close();
                 mainController.setTime();
+                mainController.resetSystem();
+                mainController.updateLiveMap();
                 mainController.loadInitTripSuggestFromXML();
         }
         else {

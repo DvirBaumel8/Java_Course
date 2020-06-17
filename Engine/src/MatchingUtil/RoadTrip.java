@@ -2,6 +2,7 @@ package MatchingUtil;
 
 import Manager.EngineManager;
 import Time.Time;
+import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
 import XML.XMLLoading.jaxb.schema.generated.Route;
 
@@ -17,10 +18,19 @@ public class RoadTrip {
     private Time startArrivalTime;
     private String RoadStory;
     private List<TripSuggest> ratedTripSuggested;
+    private TripRequest tripRequest;
 
     public RoadTrip() {
         participantSuggestTripsToRoadPart = new HashMap<>();
         ratedTripSuggested = new ArrayList<>();
+    }
+
+    public TripRequest getTripRequest() {
+        return tripRequest;
+    }
+
+    public void setTripRequest(TripRequest tripRequest) {
+        this.tripRequest = tripRequest;
     }
 
     public double getTotalCost() {
@@ -85,9 +95,27 @@ public class RoadTrip {
     }
 
     public void calcStartArrivalTime() {
+
     }
 
     public void buildRoadTripStory() {
+        StringBuilder str = new StringBuilder();
+        str.append("Road Story:/n");
+        for(Map.Entry<TripSuggest,Route> entry : participantSuggestTripsToRoadPart.entrySet()) {
+            String route = entry.getValue().getPath();
+            str.append(String.format("Go up to %s's car in station %s\n", entry.getKey().getTripOwnerName(), route.split(",")[0]));
+            str.append(String.format("Go down from %s's car in station %s\n", entry.getKey().getTripOwnerName(), route.split(",")[route.split(",").length - 1]));
+        }
+        str.append(String.format("Total trip cost: %d\n",this.totalCost));
+        str.append(String.format("Total required fuel: %d\n", this.requiredFuel));
+        if(tripRequest.isRequestByStartTime()) {
+            str.append(String.format("Arrival time: %s", tripRequest.getArrivalTime().toString()));
+        }
+        else {
+            str.append(String.format("Starting time: %s", tripRequest.getStartTime().toString()));
+        }
+
+        this.RoadStory = str.toString();
     }
 
     private int calculateRoutePriceByPpk(int ppk, Route route) {
