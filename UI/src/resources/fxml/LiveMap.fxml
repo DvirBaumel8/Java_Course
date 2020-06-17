@@ -11,23 +11,6 @@
 <ScrollPane minWidth="200" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LiveMapController">
   <content>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="592.0" prefWidth="1055.0">
-         <children>
-            <Label fx:id="timeLabel" layoutX="16.0" layoutY="1.0" prefHeight="53.0" prefWidth="335.0" text="Time:" textFill="#0c2deb">
-               <font>
-                  <Font name="System Bold Italic" size="20.0" />
-               </font></Label>
-            <Button fx:id="fiveMinButton" layoutX="762.0" layoutY="12.0" mnemonicParsing="false" onAction="#fiveMinButtonActionListener" prefHeight="24.0" prefWidth="49.0" text="5Min" />
-            <Button fx:id="halfHourMinButton" layoutX="815.0" layoutY="11.0" mnemonicParsing="false" onAction="#halfHourMinButtonActionListener" prefWidth="57.0" text="30Min" />
-            <Button fx:id="oneHourButton" layoutX="877.0" layoutY="11.0" mnemonicParsing="false" onAction="#oneHourButtonActionListener" text="1Hour" />
-            <Button fx:id="twoHoursButton" layoutX="936.0" layoutY="11.0" mnemonicParsing="false" onAction="#twoHoursButtonActionListener" text="2Hours" />
-            <Button fx:id="oneDayButton" layoutX="1003.0" layoutY="11.0" mnemonicParsing="false" onAction="#oneDayButtonActionListener" text="1Day" />
-            <Accordion fx:id="currentTripsAccordion" layoutX="459.0" layoutY="12.0" />
-          <TitledPane animated="false" expanded="false" layoutX="910.0" layoutY="45.0" prefHeight="138.0" prefWidth="141.0" text="Current Trips" />
-            <Label fx:id="setRunningButtonLabel" layoutX="441.0" layoutY="3.0" prefHeight="41.0" prefWidth="160.0" text="Set running method:" underline="true">
-               <font>
-                  <Font name="System Bold" size="16.0" />
-               </font></Label>
-            <Button fx:id="forwardPreviousButton" layoutX="602.0" layoutY="11.0" mnemonicParsing="false" onAction="#forwardPreviousButtonActionListener" prefHeight="29.0" prefWidth="121.0" text="Forward" />
-         </children></AnchorPane>
+   </AnchorPane>
   </content>
 </ScrollPane>

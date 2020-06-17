@@ -2,6 +2,7 @@ package controllers;
 
 import Manager.EngineManager;
 import Manager.TransPoolManager;
+import RootWrapper.RootWrapper;
 import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
 import com.fxgraph.graph.Graph;
@@ -35,7 +36,6 @@ public class AppController {
     private TransPoolManager transPoolManager;
 
     private EngineManager engine;
-    private BorderPane root;
 
 
     @FXML
@@ -201,7 +201,7 @@ public class AppController {
 
     public void setTime() {
         String timeStr = engine.getCurrentSystemTime().toString();
-        liveMapController.setTimeLabel(timeStr);
+        headerComponentController.setTimeLabel(timeStr);
     }
 
     public void setDateString5Min(boolean isForward) {
@@ -277,7 +277,11 @@ public class AppController {
         Graph graph = engine.getGraph();
     }
 
-    public void setRoot(BorderPane root) {
-        this.root = root;
+    public void setLiveMapToRootCenter() {
+        RootWrapper.setRootCenter(engine.getGraph());
+    }
+
+    public void setNeededTripSuggestAccordion(String requestId, String index) {
+            tripSuggestController.setNeededTripSuggestAccordion(requestId, index);
     }
 }

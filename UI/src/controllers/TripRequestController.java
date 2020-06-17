@@ -33,10 +33,12 @@ public class TripRequestController {
 
     ArrayList<TextField> inputAddTripRequest = null;
     static final int INPUT_ADD_TRIP_REQUEST_SIZE = 6;
+    String[] inputTripRequestString = new String[INPUT_ADD_TRIP_REQUEST_SIZE];
     Stage addTripRequestStage = null;
 
     public TripRequestController() {
-        this.inputAddTripRequest = new ArrayList<>(INPUT_ADD_TRIP_REQUEST_SIZE);;
+        this.inputAddTripRequest = new ArrayList<>();
+        inputTripRequestString = new String[INPUT_ADD_TRIP_REQUEST_SIZE];
     }
 
     public void setMainController(AppController mainController) {
@@ -56,7 +58,6 @@ public class TripRequestController {
     }
 
     private void addInputTripRequestButtonAction(ActionEvent event) {
-        String[] inputTripRequestString = new String[INPUT_ADD_TRIP_REQUEST_SIZE];
         int index = 0;
         for(TextField inputTextField : inputAddTripRequest) {
             inputTripRequestString[index] = inputTextField.getText();
@@ -72,6 +73,10 @@ public class TripRequestController {
         javafx.geometry.Insets generalMargin = new javafx.geometry.Insets(0,4,0,4);
         addTripRequestWindow.setSpacing(10);
 
+        if(tripRequestAccordion.getPanes().size() > 0) {
+            this.inputAddTripRequest = null;
+            this.inputAddTripRequest = new ArrayList<>();
+        }
         Label detailsLabel = new Label("Please insert the following details:");
         detailsLabel.setTranslateX(15);
 
@@ -99,7 +104,7 @@ public class TripRequestController {
         nameOfOwnerLabel.setPrefWidth(300);
         addTripRequestWindow.getChildren().add(nameOfOwnerLabel);
 
-        inputAddTripRequest.add(new TextField("Ohad"));
+        inputAddTripRequest.add(0, new TextField("Ohad"));
         inputAddTripRequest.get(0).setMaxWidth(250);
         inputAddTripRequest.get(0).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(0));
@@ -112,7 +117,7 @@ public class TripRequestController {
         sourceStationLabel.setPrefWidth(300);
         addTripRequestWindow.getChildren().add(sourceStationLabel);
 
-        inputAddTripRequest.add(new TextField("A"));
+        inputAddTripRequest.add(1, new TextField("A"));
         inputAddTripRequest.get(1).setMaxWidth(250);
         inputAddTripRequest.get(1).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(1));
@@ -125,7 +130,7 @@ public class TripRequestController {
         destinationStationLabel.setPrefWidth(300);
         addTripRequestWindow.getChildren().add(destinationStationLabel);
 
-        inputAddTripRequest.add(new TextField("B"));
+        inputAddTripRequest.add(2, new TextField("B"));
         inputAddTripRequest.get(2).setMaxWidth(250);
         inputAddTripRequest.get(2).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(2));
@@ -138,7 +143,7 @@ public class TripRequestController {
         startOrArrivalTimeLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(startOrArrivalTimeLabel);
 
-        inputAddTripRequest.add(new TextField("12:00"));
+        inputAddTripRequest.add(3, new TextField("08:00"));
         inputAddTripRequest.get(3).setMaxWidth(250);
         inputAddTripRequest.get(3).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(3));
@@ -151,7 +156,7 @@ public class TripRequestController {
         timeTypeLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(timeTypeLabel);
 
-        inputAddTripRequest.add(new TextField("S"));
+        inputAddTripRequest.add(4, new TextField("S"));
         inputAddTripRequest.get(4).setMaxWidth(250);
         inputAddTripRequest.get(4).setTranslateX(15);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(4));
@@ -164,7 +169,7 @@ public class TripRequestController {
         arrivalDayNumberLabel.setPrefWidth(400);
         addTripRequestWindow.getChildren().add(arrivalDayNumberLabel);
 
-        inputAddTripRequest.add(new TextField("2"));
+        inputAddTripRequest.add(5, new TextField("2"));
         inputAddTripRequest.get(5).setTranslateX(15);
         inputAddTripRequest.get(5).setMaxWidth(250);
         addTripRequestWindow.getChildren().add(inputAddTripRequest.get(5));

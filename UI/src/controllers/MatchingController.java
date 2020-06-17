@@ -84,7 +84,6 @@ public class MatchingController {
     private void matchingLoadButtonAction(ActionEvent event) {
             try {
                 getPotentialSuggestedTripsToMatchWindow();
-                mainMatchingStage.close();
                 }
             catch (Exception e){
               Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Matching doesnt Succeed" + e.getMessage());
@@ -136,6 +135,7 @@ public class MatchingController {
                     matchTripRequestObject(suggestedTripsToMatchTextField.getText(),matchingTextField.getText());
             if(!roadTripForRequestId.isEmpty()) {
                 this.updateMatchingAccordion(inputsMainMatchingStage[0], roadTripForRequestId);
+                mainController.setNeededTripSuggestAccordion(inputsMainMatchingStage[0], roadTripForRequestId);
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Matching Succeed");
                 successAlert.showAndWait();
                 potentialSuggestedTripsToMatchStage.close();

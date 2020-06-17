@@ -1,3 +1,4 @@
+import RootWrapper.RootWrapper;
 import com.fxgraph.graph.Graph;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -63,13 +64,13 @@ public class Main extends Application {
 
         //--------------------------------------------------------------------
 
-        fxmlLoader = new FXMLLoader();
-        url = getClass().getResource(route.LIVEMAP_fXML_RESOURCE);
-        fxmlLoader.setLocation(url);
-        ScrollPane borderPaneLiveMap = fxmlLoader.load(url.openStream());
-        borderPaneLiveMap.setFitToHeight(true);
-        borderPaneLiveMap.setFitToWidth(true);
-        LiveMapController liveMapController = fxmlLoader.getController();
+//        fxmlLoader = new FXMLLoader();
+//        url = getClass().getResource(route.LIVEMAP_fXML_RESOURCE);
+//        fxmlLoader.setLocation(url);
+//        ScrollPane borderPaneLiveMap = fxmlLoader.load(url.openStream());
+//        borderPaneLiveMap.setFitToHeight(true);
+//        borderPaneLiveMap.setFitToWidth(true);
+//        LiveMapController liveMapController = fxmlLoader.getController();
 
         //--------------------------------------------------------------------
 
@@ -85,14 +86,14 @@ public class Main extends Application {
         root.setLeft(borderPaneTripRequest);
         root.setRight(borderPaneTripSuggest);
         root.setBottom(borderPaneMatching);
-        root.setCenter(borderPaneLiveMap);
+       // root.setCenter(borderPaneLiveMap);
+        RootWrapper.setRoot(root);
 
         appController.setHeaderComponentController(headerController);
         appController.setTripRequestComponentController(tripRequestController);
         appController.setTripSuggestComponentController(tripSuggestController);
         appController.setMatchingComponentController(matchingController);
-        appController.setLiveMapComponentController(liveMapController);
-        appController.setRoot(root);
+        //appController.setLiveMapComponentController(liveMapController);
 
         Scene scene = new Scene(root, 1400, 900);
         primaryStage.setScene(scene);

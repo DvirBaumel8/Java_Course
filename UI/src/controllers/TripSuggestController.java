@@ -1,6 +1,4 @@
 package controllers;
-import MatchingUtil.RoadTrip;
-import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -46,7 +44,7 @@ public class TripSuggestController {
     }
 
     public TripSuggestController() {
-        this.inputAddTripSuggest = new ArrayList<>(INPUT_ADD_TRIP_SUGGEST_SIZE);
+        this.inputAddTripSuggest = new ArrayList<>();
     }
 
     @FXML
@@ -261,6 +259,11 @@ public class TripSuggestController {
         //addTripSuggestWindow.setBackground((new Background(new BackgroundFill(Color.gray(0.865),
         //      CornerRadii.EMPTY, Insets.EMPTY))));
 
+        if(tripSuggestAccordion.getPanes().size() > 0) {
+            this.inputAddTripSuggest = null;
+            this.inputAddTripSuggest = new ArrayList<>();
+        }
+
         Label detailsLabel = new Label("Please insert the following details:");
         detailsLabel.setTranslateX(15);
 
@@ -431,5 +434,18 @@ public class TripSuggestController {
         tripSuggestAccordion.getPanes().add(sizeOfCurrentPanes,title);
 
         //liveMapComponentController.updateTripOnMap(trip);
+    }
+
+    public void setNeededTripSuggestAccordion(String requestId, String index) {
+        ObservableList<TitledPane> suggestTripList =  tripSuggestAccordion.getPanes();
+
+        suggestTripList.forEach((titledPane -> {
+            String suggestTripText = titledPane.getText();
+            for(int i = 0 ; i < suggestTripText.length() ; i ++) {
+                if(String.valueOf(suggestTripText.charAt(i)).equals(index)) {
+                }
+            }
+        }));
+
     }
 }
