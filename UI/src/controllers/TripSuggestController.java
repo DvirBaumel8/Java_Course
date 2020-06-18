@@ -122,7 +122,7 @@ public class TripSuggestController {
         try {
             rankSuggestID = requestIdToRankSuggestIdTextField.getText();
             errors = mainController.validateRequestIdForRank(rankSuggestID);
-            if  (errors == null) {
+            if  (errors.size() == 0) {
                 rankSuggestIdByRequestIdWindow();
                 rankMainStage.close();
             }
