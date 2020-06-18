@@ -73,6 +73,7 @@ public class GraphBuilderUtil {
 
     private CoordinatesManager createCoordinates(Model model) {
         CoordinatesManager cm = new CoordinatesManager(CoordinateNode::new);
+        List<Stop> stopStations = transPool.getMapDescriptor().getStops().getStop();
         int mapLength = transPool.getMapDescriptor().getMapBoundries().getLength();
         int mapWidth = transPool.getMapDescriptor().getMapBoundries().getWidth();
 
@@ -129,22 +130,5 @@ public class GraphBuilderUtil {
 
         //graph.getViewportGestures().setZoomSpeed(1);
         return graph;
-    }
-
-    public HashSet<String> getCurrStationNames (List<Path> pathList) {
-        HashSet<String> res = new HashSet<>();
-
-        pathList.forEach(path -> {
-            String to = path.getTo();
-            String from = path.getFrom();
-            if(!res.contains(to)) {
-                res.add(to);
-            }
-
-            if(!res.contains(from)) {
-                res.add(from);
-            }
-        });
-        return res;
     }
 }
