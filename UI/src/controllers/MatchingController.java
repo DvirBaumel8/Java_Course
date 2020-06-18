@@ -94,16 +94,19 @@ public class MatchingController {
         javafx.geometry.Insets margin = new javafx.geometry.Insets(10,10,10,10);
 
         ScrollPane scrollPanePotentialSuggestedTripsToMatch = new ScrollPane();
-
         List<String> potentialSuggestedTripsToMatch = mainController.getPotentialSuggestedTripsToMatch(matchingTextField.getText());
+        String strToShow = potentialSuggestedTripsToMatch.toString();
 
         Label potentialSuggestedIdsToMatchLabel = new Label("Choose index to match from the following options:" + System.lineSeparator() +
+                "Note: if you see just [null] : " + System.lineSeparator() +
+                "- there is no current index to match in the system"  + System.lineSeparator() +
+                "- please insert more request/suggest trips in the main menu"  + System.lineSeparator() +
                  System.lineSeparator() + potentialSuggestedTripsToMatch.toString() +
                 System.lineSeparator() + System.lineSeparator() +
                 "insert here the desired index for match:" + System.lineSeparator() + System.lineSeparator());
 
         potentialSuggestedTripsToMatchWindow.getChildren().add(potentialSuggestedIdsToMatchLabel);
-
+        suggestedTripsToMatchTextField = null;
         suggestedTripsToMatchTextField = new TextField("1");
         suggestedTripsToMatchTextField.setPrefWidth(120);
         suggestedTripsToMatchTextField.setMaxWidth(120);
@@ -120,7 +123,7 @@ public class MatchingController {
 
         scrollPanePotentialSuggestedTripsToMatch.setContent(potentialSuggestedTripsToMatchWindow);
 
-        Scene scene = new Scene(scrollPanePotentialSuggestedTripsToMatch, 400, 300);
+        Scene scene = new Scene(scrollPanePotentialSuggestedTripsToMatch, 450, 350);
         mainMatchingStage.setTitle("Matching Action - potential suggested Ids to match");
         mainMatchingStage.setScene(scene);
         mainMatchingStage.show();

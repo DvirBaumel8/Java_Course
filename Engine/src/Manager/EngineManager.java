@@ -558,15 +558,17 @@ public class EngineManager {
     private List<String> convertToStr(List<RoadTrip> potentialCacheList, TripRequest tripRequest) {
         List<String> potentialRoadTripsStr = new ArrayList<>();
         int index = 0;
-        for (RoadTrip roadTrip : potentialCacheList) {
-            index++;
-            if (tripRequest.isRequestByStartTime()) {
-                potentialRoadTripsStr.add(String.format("Index %d:\n", index));
-                potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %d\nArrival time: %s\nRequired fuel: %d", index, roadTrip.getRoadStory(),roadTrip.getTotalCost(), roadTrip.getArrivalTime().toString(), roadTrip.getRequiredFuel()));
-            } else {
-                potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %d\nStarting time: %s\nRequired fuel: %d", index, roadTrip.getRoadStory(),roadTrip.getTotalCost(), roadTrip.getStartTime(), roadTrip.getRequiredFuel()));
+            for (RoadTrip roadTrip : potentialCacheList) {
+                index++;
+                if (tripRequest.isRequestByStartTime()) {
+                    potentialRoadTripsStr.add(String.format("Index %d:\n", index));
+                    potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %d\nArrival time: %s\nRequired fuel: %d", index, roadTrip.getRoadStory(),roadTrip.getTotalCost(), roadTrip.getArrivalTime().toString(), roadTrip.getRequiredFuel()));
+                } else {
+                    potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %d\nStarting time: %s\nRequired fuel: %d", index, roadTrip.getRoadStory(),roadTrip.getTotalCost(), roadTrip.getStartTime(), roadTrip.getRequiredFuel()));
+                }
             }
-        }
+
+
         return potentialRoadTripsStr;
     }
 
