@@ -7,6 +7,11 @@ import javafx.scene.layout.BorderPane;
 public class RootWrapper {
     static BorderPane root = null;
 
+    //live map component
+    static ScrollPane borderPaneLiveMapCenter = null;
+    private static Graph graph = null;
+
+
     public RootWrapper() {
     }
 
@@ -19,8 +24,25 @@ public class RootWrapper {
     }
 
     public static void setRootCenter(Graph graph) {
-        ScrollPane borderPaneLiveMapCenter = new ScrollPane();
+        graph = graph;
+        borderPaneLiveMapCenter = new ScrollPane();
         borderPaneLiveMapCenter.setContent(graph.getCanvas());
         RootWrapper.root.setCenter(borderPaneLiveMapCenter);
+    }
+
+    public static ScrollPane getBorderPaneLiveMapCenter() {
+        return borderPaneLiveMapCenter;
+    }
+
+    public static void setBorderPaneLiveMapCenter(ScrollPane borderPaneLiveMapCenter) {
+        RootWrapper.borderPaneLiveMapCenter = borderPaneLiveMapCenter;
+    }
+
+    public static Graph getGraph() {
+        return graph;
+    }
+
+    public static void setGraph(Graph graph) {
+        RootWrapper.graph = graph;
     }
 }

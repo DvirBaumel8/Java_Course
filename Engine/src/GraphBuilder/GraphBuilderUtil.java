@@ -15,14 +15,21 @@ import graph.component.station.StationNode;
 import graph.layout.MapGridLayout;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GraphBuilderUtil {
     private TransPool transPool;
-
+//suggest to build the graph for the xml
+    //edge , i get statuions in the xm,l and supposed to build it
+    //do sytry and one
+    //statios ok
+    //edjs check again
     public GraphBuilderUtil(TransPool transPool) {
         this.transPool = transPool;
     }
@@ -31,8 +38,11 @@ public class GraphBuilderUtil {
 
     private void createEdges(Model model, CoordinatesManager cm) {
         ArrowEdge arrowEdge;
-
-        for(Path path : transPool.getMapDescriptor().getPaths().getPath()) {
+        List<Path> pathList = transPool.getMapDescriptor().getPaths().getPath();
+        for(Path path : pathList) {
+            String to = path.getTo();
+            String from = path.getFrom();
+            boolean isOneWay = path.isOneWay();
             for(CoordinateNode node : cm.getAllCoordinates()) {
 
             }
@@ -188,15 +198,18 @@ public class GraphBuilderUtil {
         Graph graph = new Graph();
         final Model model = graph.getModel();
         graph.beginUpdate();
-
         StationManager sm = createStations(model);
         CoordinatesManager cm = createCoordinates(model);
         createEdges(model, cm);
-
         graph.endUpdate();
-
+        graph.getCanvas().setMaxWidth(1030);
+        graph.getCanvas().setPrefWidth(1030);
+        graph.getCanvas().setPrefHeight(800);
+        graph.getCanvas().setMaxHeight(800);
         graph.layout(new MapGridLayout(cm, sm));
+        EventHandler<MouseEvent> mouseEventEventHandler =  graph.getViewportGestures().getOnMouseDraggedEventHandler();
 
+        //graph.getViewportGestures().setZoomSpeed(1);
         return graph;
     }
 }

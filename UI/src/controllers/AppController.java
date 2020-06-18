@@ -40,7 +40,6 @@ public class AppController {
 
     @FXML
     public void initialize() {
-        engine = EngineManager.getEngineManagerInstance();
         if (headerComponentController != null && tripRequestController != null && tripSuggestController != null) {
             headerComponentController.setMainController(this);
             tripRequestController.setMainController(this);
@@ -49,6 +48,7 @@ public class AppController {
             liveMapController.setMainController(this);
         }
         transPoolManager = transPoolManager.getTransPoolManagerInstance();
+        engine = transPoolManager.getEngineManager();
     }
 
     public void setHeaderComponentController(HeaderController headerComponentController) {
@@ -152,6 +152,11 @@ public class AppController {
             if(xmlErrors.isEmpty()) {
                 TransPoolManager.setIsXMLLoaded(true);
                 transPoolManager = transPoolManager.getTransPoolManagerInstance();
+                engine = transPoolManager.getEngineManager();
+                Map<Integer, TripSuggest> tripSuggestMap = engine.getTripSuggestUtil().getAllSuggestedTrips();
+                tripSuggestMap.forEach((tripSuggestId, tripSuggestObj) -> {
+                    tripSuggestController.addNewTripSuggestAccordion(tripSuggestObj);
+                });
             }
         } catch (Exception e) {
             xmlErrors.add(e.getMessage());
@@ -274,11 +279,13 @@ public class AppController {
     }
 
     public void updateLiveMap() {
-        Graph graph = engine.getGraph();
+
     }
 
     public void setLiveMapToRootCenter() {
-        RootWrapper.setRootCenter(engine.getGraph());
+        Graph graph = engine.getGraph();
+        liveMapController = new LiveMapController();
+        liveMapController.setLiveMapToRootCenter(graph);
     }
 
     public void setNeededTripSuggestAccordion(String requestId, String index) {
