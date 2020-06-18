@@ -43,6 +43,8 @@ public class SubTrip {
         StringBuilder str = new StringBuilder();
         str.append(String.format("Go up to %s's car in station %s\n", trip.getTripOwnerName(), stations.getFirst().getName()));
         str.append(String.format("Go down from %s's car in station %s\n",trip.getTripOwnerName(), stations.getLast().getName()));
+
+        this.subTripStory = str.toString();
     }
 
     public Station getLastStation() {

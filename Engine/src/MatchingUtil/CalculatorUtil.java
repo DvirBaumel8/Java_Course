@@ -10,7 +10,7 @@ public class CalculatorUtil {
     public static int calcCost(int ppk, LinkedList<Station> stations) {
         int sum = 0;
         for(int i = 0; i < stations.size() - 1; i++) {
-            int km = getLengthBetweenStations(stations.get(i), stations.get(i));
+            int km = getLengthBetweenStations(stations.get(i), stations.get(i+1));
             sum += km * ppk;
         }
         return sum;

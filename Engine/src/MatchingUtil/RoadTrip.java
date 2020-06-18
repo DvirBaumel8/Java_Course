@@ -91,10 +91,10 @@ public class RoadTrip {
     public void calcRequiredFuel() {
         int fuel = 0;
         for (SubTrip subTrip : completeTrip) {
-            fuel += subTrip.getCost();
+            fuel += subTrip.getRequiredFuel();
         }
 
-        this.totalCost = fuel;
+        this.requiredFuel = fuel;
     }
 
     public void calcStartArrivalTime() {
@@ -104,7 +104,7 @@ public class RoadTrip {
 
     public void buildRoadTripStory() {
         StringBuilder str = new StringBuilder();
-        str.append("Road Story:/n");
+        str.append("Road Story:\n");
         for(SubTrip subTrip : completeTrip) {
             str.append(subTrip.getSubTripStory());
         }
