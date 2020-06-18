@@ -241,9 +241,9 @@ public class TripSuggestController {
     }
 
     public void loadTripSuggestFromXML() {
-        Map<TripSuggest, Integer> initTripSuggest = mainController.getTripSuggestMap();
+        Map<Integer, TripSuggest> initTripSuggest = mainController.getTripSuggestMap();
         if(!initTripSuggest.isEmpty()) {
-            initTripSuggest.forEach((tripSuggest,tripSuggestID) -> {
+            initTripSuggest.forEach((tripSuggestID, tripSuggest) -> {
                 addNewTripSuggestAccordion(tripSuggest);
             });
         }

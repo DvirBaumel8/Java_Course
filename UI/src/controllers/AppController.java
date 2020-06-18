@@ -136,7 +136,7 @@ public class AppController {
         //tripRequestController.addTripRequestButtonActionListener();
     }
 
-    public Map<TripSuggest, Integer> getTripSuggestMap() {
+    public Map<Integer, TripSuggest> getTripSuggestMap() {
         return this.transPoolManager.getEngineManager().getTripSuggestUtil().getAllSuggestedTrips();
     }
 
