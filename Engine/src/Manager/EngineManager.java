@@ -56,7 +56,7 @@ public class EngineManager {
             matches = new HashMap<>();
             timeManager = TimeManager.getInstance();
             matchingUtil = new MatchingUtil(transPool);
-            potentialCacheList = new ArrayList<>();
+            potentialCacheList = new LinkedList<>();
             suggestTripOwners = new ArrayList<>();
         }
         return engineManagerInstance;
@@ -500,9 +500,38 @@ public class EngineManager {
     }
 
     public List<String> findPotentialSuggestedTripsToMatch(String inputMatchingString) {
-        // potentialCacheList = matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
+        String[] elements = inputMatchingString.split(",");
+        String tripRequestID = elements[0];
+        String amountS = elements[1];
+        TripRequest request = getTripRequestByID(Integer.parseInt(tripRequestID));
+        int amount = Integer.parseInt(amountS);
+        LinkedList<LinkedList<SubTrip>> potentialRoadTrips = matchingUtil.makeAMatch(request, amount);
+        potentialCacheList = convertTwoLinkedListToOneRoadTripLinkedList(potentialRoadTrips);
+
         int requestID = Integer.parseInt(inputMatchingString.split(",")[0]);
         return convertToStr(potentialCacheList, tripRequestUtil.getTripRequestByID(requestID));
+    }
+
+    private List<RoadTrip> convertTwoLinkedListToOneRoadTripLinkedList(LinkedList<LinkedList<SubTrip>> potentialRoadTrips) {
+        LinkedList<RoadTrip> roadTrips = new LinkedList<RoadTrip>();
+        for(LinkedList<SubTrip> roadTrip : potentialRoadTrips) {
+            roadTrips.add(createRoadTripFromLinkListSubTrips(roadTrip));
+        }
+
+        return roadTrips;
+    }
+
+    private RoadTrip createRoadTripFromLinkListSubTrips(LinkedList<SubTrip> subRoadTrips) {
+        RoadTrip roadTrip = new RoadTrip();
+
+        for(SubTrip subTrip : subRoadTrips) {
+            roadTrip.addSubTripToRoadTrip(subTrip);
+        }
+        roadTrip.calcRequiredFuel();
+        roadTrip.calcTotalCost();
+        roadTrip.calcStartArrivalTime();
+
+        return roadTrip;
     }
 
     private List<String> convertToStr(List<RoadTrip> potentialCacheList, TripRequest tripRequest) {
