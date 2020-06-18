@@ -131,10 +131,10 @@ public class MatchingController {
 
     public void suggestedTripsToMatchButtonAction(ActionEvent event) {
         try {
-            String roadTripForRequestId = mainController.
+            String roadTrip = mainController.
                     matchTripRequestObject(suggestedTripsToMatchTextField.getText(),matchingTextField.getText());
-            if(!roadTripForRequestId.isEmpty()) {
-                mainController.setNeededTripSuggestAccordion(inputsMainMatchingStage[0], roadTripForRequestId);
+            if(!roadTrip.isEmpty()) {
+                mainController.setNeededTripRequestForMatchAccordion(matchingTextField.getText());
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Matching Succeed");
                 successAlert.showAndWait();
                 potentialSuggestedTripsToMatchStage.close();

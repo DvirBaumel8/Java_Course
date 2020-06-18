@@ -1,6 +1,7 @@
 package controllers;
 
 import TripRequests.TripRequest;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -263,5 +264,23 @@ public class TripRequestController {
 
     public void closeAddNewTripRequestStage() {
         addTripRequestStage.close();
+    }
+
+
+
+    public void setNeededTripRequestForMatchAccordion(String requestId) {
+        ObservableList<TitledPane> suggestTripList =  tripRequestAccordion.getPanes();
+
+        suggestTripList.forEach((titledPane -> {
+            String suggestTripText = titledPane.getText();
+            for(int i = 0 ; i < suggestTripText.length() ; i ++) {
+                if(String.valueOf(suggestTripText.charAt(i)).equals(requestId)) {
+                    StringBuilder sb = new StringBuilder(suggestTripText);
+                    TitledPane titledPane1 = tripRequestAccordion.getExpandedPane();
+                    int x = 3;
+                    // tripSuggestAccordion.getPanes().set(i,sb)
+                }
+            }
+        }));
     }
 }

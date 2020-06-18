@@ -438,18 +438,6 @@ public class TripSuggestController {
        // liveMapComponentController.updateTripOnMap(trip);
     }
 
-    public void setNeededTripSuggestAccordion(String requestId, String index) {
-        ObservableList<TitledPane> suggestTripList =  tripSuggestAccordion.getPanes();
-
-        suggestTripList.forEach((titledPane -> {
-            String suggestTripText = titledPane.getText();
-            for(int i = 0 ; i < suggestTripText.length() ; i ++) {
-                if(String.valueOf(suggestTripText.charAt(i)).equals(index)) {
-                }
-            }
-        }));
-    }
-
     public void resetTripSuggestAccordion() {
         int sizeOfCurrentPanes = tripSuggestAccordion.getPanes().size();
 

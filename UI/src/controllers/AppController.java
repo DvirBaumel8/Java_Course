@@ -261,8 +261,8 @@ public class AppController {
         return engine.validateInputOfRatingDriverOfSuggestIDAndRating(tripSuggestId, rank, review);
     }
 
-    public String matchTripRequestObject(String second, String first) {
-        return engine.matchTripRequest(second, first);
+    public String matchTripRequestObject(String input, String requestIDAndAmountToMatch) {
+        return engine.matchTripRequest(input, requestIDAndAmountToMatch);
     }
 
     public void resetTripSuggestAccordion() {
@@ -282,7 +282,7 @@ public class AppController {
         liveMapController.setLiveMapToRootCenter(graph);
     }
 
-    public void setNeededTripSuggestAccordion(String requestId, String index) {
-            tripSuggestController.setNeededTripSuggestAccordion(requestId, index);
+    public void setNeededTripRequestForMatchAccordion(String requestId) {
+        tripRequestController.setNeededTripRequestForMatchAccordion(requestId);
     }
 }
