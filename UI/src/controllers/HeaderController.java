@@ -59,6 +59,7 @@ public class HeaderController {
         String userFullPath = xmlPathTextField.getText();
         List<String> xmlErrors = mainController.CheckPathForXML(userFullPath);
         if(xmlErrors.isEmpty()) {
+                mainController.resetTripSuggestAccordion();
                 mainController.setLiveMapToRootCenter();
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "XML Load Successfully");
                 successAlert.showAndWait();
