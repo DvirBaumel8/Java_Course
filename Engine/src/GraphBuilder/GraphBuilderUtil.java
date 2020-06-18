@@ -1,11 +1,13 @@
 package GraphBuilder;
 
+import Manager.EngineManager;
 import Time.Time;
 import XML.XMLLoading.jaxb.schema.generated.Path;
 import XML.XMLLoading.jaxb.schema.generated.Stop;
 import XML.XMLLoading.jaxb.schema.generated.TransPool;
 import com.fxgraph.graph.Graph;
 import com.fxgraph.graph.Model;
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import graph.component.coordinate.CoordinateNode;
 import graph.component.coordinate.CoordinatesManager;
 import graph.component.details.StationDetailsDTO;
@@ -27,112 +29,48 @@ import java.util.List;
 
 public class GraphBuilderUtil {
     private TransPool transPool;
-//suggest to build the graph for the xml
-    //edge , i get statuions in the xm,l and supposed to build it
-    //do sytry and one
-    //statios ok
-    //edjs check again
+
     public GraphBuilderUtil(TransPool transPool) {
         this.transPool = transPool;
     }
 
-
-
     private void createEdges(Model model, CoordinatesManager cm) {
         ArrowEdge arrowEdge;
-        List<Path> pathList = transPool.getMapDescriptor().getPaths().getPath();
+        String sourceStation;
+        String destStation;
+        int xSource;
+        int ySource;
+        int xDest;
+        int yDest;
 
-        HashSet<String> currStationNames = getCurrStationNames(pathList);
-/*
-        for(Path path : pathList) {
-            for(CoordinateNode node : cm.getAllCoordinates()) {
-                String to = path.getTo();
-                String from = path.getFrom();
-                boolean isOneWay = path.isOneWay();
-
-
-                switch (to) {
-                    case "A":
-                        node.getX() node.getY()
-                            node.
-                        break;
-                    case "B":
-
-                        break;
-                    case "C":
-                        System.out.println("one");
-                        break;
-                    case "D":
-                        System.out.println("two");
-                        break;
-                    case "E":
-                        System.out.println("three");
-                        break;
-
-                    case "F":
-                        System.out.println("three");
-                        break;
-                    case "G":
-                        System.out.println("three");
-                        break;
-                    default:
-                        System.out.println("no match");
-                }
+        for (Path path : transPool.getMapDescriptor().getPaths().getPath()) {
+            sourceStation = path.getFrom();
+            destStation = path.getTo();
+            xSource = findCoordinateXToStation(sourceStation);
+            ySource = findCoordinateYToStation(sourceStation);
+            xDest = findCoordinateXToStation(destStation);
+            yDest = findCoordinateYToStation(destStation);
+            if (path.isOneWay()) {
+                arrowEdge = new ArrowEdge(cm.getOrCreate(xSource, ySource), cm.getOrCreate(xDest, yDest));
+                model.addEdge(arrowEdge);
             }
+            else {
+                arrowEdge = new ArrowEdge(cm.getOrCreate(xDest, yDest), cm.getOrCreate(xSource, ySource));
+                arrowEdge = new ArrowEdge(cm.getOrCreate(xSource, ySource), cm.getOrCreate(xDest, yDest));
+                model.addEdge(arrowEdge);
+            }
+            arrowEdge.textProperty().set(path.getFrom());
         }
-
- */
-        ArrowEdge e13 = new ArrowEdge(cm.getOrCreate(2,2), cm.getOrCreate(7,9));
-        e13.textProperty().set("L: 7 ; FC: 4");
-        model.addEdge(e13); // 1-3
-
-        ArrowEdge e34 = new ArrowEdge(cm.getOrCreate(7,9), cm.getOrCreate(4,6));
-        e34.textProperty().set("L: 12 ; FC: 14");
-        model.addEdge(e34); // 3-4
-
-        ArrowEdge e23 = new ArrowEdge(cm.getOrCreate(5,5), cm.getOrCreate(7,9));
-        e23.textProperty().set("L: 4 ; FC: 10");
-        model.addEdge(e23); // 2-3
-
-        Platform.runLater(() -> {
-            e13.getLine().getStyleClass().add("line1");
-            e13.getText().getStyleClass().add("edge-text");
-
-            e34.getLine().getStyleClass().add("line2");
-            e34.getText().getStyleClass().add("edge-text");
-
-            e23.getLine().getStyleClass().add("line3");
-            e23.getText().getStyleClass().add("edge-text");
-
-            //moveAllEdgesToTheFront(graph);
-        });
     }
-    private void createEdges1(Model model, CoordinatesManager cm) {
-        ArrowEdge e13 = new ArrowEdge(cm.getOrCreate(2,2), cm.getOrCreate(7,9));
-        e13.textProperty().set("L: 7 ; FC: 4");
-        model.addEdge(e13); // 1-3
 
-        ArrowEdge e34 = new ArrowEdge(cm.getOrCreate(7,9), cm.getOrCreate(4,6));
-        e34.textProperty().set("L: 12 ; FC: 14");
-        model.addEdge(e34); // 3-4
-
-        ArrowEdge e23 = new ArrowEdge(cm.getOrCreate(5,5), cm.getOrCreate(7,9));
-        e23.textProperty().set("L: 4 ; FC: 10");
-        model.addEdge(e23); // 2-3
-
-        Platform.runLater(() -> {
-            e13.getLine().getStyleClass().add("line1");
-            e13.getText().getStyleClass().add("edge-text");
-
-            e34.getLine().getStyleClass().add("line2");
-            e34.getText().getStyleClass().add("edge-text");
-
-            e23.getLine().getStyleClass().add("line3");
-            e23.getText().getStyleClass().add("edge-text");
-
-            //moveAllEdgesToTheFront(graph);
-        });
+    private int findCoordinateYToStation(String sourceStation) {
+        return EngineManager.getEngineManagerInstance().getXCoorOfStation(sourceStation);
     }
+
+    private int findCoordinateXToStation(String sourceStation) {
+        return EngineManager.getEngineManagerInstance().getYCoorOfStation(sourceStation);
+    }
+
     private CoordinatesManager createCoordinates(Model model) {
         CoordinatesManager cm = new CoordinatesManager(CoordinateNode::new);
         int mapLength = transPool.getMapDescriptor().getMapBoundries().getLength();
@@ -140,17 +78,6 @@ public class GraphBuilderUtil {
 
         for (int i=0; i<mapLength; i++) {
             for (int j = 0; j < mapWidth; j++) {
-                model.addCell(cm.getOrCreate(i+1, j+1));
-            }
-        }
-
-        return cm;
-    }
-    private CoordinatesManager createCoordinates1(Model model) {
-        CoordinatesManager cm = new CoordinatesManager(CoordinateNode::new);
-
-        for (int i=0; i<10; i++) {
-            for (int j = 0; j < 10; j++) {
                 model.addCell(cm.getOrCreate(i+1, j+1));
             }
         }
@@ -170,50 +97,6 @@ public class GraphBuilderUtil {
 
         return sm;
     }
-//    private StationManager createStations1(Model model) {
-//        StationManager sm = new StationManager(StationNode::new);
-//
-//        StationNode station = sm.getOrCreate(2, 2);
-//        station.setName("This is a test for long string");
-//        station.setDetailsSupplier(() -> {
-//            List<String> trips = new ArrayList<>();
-//            trips.add("Mosh");
-//            trips.add("Menash");
-//            return new StationDetailsDTO(trips);
-//        });
-//        model.addCell(station);
-//
-//        station = sm.getOrCreate(5, 5);
-//        station.setName("B");
-//        station.setDetailsSupplier(() -> {
-//            List<String> trips = new ArrayList<>();
-//            return new StationDetailsDTO(trips);
-//        });
-//        model.addCell(station);
-//
-//        station = sm.getOrCreate(7, 9);
-//        station.setName("C");
-//        station.setDetailsSupplier(() -> {
-//            List<String> trips = new ArrayList<>();
-//            trips.add("Mosh");
-//            trips.add("Menash");
-//            trips.add("Tikva");
-//            trips.add("Mazal");
-//            return new StationDetailsDTO(trips);
-//        });
-//        model.addCell(station);
-//
-//        station = sm.getOrCreate(4, 6);
-//        station.setName("D");
-//        station.setDetailsSupplier(() -> {
-//            List<String> trips = new ArrayList<>();
-//            trips.add("Mazal");
-//            return new StationDetailsDTO(trips);
-//        });
-//        model.addCell(station);
-//
-//        return sm;
-//    }
 
     private void moveAllEdgesToTheFront(Graph graph) {
 
@@ -233,8 +116,8 @@ public class GraphBuilderUtil {
         Graph graph = new Graph();
         final Model model = graph.getModel();
         graph.beginUpdate();
-        StationManager sm = createStations(model);
         CoordinatesManager cm = createCoordinates(model);
+        StationManager sm = createStations(model);
         createEdges(model, cm);
         graph.endUpdate();
         graph.getCanvas().setMaxWidth(1030);

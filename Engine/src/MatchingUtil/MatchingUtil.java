@@ -15,13 +15,7 @@ import java.util.Map;
 
 public class MatchingUtil {
 
-    public MatchingUtil(TransPool system) {
-        data = system;
-    }
-
-    private TransPool data;
-
-    public LinkedList<LinkedList<SubTrip>> makeAMatch(TripRequest request, int numberOfTripsToOffer) {  //By departure or arrival
+    public LinkedList<LinkedList<SubTrip>> makeAMatch(TripRequest request, int numberOfTripsToOffer) {//By departure or arrival
         if (request.isRequestByStartTime())
             return collectMatchingTripsByDepartureTime(request, numberOfTripsToOffer);
         else

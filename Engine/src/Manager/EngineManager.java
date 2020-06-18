@@ -55,7 +55,7 @@ public class EngineManager {
             validator = Validator.getInstance();
             matches = new HashMap<>();
             timeManager = TimeManager.getInstance();
-            matchingUtil = new MatchingUtil(transPool);
+            matchingUtil = new MatchingUtil();
             potentialCacheList = new LinkedList<>();
             suggestTripOwners = new ArrayList<>();
         }
@@ -630,5 +630,23 @@ public class EngineManager {
 
     public Graph getGraph() {
         return graphBuilderUtil.createGraph(getCurrentSystemTime(), transPool);
+    }
+
+    public int getXCoorOfStation(String sourceStation) {
+        for(Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
+            if(stop.getName().equals(sourceStation)) {
+                return stop.getX();
+            }
+        }
+        return -1;
+    }
+
+    public int getYCoorOfStation(String sourceStation) {
+        for(Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
+            if(stop.getName().equals(sourceStation)) {
+                return stop.getY();
+            }
+        }
+        return -1;
     }
 }
