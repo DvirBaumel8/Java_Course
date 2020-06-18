@@ -37,7 +37,6 @@ public class AppController {
 
     private EngineManager engine;
 
-
     @FXML
     public void initialize() {
         if (headerComponentController != null && tripRequestController != null && tripSuggestController != null) {
@@ -153,10 +152,6 @@ public class AppController {
                 TransPoolManager.setIsXMLLoaded(true);
                 transPoolManager = transPoolManager.getTransPoolManagerInstance();
                 engine = transPoolManager.getEngineManager();
-                Map<Integer, TripSuggest> tripSuggestMap = engine.getTripSuggestUtil().getAllSuggestedTrips();
-                tripSuggestMap.forEach((tripSuggestId, tripSuggestObj) -> {
-                    tripSuggestController.addNewTripSuggestAccordion(tripSuggestObj);
-                });
             }
         } catch (Exception e) {
             xmlErrors.add(e.getMessage());

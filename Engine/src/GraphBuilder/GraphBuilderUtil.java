@@ -21,6 +21,8 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GraphBuilderUtil {
@@ -39,14 +41,47 @@ public class GraphBuilderUtil {
     private void createEdges(Model model, CoordinatesManager cm) {
         ArrowEdge arrowEdge;
         List<Path> pathList = transPool.getMapDescriptor().getPaths().getPath();
-        for(Path path : pathList) {
-            String to = path.getTo();
-            String from = path.getFrom();
-            boolean isOneWay = path.isOneWay();
-            for(CoordinateNode node : cm.getAllCoordinates()) {
 
+        HashSet<String> currStationNames = getCurrStationNames(pathList);
+/*
+        for(Path path : pathList) {
+            for(CoordinateNode node : cm.getAllCoordinates()) {
+                String to = path.getTo();
+                String from = path.getFrom();
+                boolean isOneWay = path.isOneWay();
+
+
+                switch (to) {
+                    case "A":
+                        node.getX() node.getY()
+                            node.
+                        break;
+                    case "B":
+
+                        break;
+                    case "C":
+                        System.out.println("one");
+                        break;
+                    case "D":
+                        System.out.println("two");
+                        break;
+                    case "E":
+                        System.out.println("three");
+                        break;
+
+                    case "F":
+                        System.out.println("three");
+                        break;
+                    case "G":
+                        System.out.println("three");
+                        break;
+                    default:
+                        System.out.println("no match");
+                }
             }
         }
+
+ */
         ArrowEdge e13 = new ArrowEdge(cm.getOrCreate(2,2), cm.getOrCreate(7,9));
         e13.textProperty().set("L: 7 ; FC: 4");
         model.addEdge(e13); // 1-3
@@ -211,5 +246,22 @@ public class GraphBuilderUtil {
 
         //graph.getViewportGestures().setZoomSpeed(1);
         return graph;
+    }
+
+    public HashSet<String> getCurrStationNames (List<Path> pathList) {
+        HashSet<String> res = new HashSet<>();
+
+        pathList.forEach(path -> {
+            String to = path.getTo();
+            String from = path.getFrom();
+            if(!res.contains(to)) {
+                res.add(to);
+            }
+
+            if(!res.contains(from)) {
+                res.add(from);
+            }
+        });
+        return res;
     }
 }

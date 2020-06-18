@@ -1,6 +1,7 @@
 package TripSuggestUtil;
 
 import Manager.EngineManager;
+import MatchingUtil.Station;
 import Time.Time;
 import TripRequests.TripRequest;
 import XML.XMLLoading.jaxb.schema.generated.Route;
@@ -12,7 +13,7 @@ import java.util.Map;
 public class TripSuggest {
     private int suggestID;
     private String TripOwnerName;
-    private String tripRoute;
+    private Route tripRoute;
     private RecurrencesTypes recurrencesType;
     private int ppk;
     private int remainingCapacity;
@@ -24,10 +25,12 @@ public class TripSuggest {
     private Time startingTime;
     private Time arrivalTime;
     private int startingDay;
+    private Station[] stations;
 
     public TripSuggest(String ownerName, Route route, int minutes, int hour, int day, int recurrencesType, int ppk, int driverCapacity) {
         this.TripOwnerName = ownerName;
-        this.tripRoute = trimRoute(route);
+        this.tripRoute = route;
+        handleRoute();
         this.setTripScheduleTypeByInt(recurrencesType);
         this.ppk = ppk;
         this.startingTime = new Time(minutes, hour, day);
@@ -39,28 +42,28 @@ public class TripSuggest {
         this.requiredFuel = calcRequiredFuel(route);
         this.driverRating = new DriverRating();
         this.arrivalTime = calcArrivalHour(route.getPath());
+        calcStationsArrivalHour();
+    }
+
+    private void calcStationsArrivalHour() {
+        for(int i = 0; i < stations.length; i++) {
+            calcArrivalHourToSpecificStation(stations[i]);
+        }
+    }
+
+    private void handleRoute() {
+        String[] elements = tripRoute.getPath().split(",");
+        stations = new Station[elements.length];
+
+        for(int i =0; i < stations.length; i++) {
+            stations[i] = new Station(elements[i]);
+        }
     }
 
     public int getPpk() {
         return ppk;
     }
 
-    private String trimRoute(Route route) {
-        String[] stations = route.getPath().split(",");
-        StringBuilder str = new StringBuilder();
-
-        for(int i =0; i < stations.length; i++) {
-            stations[i] = stations[i].trim();
-        }
-
-        for(int i = 0; i < stations.length ; i++) {
-            str.append(stations[i]);
-            if(i != stations.length - 1) {
-                str.append(",");
-            }
-        }
-        return str.toString();
-    }
 
     private Time calcArrivalHour(String path) {
         int sumMinutes = 0;
@@ -128,7 +131,7 @@ public class TripSuggest {
         return TripOwnerName;
     }
 
-    public String getTripRoute() {
+    public Route getTripRoute() {
         return tripRoute;
     }
 
@@ -187,6 +190,14 @@ public class TripSuggest {
         return null;
     }
 
+    public Station getFirstStation() {
+        return stations[0];
+    }
+
+    public Station getLastStation() {
+        return stations[stations.length - 1];
+    }
+
     public enum RecurrencesTypes
     {
         ONE_TIME_ONLY(0),
@@ -224,21 +235,29 @@ public class TripSuggest {
         }
     }
 
-    public Time getArrivalHourToSpecificStation(String stationName) {
-        String[] paths = tripRoute.split(",");
+    public Time getArrivalTimeToStation(Station stationName) {
+        for(int i = 0; i < stations.length; i++) {
+            if(stationName.equals(stations[i])) {
+                return stations[i].getTime();
+            }
+        }
+        return null;
+    }
+
+    public void calcArrivalHourToSpecificStation(Station station) {
         StringBuilder pathToCalc = new StringBuilder();
 
-        for(int i =0; i < paths.length; i++) {
-            if(!paths[i].equals(stationName)) {
-                pathToCalc.append(paths[i]);
+        for(int i =0; i < stations.length; i++) {
+            if(!stations[i].getName().equals(station.getName())) {
+                pathToCalc.append(stations[i]);
                 pathToCalc.append(",");
             }
             else {
-                pathToCalc.append(paths[i]);
+                pathToCalc.append(stations[i]);
                 break;
             }
         }
-        return calcArrivalHour(pathToCalc.toString());
+        station.setArrivalTime(calcArrivalHour(pathToCalc.toString()));
     }
 
     public void addRatingToDriver(int rating) {
@@ -258,29 +277,6 @@ public class TripSuggest {
         return recurrencesType;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        TripSuggest that = (TripSuggest) o;
-//        return suggestID == that.suggestID &&
-//                tripPrice == that.tripPrice &&
-//                startingHour == that.startingHour &&
-//                arrivalHour == that.arrivalHour &&
-//                remainingCapacity == that.remainingCapacity &&
-//                requiredFuel == that.requiredFuel &&
-//                TripOwnerName.equals(that.TripOwnerName) &&
-//                tripRoute.equals(that.tripRoute) &&
-//                passengers.equals(that.passengers) &&
-//                stopStationsDetails.equals(that.stopStationsDetails);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(suggestID, TripOwnerName, tripRoute, tripPrice, startingHour, arrivalHour, remainingCapacity, passengers, stopStationsDetails, requiredFuel);
-//    }
-
-
     public Time getStartingTime() {
         return startingTime;
     }
@@ -291,5 +287,13 @@ public class TripSuggest {
 
     public int getStartingDay() {
         return startingDay;
+    }
+
+    public Station[] getRide() {
+        return stations;
+    }
+
+    public Station[] getTripStations() {
+        return stations;
     }
 }
