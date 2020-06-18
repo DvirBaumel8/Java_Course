@@ -1,11 +1,13 @@
 package GraphBuilder;
 
+import Manager.EngineManager;
 import Time.Time;
 import XML.XMLLoading.jaxb.schema.generated.Path;
 import XML.XMLLoading.jaxb.schema.generated.Stop;
 import XML.XMLLoading.jaxb.schema.generated.TransPool;
 import com.fxgraph.graph.Graph;
 import com.fxgraph.graph.Model;
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import graph.component.coordinate.CoordinateNode;
 import graph.component.coordinate.CoordinatesManager;
 import graph.component.details.StationDetailsDTO;
@@ -34,29 +36,39 @@ public class GraphBuilderUtil {
 
     private void createEdges(Model model, CoordinatesManager cm) {
         ArrowEdge arrowEdge;
-        List<Path> pathList = transPool.getMapDescriptor().getPaths().getPath();
-        List<Stop> stopStations = transPool.getMapDescriptor().getStops().getStop();
+        String sourceStation;
+        String destStation;
+        int xSource;
+        int ySource;
+        int xDest;
+        int yDest;
 
-        for(Stop stop1 : stopStations) {
-            for(Stop stop2 : stopStations) {
-                for(Path path : pathList) {
-                    String from = path.getFrom();
-                    String to = path.getTo();
-                    boolean isOneWay = path.isOneWay();
-                    if(from.equals(stop1.getName()) && to.equals(stop2.getName())) {
-                        ArrowEdge edge = new ArrowEdge(cm.getOrCreate(stop1.getX(),stop1.getY())
-                                , cm.getOrCreate(stop2.getX(),stop2.getY()));
-                        edge.textProperty().set(String.valueOf(path.getLength()));
-                        model.addEdge(edge); // 1-3
-                        if(!isOneWay) {
-                            ArrowEdge edge2 = new ArrowEdge(cm.getOrCreate(stop2.getX(),stop2.getY())
-                                    , cm.getOrCreate(stop1.getX(),stop1.getY()));
-                            model.addEdge(edge2); // 1-3
-                        }
-                    }
-                }
+        for (Path path : transPool.getMapDescriptor().getPaths().getPath()) {
+            sourceStation = path.getFrom();
+            destStation = path.getTo();
+            xSource = findCoordinateXToStation(sourceStation);
+            ySource = findCoordinateYToStation(sourceStation);
+            xDest = findCoordinateXToStation(destStation);
+            yDest = findCoordinateYToStation(destStation);
+            if (path.isOneWay()) {
+                arrowEdge = new ArrowEdge(cm.getOrCreate(xSource, ySource), cm.getOrCreate(xDest, yDest));
+                model.addEdge(arrowEdge);
             }
+            else {
+                arrowEdge = new ArrowEdge(cm.getOrCreate(xDest, yDest), cm.getOrCreate(xSource, ySource));
+                arrowEdge = new ArrowEdge(cm.getOrCreate(xSource, ySource), cm.getOrCreate(xDest, yDest));
+                model.addEdge(arrowEdge);
+            }
+            arrowEdge.textProperty().set(path.getFrom());
         }
+    }
+
+    private int findCoordinateYToStation(String sourceStation) {
+        return EngineManager.getEngineManagerInstance().getXCoorOfStation(sourceStation);
+    }
+
+    private int findCoordinateXToStation(String sourceStation) {
+        return EngineManager.getEngineManagerInstance().getYCoorOfStation(sourceStation);
     }
 
     private CoordinatesManager createCoordinates(Model model) {
@@ -87,12 +99,26 @@ public class GraphBuilderUtil {
         return sm;
     }
 
+    private void moveAllEdgesToTheFront(Graph graph) {
+
+        List<Node> onlyEdges = new ArrayList<>();
+
+        // finds all edge nodes and remove them from the beginning of list
+        ObservableList<Node> nodes = graph.getCanvas().getChildren();
+        while (nodes.get(0).getClass().getSimpleName().equals("EdgeGraphic")) {
+            onlyEdges.add(nodes.remove(0));
+        }
+
+        // adds them as last ones
+        nodes.addAll(onlyEdges);
+    }
+
     public Graph createGraph(Time time, TransPool transPool) {
         Graph graph = new Graph();
         final Model model = graph.getModel();
         graph.beginUpdate();
-        StationManager sm = createStations(model);
         CoordinatesManager cm = createCoordinates(model);
+        StationManager sm = createStations(model);
         createEdges(model, cm);
         graph.endUpdate();
         graph.getCanvas().setMaxWidth(1030);

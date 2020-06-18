@@ -13,15 +13,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class MatchingUtil {
+public class MatchUtil {
 
-    public MatchingUtil(TransPool system) {
-        data = system;
-    }
-
-    private TransPool data;
-
-    public LinkedList<LinkedList<SubTrip>> makeAMatch(TripRequest request, int numberOfTripsToOffer) {  //By departure or arrival
+    public LinkedList<LinkedList<SubTrip>> makeAMatch(TripRequest request, int numberOfTripsToOffer) {//By departure or arrival
         if (request.isRequestByStartTime())
             return collectMatchingTripsByDepartureTime(request, numberOfTripsToOffer);
         else
@@ -53,9 +47,10 @@ public class MatchingUtil {
             return;
 
         Station current = ride.getLast().getLastStation();
-        if (request.getDestinationStation().equals(current)) {
+        if (request.getDestinationStation().equals(current.getName())) {
             res.add(copyLinkedList(ride));
-        } else {
+        }
+        else {
             LinkedList<SubTrip> matchingRides = findTripsForNextStations(ride);
             for (SubTrip subTrip : matchingRides) {
                 LinkedList<SubTrip> newRide = copyLinkedList(ride);

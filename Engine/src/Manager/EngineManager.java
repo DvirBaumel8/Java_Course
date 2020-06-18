@@ -1,8 +1,10 @@
 package Manager;
 
 import GraphBuilder.GraphBuilderUtil;
-import MatchingUtil.MatchingUtil;
+import MatchingUtil.MatchUtil;
 import MatchingUtil.RoadTrip;
+import MatchingUtil.Station;
+import MatchingUtil.SubTrip;
 import Time.Time;
 import Time.TimeManager;
 import TripSuggestUtil.TripSuggestUtil;
@@ -18,8 +20,7 @@ import XML.XMLLoading.jaxb.schema.generated.Route;
 import XML.XMLLoading.jaxb.schema.generated.Stop;
 import XML.XMLLoading.jaxb.schema.generated.TransPool;
 import com.fxgraph.graph.Graph;
-import MatchingUtil.Station;
-import MatchingUtil.SubTrip;
+
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -30,7 +31,7 @@ public class EngineManager {
     private static TransPool transPool;
     private static TripRequestsUtil tripRequestUtil;
     private static TripSuggestUtil tripSuggestUtil;
-    private static MatchingUtil matchingUtil;
+    private static MatchUtil matchUtil;
     private static Validator validator;
     private static List<String> suggestTripOwners;
     private static Map<TripRequest, RoadTrip> matches;
@@ -55,7 +56,7 @@ public class EngineManager {
             validator = Validator.getInstance();
             matches = new HashMap<>();
             timeManager = TimeManager.getInstance();
-            matchingUtil = new MatchingUtil(transPool);
+            matchUtil = new MatchUtil();
             potentialCacheList = new LinkedList<>();
             suggestTripOwners = new ArrayList<>();
         }
@@ -300,6 +301,13 @@ public class EngineManager {
         TripRequest tripRequest = tripRequestUtil.getTripRequestByID(requestID);
         matches.put(tripRequest, roadTrip);
         tripRequest.setMatched(true);
+        if(tripRequest.isRequestByStartTime()) {
+            tripRequest.setArrivalTime(roadTrip.getArrivalTime());
+        }
+        else {
+            tripRequest.setStartTime(roadTrip.getStartTime());
+        }
+
         tripRequest.setMatchTrip(roadTrip);
         return roadTrip.getRoadStory();
     }
@@ -505,31 +513,44 @@ public class EngineManager {
         String amountS = elements[1];
         TripRequest request = getTripRequestByID(Integer.parseInt(tripRequestID));
         int amount = Integer.parseInt(amountS);
-        LinkedList<LinkedList<SubTrip>> potentialRoadTrips = matchingUtil.makeAMatch(request, amount);
-        potentialCacheList = convertTwoLinkedListToOneRoadTripLinkedList(potentialRoadTrips);
+        LinkedList<LinkedList<SubTrip>> potentialRoadTrips = matchUtil.makeAMatch(request, amount);
+        updateSubTripsValues(potentialRoadTrips);
+        potentialCacheList = convertTwoLinkedListToOneRoadTripLinkedList(potentialRoadTrips, request);
 
         int requestID = Integer.parseInt(inputMatchingString.split(",")[0]);
         return convertToStr(potentialCacheList, tripRequestUtil.getTripRequestByID(requestID));
     }
 
-    private List<RoadTrip> convertTwoLinkedListToOneRoadTripLinkedList(LinkedList<LinkedList<SubTrip>> potentialRoadTrips) {
+    private void updateSubTripsValues(LinkedList<LinkedList<SubTrip>> potentialRoadTrips) {
+        for(LinkedList<SubTrip> subTrips : potentialRoadTrips) {
+            for(SubTrip subTrip : subTrips) {
+                subTrip.calcCost();
+                subTrip.calcRequiredFuel();
+                subTrip.buildSubTripStory();
+                subTrip.calcStartArrivalTime();
+            }
+        }
+    }
+
+    private List<RoadTrip> convertTwoLinkedListToOneRoadTripLinkedList(LinkedList<LinkedList<SubTrip>> potentialRoadTrips, TripRequest request) {
         LinkedList<RoadTrip> roadTrips = new LinkedList<RoadTrip>();
         for(LinkedList<SubTrip> roadTrip : potentialRoadTrips) {
-            roadTrips.add(createRoadTripFromLinkListSubTrips(roadTrip));
+            roadTrips.add(createRoadTripFromLinkListSubTrips(roadTrip, request));
         }
 
         return roadTrips;
     }
 
-    private RoadTrip createRoadTripFromLinkListSubTrips(LinkedList<SubTrip> subRoadTrips) {
+    private RoadTrip createRoadTripFromLinkListSubTrips(LinkedList<SubTrip> subRoadTrips, TripRequest request) {
         RoadTrip roadTrip = new RoadTrip();
-
+        roadTrip.setTripRequest(request);
         for(SubTrip subTrip : subRoadTrips) {
             roadTrip.addSubTripToRoadTrip(subTrip);
         }
         roadTrip.calcRequiredFuel();
         roadTrip.calcTotalCost();
         roadTrip.calcStartArrivalTime();
+        roadTrip.buildRoadTripStory();
 
         return roadTrip;
     }
@@ -541,9 +562,9 @@ public class EngineManager {
             index++;
             if (tripRequest.isRequestByStartTime()) {
                 potentialRoadTripsStr.add(String.format("Index %d:\n", index));
-                //potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nArrival time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getArrivalTime(), roadTrip.getRequiredFuel()));
+                potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %d\nArrival time: %s\nRequired fuel: %d", index, roadTrip.getRoadStory(),roadTrip.getTotalCost(), roadTrip.getArrivalTime().toString(), roadTrip.getRequiredFuel()));
             } else {
-                potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nStarting time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getStartTime(), roadTrip.getRequiredFuel()));
+                potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %d\nStarting time: %s\nRequired fuel: %d", index, roadTrip.getRoadStory(),roadTrip.getTotalCost(), roadTrip.getStartTime(), roadTrip.getRequiredFuel()));
             }
         }
         return potentialRoadTripsStr;
@@ -553,7 +574,7 @@ public class EngineManager {
         return tripRequestUtil.getAllMatchedTripRequestAsString();
     }
 
-    public <SubTrip> List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestIDstr) {
+    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestIDstr) {
         int requestID = 0;
         List<String> retVal = new ArrayList<>();
         try {
@@ -561,31 +582,30 @@ public class EngineManager {
         } catch (Exception ex) {
             retVal.add("Your choice wasn't a number.\n");
         }
-//        TripRequest request = getTripRequestByID(requestID);
-//        RoadTrip requestRoadTrip = request.getMatchTrip();
-////        LinkedList<SubTrip> completeTrip = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
-////        //LinkedList<SubTrip> participantsSuggestedTripsMap = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
-////        List<TripSuggest> participantsSuggestedTripsList = new ArrayList<>();
-////
-////        for (Map.Entry<TripSuggest, Route> entry : participantsSuggestedTripsMap.entrySet()) {
-////            participantsSuggestedTripsList.add(entry.getKey());
-////        }
-////        List<TripSuggest> ratedSuggestedTrips = request.getMatchTrip().getRatedTripSuggested();
-////        List<TripSuggest> tempList = new ArrayList<>();
-////        for (TripSuggest suggest : participantsSuggestedTripsList) {
-////            if (!ratedSuggestedTrips.contains(suggest)) {
-////                tempList.add(suggest);
-////            }
-////        }
-//
-//
-//        for (TripSuggest suggest : tempList) {
-//            retVal.add(String.format("Suggest ID - %d, Driver Name - %s", suggest.getSuggestID(), suggest.getTripOwnerName()));
-//        }
-//
-//        if (tempList.size() == 0) {
-//            retVal.add("You already rated all drivers that part of your road trip");
-//        }
+        TripRequest request = getTripRequestByID(requestID);
+        RoadTrip requestRoadTrip = request.getMatchTrip();
+        LinkedList<SubTrip> subTrips = requestRoadTrip.getSubTrips();
+        List<TripSuggest> participantsSuggestedTripsList = new ArrayList<>();
+
+        for (SubTrip subTrip : subTrips) {
+            participantsSuggestedTripsList.add(subTrip.getTrip());
+        }
+        List<TripSuggest> ratedSuggestedTrips = request.getMatchTrip().getRatedTripSuggested();
+        List<TripSuggest> tempList = new ArrayList<>();
+        for (TripSuggest suggest : participantsSuggestedTripsList) {
+            if (!ratedSuggestedTrips.contains(suggest)) {
+                tempList.add(suggest);
+            }
+        }
+
+
+        for (TripSuggest suggest : tempList) {
+            retVal.add(String.format("Suggest ID - %d, Driver Name - %s", suggest.getSuggestID(), suggest.getTripOwnerName()));
+        }
+
+        if (tempList.size() == 0) {
+            retVal.add("You already rated all drivers that part of your road trip");
+        }
         return retVal;
     }
 
@@ -630,5 +650,23 @@ public class EngineManager {
 
     public Graph getGraph() {
         return graphBuilderUtil.createGraph(getCurrentSystemTime(), transPool);
+    }
+
+    public int getXCoorOfStation(String sourceStation) {
+        for(Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
+            if(stop.getName().equals(sourceStation)) {
+                return stop.getX();
+            }
+        }
+        return -1;
+    }
+
+    public int getYCoorOfStation(String sourceStation) {
+        for(Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
+            if(stop.getName().equals(sourceStation)) {
+                return stop.getY();
+            }
+        }
+        return -1;
     }
 }
