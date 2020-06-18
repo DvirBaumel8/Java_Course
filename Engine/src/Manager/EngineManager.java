@@ -18,6 +18,8 @@ import XML.XMLLoading.jaxb.schema.generated.Route;
 import XML.XMLLoading.jaxb.schema.generated.Stop;
 import XML.XMLLoading.jaxb.schema.generated.TransPool;
 import com.fxgraph.graph.Graph;
+import MatchingUtil.Station;
+import MatchingUtil.SubTrip;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -32,9 +34,11 @@ public class EngineManager {
     private static Validator validator;
     private static List<String> suggestTripOwners;
     private static Map<TripRequest, RoadTrip> matches;
+
     public TripSuggestUtil getTripSuggestUtil() {
         return tripSuggestUtil;
     }
+
     private List<String> menuOrderErrorMessage;
     private static List<RoadTrip> potentialCacheList;
     private static GraphBuilderUtil graphBuilderUtil;
@@ -53,6 +57,7 @@ public class EngineManager {
             timeManager = TimeManager.getInstance();
             matchingUtil = new MatchingUtil(transPool);
             potentialCacheList = new ArrayList<>();
+            suggestTripOwners = new ArrayList<>();
         }
         return engineManagerInstance;
     }
@@ -88,8 +93,6 @@ public class EngineManager {
     }
 
     private void findAllPlannedTripsOwnerNames() {
-        suggestTripOwners = new ArrayList<>();
-
         for (TransPoolTrip trip : transPool.getPlannedTrips().getTransPoolTrip()) {
             suggestTripOwners.add(trip.getOwner());
         }
@@ -116,7 +119,7 @@ public class EngineManager {
     }
 
     private String findRouteToRequest(TripSuggest tripSuggest, TripRequest tripRequest) {
-        String[] stations = tripSuggest.getTripRoute().split(",");
+        Station[] stations = tripSuggest.getTripStations();
         boolean start = false;
         String sourceStation = tripRequest.getSourceStation();
         String destinationStation = tripRequest.getDestinationStation();
@@ -211,15 +214,13 @@ public class EngineManager {
         int id;
         try {
             id = Integer.parseInt(input);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             errors.add("Your choice wasn't a number\n");
             return errors;
         }
-        if(tripRequestUtil.isRequestIDExistInMatchedRequestTrips(id)) {
+        if (tripRequestUtil.isRequestIDExistInMatchedRequestTrips(id)) {
             return errors;
-        }
-        else {
+        } else {
             errors.add("Trip request ID isn't exist in the previous list.\n");
             return errors;
         }
@@ -282,7 +283,7 @@ public class EngineManager {
     }
 
     public String matchTripRequest(String input, String requestIDAndAmountToMatch) {
-        if(!validaRoadTripChoice(input)) {
+        if (!validaRoadTripChoice(input)) {
             return null;
         }
         String[] inputs = requestIDAndAmountToMatch.split(",");
@@ -308,14 +309,12 @@ public class EngineManager {
 
         try {
             input = Integer.parseInt(inputStr);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return false;
         }
-        if(input < 1) {
+        if (input < 1) {
             return false;
-        }
-        else if(potentialCacheList.size() < input){
+        } else if (potentialCacheList.size() < input) {
             return false;
         }
         return true;
@@ -382,14 +381,14 @@ public class EngineManager {
     }
 
     public Map<TripSuggest, String> getCurrentTripsSuggestAndStation() {
-        Map<TripSuggest, String> mapToRet = new HashMap<>();
-        Map<Integer,TripSuggest> suggestedTrips = tripSuggestUtil.getAllSuggestedTrips();
+        Map<TripSuggest, Station> mapToRet = new HashMap<>();
+        Map<Integer, TripSuggest> suggestedTrips = tripSuggestUtil.getAllSuggestedTrips();
         TripSuggest currTrip;
 
         for (Map.Entry<Integer, TripSuggest> entry : suggestedTrips.entrySet()) {
             currTrip = entry.getValue();
             if (checkIfTripActiveNow(currTrip)) {
-                String currStation = findTripCurrentStation(currTrip);
+                Station currStation = findTripCurrentStation(currTrip);
                 mapToRet.put(currTrip, currStation);
             }
         }
@@ -400,19 +399,18 @@ public class EngineManager {
         return timeManager.getCurrTime();
     }
 
-    public static String findTripCurrentStation(TripSuggest trip) {
+    public static Station findTripCurrentStation(TripSuggest trip) {
         Time timeSystem = timeManager.getCurrTime();
         int hourSystem = timeSystem.getHours();
         int minutesSystem = timeSystem.getMinutes();
 
-        String prevStation = trip.getTripRoute().split(",")[0];
-        String[] tripRoute = trip.getTripRoute().split(",");
         Time currTripTime;
         int currTripHour;
         int currTripMinutes;
+        Station prevStation = trip.getFirstStation();
 
-        for (String station : tripRoute) {
-            currTripTime = trip.getArrivalHourToSpecificStation(station);
+        for (Station station : trip.getTripStations()) {
+            currTripTime = trip.getArrivalTimeToStation(station);
             currTripHour = currTripTime.getHours();
             currTripMinutes = currTripTime.getMinutes();
 
@@ -502,7 +500,7 @@ public class EngineManager {
     }
 
     public List<String> findPotentialSuggestedTripsToMatch(String inputMatchingString) {
-       // potentialCacheList = matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
+        // potentialCacheList = matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
         int requestID = Integer.parseInt(inputMatchingString.split(",")[0]);
         return convertToStr(potentialCacheList, tripRequestUtil.getTripRequestByID(requestID));
     }
@@ -510,13 +508,12 @@ public class EngineManager {
     private List<String> convertToStr(List<RoadTrip> potentialCacheList, TripRequest tripRequest) {
         List<String> potentialRoadTripsStr = new ArrayList<>();
         int index = 0;
-        for(RoadTrip roadTrip : potentialCacheList) {
+        for (RoadTrip roadTrip : potentialCacheList) {
             index++;
-            if(tripRequest.isRequestByStartTime()) {
+            if (tripRequest.isRequestByStartTime()) {
                 potentialRoadTripsStr.add(String.format("Index %d:\n", index));
                 //potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nArrival time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getArrivalTime(), roadTrip.getRequiredFuel()));
-            }
-            else {
+            } else {
                 potentialRoadTripsStr.add(String.format("Index %d:\n Road trip: %s\nTotal cost: %f\nStarting time: %s\nRequired fuel: %f", index, roadTrip.getRoadStory(), tripRequest.getStartTime(), roadTrip.getRequiredFuel()));
             }
         }
@@ -524,47 +521,48 @@ public class EngineManager {
     }
 
     public List<String> getAllMatchedTripRequest() {
-       return tripRequestUtil.getAllMatchedTripRequestAsString();
+        return tripRequestUtil.getAllMatchedTripRequestAsString();
     }
 
-    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestIDstr) {
+    public <SubTrip> List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestIDstr) {
         int requestID = 0;
         List<String> retVal = new ArrayList<>();
         try {
             requestID = Integer.parseInt(requestIDstr);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             retVal.add("Your choice wasn't a number.\n");
         }
-        TripRequest request = getTripRequestByID(requestID);
-        RoadTrip requestRoadTrip = request.getMatchTrip();
-        Map<TripSuggest, Route> participantsSuggestedTripsMap = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
-        List<TripSuggest> participantsSuggestedTripsList = new ArrayList<>();
-
-        for(Map.Entry<TripSuggest,Route> entry : participantsSuggestedTripsMap.entrySet()) {
-            participantsSuggestedTripsList.add(entry.getKey());
-        }
-        List<TripSuggest> ratedSuggestedTrips = request.getMatchTrip().getRatedTripSuggested();
-        List<TripSuggest> tempList = new ArrayList<>();
-        for(TripSuggest suggest : participantsSuggestedTripsList) {
-            if(!ratedSuggestedTrips.contains(suggest)) {
-                tempList.add(suggest);
-            }
-        }
-
-
-        for(TripSuggest suggest : tempList) {
-            retVal.add(String.format("Suggest ID - %d, Driver Name - %s", suggest.getSuggestID(), suggest.getTripOwnerName()));
-        }
-
-        if(tempList.size() == 0) {
-            retVal.add("You already rated all drivers that part of your road trip");
-        }
+//        TripRequest request = getTripRequestByID(requestID);
+//        RoadTrip requestRoadTrip = request.getMatchTrip();
+////        LinkedList<SubTrip> completeTrip = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
+////        //LinkedList<SubTrip> participantsSuggestedTripsMap = requestRoadTrip.getParticipantSuggestTripsToRoadPart();
+////        List<TripSuggest> participantsSuggestedTripsList = new ArrayList<>();
+////
+////        for (Map.Entry<TripSuggest, Route> entry : participantsSuggestedTripsMap.entrySet()) {
+////            participantsSuggestedTripsList.add(entry.getKey());
+////        }
+////        List<TripSuggest> ratedSuggestedTrips = request.getMatchTrip().getRatedTripSuggested();
+////        List<TripSuggest> tempList = new ArrayList<>();
+////        for (TripSuggest suggest : participantsSuggestedTripsList) {
+////            if (!ratedSuggestedTrips.contains(suggest)) {
+////                tempList.add(suggest);
+////            }
+////        }
+//
+//
+//        for (TripSuggest suggest : tempList) {
+//            retVal.add(String.format("Suggest ID - %d, Driver Name - %s", suggest.getSuggestID(), suggest.getTripOwnerName()));
+//        }
+//
+//        if (tempList.size() == 0) {
+//            retVal.add("You already rated all drivers that part of your road trip");
+//        }
         return retVal;
     }
+
     //TripSuggestID, rate, description
     public List<String> validateInputOfRatingDriverOfSuggestIDAndRating(String tripSuggestId,
-                            String rateStr, String description) {
+                                                                        String rateStr, String description) {
         List<String> errors = new ArrayList<>();
 
         int suggestID = 0;
@@ -572,21 +570,19 @@ public class EngineManager {
 
         try {
             suggestID = Integer.parseInt(tripSuggestId);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             errors.add("Trip suggest ID isn't a number.\n");
         }
         try {
             rate = Integer.parseInt(rateStr);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             errors.add("Rating isn't a number.");
             return errors;
         }
-        if(tripSuggestUtil.getTripSuggestByID(suggestID) == null) {
+        if (tripSuggestUtil.getTripSuggestByID(suggestID) == null) {
             errors.add("Trip suggest isn't exist.\n");
         }
-        if(rate < 1 || rate > 5) {
+        if (rate < 1 || rate > 5) {
             errors.add("Please insert a number between 1-5 for rating.\n");
             return errors;
         }
@@ -596,10 +592,9 @@ public class EngineManager {
     public void rankDriver(String input) {
         String[] elements = input.split(",");
         TripSuggest suggest = tripSuggestUtil.getTripSuggestByID(Integer.parseInt(elements[0]));
-        if(elements[2].isEmpty()) {
+        if (elements[2].isEmpty()) {
             suggest.addRatingToDriver(Integer.parseInt(elements[1]));
-        }
-        else {
+        } else {
             suggest.addRatingToDriver(Integer.parseInt(elements[1]), elements[2]);
         }
     }

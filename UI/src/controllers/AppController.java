@@ -37,7 +37,6 @@ public class AppController {
 
     private EngineManager engine;
 
-
     @FXML
     public void initialize() {
         engine = EngineManager.getEngineManagerInstance();
@@ -48,7 +47,6 @@ public class AppController {
             matchingController.setMainController(this);
             liveMapController.setMainController(this);
         }
-        transPoolManager = transPoolManager.getTransPoolManagerInstance();
     }
 
     public void setHeaderComponentController(HeaderController headerComponentController) {

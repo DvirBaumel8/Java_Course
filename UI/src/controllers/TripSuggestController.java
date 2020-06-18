@@ -432,8 +432,7 @@ public class TripSuggestController {
         // title.setOnMouseClicked(event-> tripsAccordionOnAction());
         int sizeOfCurrentPanes = tripSuggestAccordion.getPanes().size();
         tripSuggestAccordion.getPanes().add(sizeOfCurrentPanes,title);
-
-        //liveMapComponentController.updateTripOnMap(trip);
+       // liveMapComponentController.updateTripOnMap(trip);
     }
 
     public void setNeededTripSuggestAccordion(String requestId, String index) {

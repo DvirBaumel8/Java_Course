@@ -63,10 +63,10 @@ public class HeaderController {
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "XML Load Successfully");
                 successAlert.showAndWait();
                 xmlStage.close();
+                mainController.loadInitTripSuggestFromXML();
                 mainController.setTime();
                 mainController.resetSystem();
                 mainController.updateLiveMap();
-                mainController.loadInitTripSuggestFromXML();
         }
         else {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR, "XML doesnt Load Successfully");

@@ -38,13 +38,13 @@ public class TripSuggestUtil {
         int res = 0;
         switch(tripScheduleType)
         {
-            case "One time":
+            case "OneTime":
                 res = 1;
                 break;
             case "Daily":
                 res = 2;
                 break;
-            case "Bi day":
+            case "BiDaily":
                 res = 3;
                 break;
             case "Weekly":
