@@ -62,7 +62,7 @@ public class TripSuggestController {
 
     @FXML
     void rankTripSuggestButtonActionListener() {
-        if(mainController.isXMLLoaded() && mainController.getMatchingAccordion() != null) {
+        if(mainController.isXMLLoaded()) {
             getRankTripSuggestMainWindow();
         }
         else {

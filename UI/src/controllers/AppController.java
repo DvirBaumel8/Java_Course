@@ -244,10 +244,6 @@ public class AppController {
         return engine.getCurrentSystemTime().toString();
     }
 
-    public Accordion getMatchingAccordion() {
-        return matchingController.getMatchingAccordion();
-    }
-
     public List<String> validateRequestIdForRank(String requestId) {
         return engine.validateRequestIDExistInMatchedRequestTrip(requestId);
     }

@@ -16,9 +16,6 @@ public class MatchingController {
     @FXML
     private Button matchingButton;
 
-    @FXML
-    Accordion matchingAccordion;
-
     Stage mainMatchingStage = null;
     TextField matchingTextField = null;
     String[] inputsMainMatchingStage = null;
@@ -134,7 +131,6 @@ public class MatchingController {
             String roadTripForRequestId = mainController.
                     matchTripRequestObject(suggestedTripsToMatchTextField.getText(),matchingTextField.getText());
             if(!roadTripForRequestId.isEmpty()) {
-                this.updateMatchingAccordion(inputsMainMatchingStage[0], roadTripForRequestId);
                 mainController.setNeededTripSuggestAccordion(inputsMainMatchingStage[0], roadTripForRequestId);
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Matching Succeed");
                 successAlert.showAndWait();
@@ -147,17 +143,6 @@ public class MatchingController {
         }
     }
 
-    public void updateMatchingAccordion(String requestId, String suggestId) {
-        String matchingTextArea = matchingAccordion.getPanes().get(0).getText();
-        StringBuilder matchingTextAreaBuilder = new StringBuilder(matchingTextArea);
-        matchingTextAreaBuilder.append(requestId + ',' + suggestId +  System.lineSeparator());
-        TitledPane matchingTitledPane = new TitledPane("Matching Trip List", new TextArea(matchingTextAreaBuilder.toString()));
-        matchingAccordion.getPanes().set(0,matchingTitledPane);
-    }
-
-    public Accordion getMatchingAccordion() {
-        return matchingAccordion;
-    }
 
     public String getOptionalSuggestIdsForMatch() {
         return "x";
