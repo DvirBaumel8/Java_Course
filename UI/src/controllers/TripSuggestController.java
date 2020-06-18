@@ -420,12 +420,12 @@ public class TripSuggestController {
         String scheduleTypeString = String.valueOf(newSuggest.getRecurrencesType());
 
         TextArea newTripSuggestTextArea =
-                new TextArea("-Suggest trip:" + newSuggest.getTripRoute() + System.lineSeparator() +
+                new TextArea("-Suggest trip:" + newSuggest.getTripRoute().getPath()+ System.lineSeparator() +
                         "-Starting day:" + newSuggest.getStartingDay() + System.lineSeparator() +
                         "-Starting time:" + newSuggest.getStartingTime().toString() + System.lineSeparator() +
                         "-Schedule type:" + scheduleTypeString + System.lineSeparator() +
                         "-PPK:" + newSuggest.getPpk() + System.lineSeparator() +
-                        "- Pass capacity:" + newSuggest.getPassengers());
+                        "- Pass capacity:" + newSuggest.getRemainingCapacity());
         newTripSuggestTextArea.setPrefRowCount(6);
         TitledPane title = new TitledPane(newSuggest.getTripOwnerName() + ", id:" + newSuggest.getSuggestID(),
                 newTripSuggestTextArea);

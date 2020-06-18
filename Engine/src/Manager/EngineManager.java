@@ -35,14 +35,14 @@ public class EngineManager {
     private static List<String> suggestTripOwners;
     private static Map<TripRequest, RoadTrip> matches;
 
-    public TripSuggestUtil getTripSuggestUtil() {
-        return tripSuggestUtil;
-    }
-
     private List<String> menuOrderErrorMessage;
     private static List<RoadTrip> potentialCacheList;
     private static GraphBuilderUtil graphBuilderUtil;
     private static final String SUCCESS_MATCHING = "Your trip request was match to trip suggested successfully\n";
+
+    public TripSuggestUtil getTripSuggestUtil() {
+        return tripSuggestUtil;
+    }
 
     private EngineManager() {
     }
@@ -500,7 +500,7 @@ public class EngineManager {
     }
 
     public List<String> findPotentialSuggestedTripsToMatch(String inputMatchingString) {
-        // potentialCacheList = matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
+        potentialCacheList = matchingUtil.findRoadTripsMatchToRequestTrip(inputMatchingString);
         int requestID = Integer.parseInt(inputMatchingString.split(",")[0]);
         return convertToStr(potentialCacheList, tripRequestUtil.getTripRequestByID(requestID));
     }
