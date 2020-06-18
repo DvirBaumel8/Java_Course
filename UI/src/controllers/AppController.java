@@ -269,8 +269,11 @@ public class AppController {
         return engine.matchTripRequest(second, first);
     }
 
-    public void resetSystem() {
+    public void resetTripSuggestAccordion() {
+            tripSuggestController.resetTripSuggestAccordion();
+    }
 
+    public void resetSystem() {
     }
 
     public void updateLiveMap() {

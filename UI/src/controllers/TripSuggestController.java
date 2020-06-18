@@ -445,6 +445,13 @@ public class TripSuggestController {
                 }
             }
         }));
+    }
 
+    public void resetTripSuggestAccordion() {
+        int sizeOfCurrentPanes = tripSuggestAccordion.getPanes().size();
+
+        for(int i = 0 ; i < sizeOfCurrentPanes ; i++) {
+            this.tripSuggestAccordion.getPanes().remove(i);
+        }
     }
 }
