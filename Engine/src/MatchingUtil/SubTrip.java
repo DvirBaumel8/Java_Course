@@ -10,6 +10,7 @@ public class SubTrip {
     private int requiredFuel;
     private TripSuggest trip;
     private int tripID;
+    private int tripDay;
 
     public SubTrip(SubTrip subTrip, int day) {
         this.stations = subTrip.getRoute();
@@ -24,6 +25,14 @@ public class SubTrip {
         this.cost = subTrip.getCost();
         this.requiredFuel = subTrip.getRequiredFuel();
         this.trip = subTrip.getTrip();
+    }
+
+    public SubTrip(TripSuggest tripsuggest, Station station, Station station1, int closestDayFromAbove) {
+        this.trip = tripsuggest;
+        stations = new LinkedList<>();
+        stations.add(station);
+        stations.add(station1);
+        this.tripDay = closestDayFromAbove;
     }
 
     public Station getLastStation() {
