@@ -1,6 +1,7 @@
 package TripRequests;
 
 import MatchingUtil.RoadTrip;
+import MatchingUtil.Station;
 import Time.Time;
 
 public class TripRequest {

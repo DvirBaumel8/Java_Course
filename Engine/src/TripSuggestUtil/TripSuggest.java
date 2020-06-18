@@ -7,6 +7,7 @@ import TripRequests.TripRequest;
 import XML.XMLLoading.jaxb.schema.generated.Route;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ public class TripSuggest {
     private Time arrivalTime;
     private int startingDay;
     private Station[] stations;
+    Map<Time, Integer> capacityPerTime;
 
     public TripSuggest(String ownerName, Route route, int minutes, int hour, int day, int recurrencesType, int ppk, int driverCapacity) {
         this.TripOwnerName = ownerName;
@@ -43,6 +45,9 @@ public class TripSuggest {
         this.driverRating = new DriverRating();
         this.arrivalTime = calcArrivalHour(route.getPath());
         calcStationsArrivalHour();
+        capacityPerTime = new HashMap<Time, Integer>();
+        Time time = new Time(00, 10, 2);
+        capacityPerTime.put(time, 1);
     }
 
     private void calcStationsArrivalHour() {
@@ -186,8 +191,8 @@ public class TripSuggest {
         this.suggestID = suggestIDID;
     }
 
-    public Map<Object, Integer> getCapacityPerTime() {
-        return null;
+    public Map<Time, Integer> getCapacityPerTime() {
+        return capacityPerTime;
     }
 
     public Station getFirstStation() {
@@ -249,11 +254,11 @@ public class TripSuggest {
 
         for(int i =0; i < stations.length; i++) {
             if(!stations[i].getName().equals(station.getName())) {
-                pathToCalc.append(stations[i]);
+                pathToCalc.append(stations[i].getName());
                 pathToCalc.append(",");
             }
             else {
-                pathToCalc.append(stations[i]);
+                pathToCalc.append(stations[i].getName());
                 break;
             }
         }

@@ -47,9 +47,10 @@ public class MatchingUtil {
             return;
 
         Station current = ride.getLast().getLastStation();
-        if (request.getDestinationStation().equals(current)) {
+        if (request.getDestinationStation().equals(current.getName())) {
             res.add(copyLinkedList(ride));
-        } else {
+        }
+        else {
             LinkedList<SubTrip> matchingRides = findTripsForNextStations(ride);
             for (SubTrip subTrip : matchingRides) {
                 LinkedList<SubTrip> newRide = copyLinkedList(ride);
