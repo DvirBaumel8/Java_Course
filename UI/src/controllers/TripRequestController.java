@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -276,8 +277,12 @@ public class TripRequestController {
             for(int i = 0 ; i < suggestTripText.length() ; i ++) {
                 if(String.valueOf(suggestTripText.charAt(i)).equals(requestId)) {
                     StringBuilder sb = new StringBuilder(suggestTripText);
-                    TitledPane titledPane1 = tripRequestAccordion.getExpandedPane();
-                    int x = 3;
+                    int indexAccordion = Integer.parseInt(requestId) - 1;
+                    TitledPane titledPane2 = requestTripList.get(indexAccordion);
+                    Node temp = titledPane2.getContent();
+                    TitledPane title3 = new TitledPane(sb + "Matched",
+                            temp);
+                    tripRequestAccordion.getPanes().set(indexAccordion,title3);
                     // tripSuggestAccordion.getPanes().set(i,sb)
                 }
             }

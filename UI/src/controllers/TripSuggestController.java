@@ -428,8 +428,11 @@ public class TripSuggestController {
                         "-Starting time:" + newSuggest.getStartingTime().toString() + System.lineSeparator() +
                         "-Schedule type:" + scheduleTypeString + System.lineSeparator() +
                         "-PPK:" + newSuggest.getPpk() + System.lineSeparator() +
-                        "- Pass capacity:" + newSuggest.getRemainingCapacity());
-        newTripSuggestTextArea.setPrefRowCount(6);
+                        "-Pass capacity:" + newSuggest.getRemainingCapacity() + System.lineSeparator() +
+                        "-Average Rank:"  + System.lineSeparator() +
+                        "-Num of ranking:"  + System.lineSeparator() +
+                        "-Comments"  + System.lineSeparator());
+        newTripSuggestTextArea.setPrefRowCount(9);
         TitledPane title = new TitledPane(newSuggest.getTripOwnerName() + ", id:" + newSuggest.getSuggestID(),
                 newTripSuggestTextArea);
         // title.setOnMouseClicked(event-> tripsAccordionOnAction());

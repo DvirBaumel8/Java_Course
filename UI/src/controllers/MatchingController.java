@@ -137,12 +137,12 @@ public class MatchingController {
                 mainController.setNeededTripRequestForMatchAccordion(matchingTextField.getText());
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Matching Succeed");
                 successAlert.showAndWait();
-                potentialSuggestedTripsToMatchStage.close();
             }
         }
         catch (Exception e) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Matching doesnt Succeed");
             errorAlert.showAndWait();
         }
+        potentialSuggestedTripsToMatchStage.close();
     }
 }
