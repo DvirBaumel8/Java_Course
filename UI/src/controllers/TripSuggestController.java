@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Background;
@@ -201,9 +202,9 @@ public class TripSuggestController {
             String[] inputs = suggestIdToRankFromRequestIdRoadTrips.getText().split(",");
             errors = mainController.validateInputOfRatingDriverOfSuggestIDAndRating(inputs[0], inputs[1], inputs[2]);
             if (errors.isEmpty()) {
-                mainController.rankDrier(inputs);
+                mainController.rankDriver(inputs);
+                this.setRankFieldsAtSuggestIdAccordion(inputs);
                 mainController.getSuccessWindow("Ranking succeed");
-                this.setSuggestIdAccordionForRanking(inputs[0]);
             } else {
                 mainController.getAlertErrorWindow(errors);
             }
@@ -216,8 +217,30 @@ public class TripSuggestController {
     }
 
 
-    public void setSuggestIdAccordionForRanking(String suggestIdToRankStr) {
+    public void setRankFieldsAtSuggestIdAccordion(String[] inputs) {
+        String tripSuggestId = inputs[0];
+        String rank = inputs [1];
+        String review = inputs[2];
 
+        ObservableList<TitledPane> suggestTripList =  tripSuggestAccordion.getPanes();
+
+        suggestTripList.forEach((titledPane -> {
+            String suggestTripText = titledPane.getText();
+            for(int i = 0 ; i < suggestTripText.length() ; i ++) {
+                if(String.valueOf(suggestTripText.charAt(i)).equals(tripSuggestId)) {
+                    StringBuilder sb = new StringBuilder(suggestTripText);
+                    int indexAccordion = Integer.parseInt(tripSuggestId) - 1;
+                    TitledPane titledPane2 = suggestTripList.get(indexAccordion);
+                    Node temp = titledPane2.getContent();
+
+                    TextArea newTripSuggestTextArea = (TextArea) temp;
+                    TitledPane title3 = new TitledPane(sb + "Matched",
+                            temp);
+                    tripSuggestAccordion.getPanes().set(indexAccordion,title3);
+                    // tripSuggestAccordion.getPanes().set(i,sb)
+                }
+            }
+        }));
     }
 
     /*

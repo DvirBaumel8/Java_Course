@@ -286,7 +286,9 @@ public class AppController {
         tripRequestController.setNeededTripRequestForMatchAccordion(requestId);
     }
 
-    public void rankDrier(String[] inputs) {
+    public void rankDriver(String[] inputs) {
         engine.rankDriver(inputs);
     }
+
+
 }

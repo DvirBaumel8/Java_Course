@@ -273,10 +273,10 @@ public class TripRequestController {
         ObservableList<TitledPane> requestTripList =  tripRequestAccordion.getPanes();
 
         requestTripList.forEach((titledPane -> {
-            String suggestTripText = titledPane.getText();
-            for(int i = 0 ; i < suggestTripText.length() ; i ++) {
-                if(String.valueOf(suggestTripText.charAt(i)).equals(requestId)) {
-                    StringBuilder sb = new StringBuilder(suggestTripText);
+            String requestTripText = titledPane.getText();
+            for(int i = 0 ; i < requestTripText.length() ; i ++) {
+                if(String.valueOf(requestTripText.charAt(i)).equals(requestId)) {
+                    StringBuilder sb = new StringBuilder(requestTripText);
                     int indexAccordion = Integer.parseInt(requestId) - 1;
                     TitledPane titledPane2 = requestTripList.get(indexAccordion);
                     Node temp = titledPane2.getContent();
