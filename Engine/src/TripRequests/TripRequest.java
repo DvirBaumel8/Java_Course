@@ -82,5 +82,13 @@ public class TripRequest {
     public void setMatchTrip(RoadTrip matchTrip) {
         this.matchTrip = matchTrip;
     }
+
+    public void setArrivalTime(Time time) {
+        this.arrivalTime = time;
+    }
+
+    public void setStartTime(Time time) {
+        this.startTime = time;
+    }
 }
 

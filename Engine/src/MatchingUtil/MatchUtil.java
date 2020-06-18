@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class MatchingUtil {
+public class MatchUtil {
 
     public LinkedList<LinkedList<SubTrip>> makeAMatch(TripRequest request, int numberOfTripsToOffer) {//By departure or arrival
         if (request.isRequestByStartTime())
