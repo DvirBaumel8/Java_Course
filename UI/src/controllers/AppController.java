@@ -252,7 +252,7 @@ public class AppController {
         return engine.getAllMatchedTripRequest();
     }
 
-    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestId) throws Exception {
+    public List<String> getTripSuggestIdsFromTripRequestWhichNotRankYet(String requestId) {
         return engine.getTripSuggestIdsFromTripRequestWhichNotRankYet(requestId);
     }
 
@@ -284,5 +284,9 @@ public class AppController {
 
     public void setNeededTripRequestForMatchAccordion(String requestId) {
         tripRequestController.setNeededTripRequestForMatchAccordion(requestId);
+    }
+
+    public void rankDrier(String[] inputs) {
+        engine.rankDriver(inputs);
     }
 }

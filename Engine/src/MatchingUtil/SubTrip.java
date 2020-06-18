@@ -15,6 +15,7 @@ public class SubTrip {
     private String subTripStory;
     private Time startTime;
     private Time arrivalTime;
+    private boolean isRanked;
 
     public SubTrip(SubTrip subTrip, int day) {
         this.stations = subTrip.getRoute();
@@ -22,6 +23,15 @@ public class SubTrip {
         this.requiredFuel = subTrip.getRequiredFuel();
         this.trip = subTrip.getTrip();
         this.tripID = subTrip.getTripID();
+        this.tripDay = day;
+        this.subTripStory = subTrip.getSubTripStory();
+        this.startTime = subTrip.getStartTime();
+        this.arrivalTime = subTrip.getArrivalTime();
+        this.isRanked = subTrip.getIsRanked();
+    }
+
+    public boolean getIsRanked() {
+        return isRanked;
     }
 
     public SubTrip(SubTrip subTrip) {
@@ -29,6 +39,11 @@ public class SubTrip {
         this.cost = subTrip.getCost();
         this.requiredFuel = subTrip.getRequiredFuel();
         this.trip = subTrip.getTrip();
+        this.tripID = subTrip.getTripID();
+        this.subTripStory = subTrip.getSubTripStory();
+        this.startTime = subTrip.getStartTime();
+        this.arrivalTime = subTrip.getArrivalTime();
+        this.isRanked = subTrip.getIsRanked();
     }
 
     public SubTrip(TripSuggest tripsuggest, Station station, Station station1, int closestDayFromAbove) {
@@ -37,6 +52,7 @@ public class SubTrip {
         stations.add(station);
         stations.add(station1);
         this.tripDay = closestDayFromAbove;
+        this.isRanked = false;
     }
 
     public void buildSubTripStory() {
@@ -104,5 +120,9 @@ public class SubTrip {
 
     public Time getArrivalTime() {
         return arrivalTime;
+    }
+
+    public void setIsRanked(boolean val) {
+        this.isRanked = val;
     }
 }

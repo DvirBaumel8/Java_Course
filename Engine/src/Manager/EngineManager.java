@@ -35,6 +35,7 @@ public class EngineManager {
     private static Validator validator;
     private static List<String> suggestTripOwners;
     private static Map<TripRequest, RoadTrip> matches;
+    private static int requestIDCache;
 
     private List<String> menuOrderErrorMessage;
     private static List<RoadTrip> potentialCacheList;
@@ -584,26 +585,19 @@ public class EngineManager {
         TripRequest request = getTripRequestByID(requestID);
         RoadTrip requestRoadTrip = request.getMatchTrip();
         LinkedList<SubTrip> subTrips = requestRoadTrip.getSubTrips();
-        List<TripSuggest> participantsSuggestedTripsList = new ArrayList<>();
 
         for (SubTrip subTrip : subTrips) {
-            participantsSuggestedTripsList.add(subTrip.getTrip());
-        }
-        List<TripSuggest> ratedSuggestedTrips = request.getMatchTrip().getRatedTripSuggested();
-        List<TripSuggest> tempList = new ArrayList<>();
-        for (TripSuggest suggest : participantsSuggestedTripsList) {
-            if (!ratedSuggestedTrips.contains(suggest)) {
-                tempList.add(suggest);
+            if(!subTrip.getIsRanked()) {
+                retVal.add(String.valueOf(subTrip.getTrip().getSuggestID()));
             }
         }
 
-
-        for (TripSuggest suggest : tempList) {
-            retVal.add(String.format("Suggest ID - %d, Driver Name - %s", suggest.getSuggestID(), suggest.getTripOwnerName()));
-        }
-
-        if (tempList.size() == 0) {
+        if (retVal.size() == 0) {
             retVal.add("You already rated all drivers that part of your road trip");
+            return retVal;
+        }
+        else {
+            requestIDCache = requestID;
         }
         return retVal;
     }
@@ -622,6 +616,7 @@ public class EngineManager {
             errors.add("Trip suggest ID isn't a number.\n");
         }
         try {
+            rateStr = rateStr.trim();
             rate = Integer.parseInt(rateStr);
         } catch (Exception ex) {
             errors.add("Rating isn't a number.");
@@ -637,13 +632,21 @@ public class EngineManager {
         return errors;
     }
 
-    public void rankDriver(String input) {
-        String[] elements = input.split(",");
-        TripSuggest suggest = tripSuggestUtil.getTripSuggestByID(Integer.parseInt(elements[0]));
-        if (elements[2].isEmpty()) {
-            suggest.addRatingToDriver(Integer.parseInt(elements[1]));
+    public void rankDriver(String[] inputs) {
+        TripSuggest suggest = tripSuggestUtil.getTripSuggestByID(Integer.parseInt(inputs[0]));
+        int suggestID = suggest.getSuggestID();
+        TripRequest request = getTripRequestByID(requestIDCache);
+        RoadTrip roadTrip = request.getMatchTrip();
+        LinkedList<SubTrip> subTrips = roadTrip.getSubTrips();
+        for(SubTrip subTrip : subTrips) {
+            if(subTrip.getTrip().getSuggestID() == suggestID) {
+                subTrip.setIsRanked(true);
+            }
+        }
+        if (inputs[2].isEmpty()) {
+            suggest.addRatingToDriver(Integer.parseInt(inputs[1]));
         } else {
-            suggest.addRatingToDriver(Integer.parseInt(elements[1]), elements[2]);
+            suggest.addRatingToDriver(Integer.parseInt(inputs[1]), inputs[2]);
         }
     }
 
