@@ -146,8 +146,11 @@ public class TripSuggestController {
         rankSuggestIdByTripRequestWindow.setSpacing(10);
 
         ScrollPane scrollPaneRankSuggestIdByTripRequestWindow = new ScrollPane();
-
-        List<String> tripSuggestIdsFromRequestId = mainController.getTripSuggestIdsFromTripRequestWhichNotRankYet(suggestIdToRankFromRequestIdRoadTrips.getText());
+        List<String> tripSuggestIdsFromRequestId = null;
+        if(!suggestIdToRankFromRequestIdRoadTrips.getText().isEmpty()){
+            tripSuggestIdsFromRequestId = mainController.
+                    getTripSuggestIdsFromTripRequestWhichNotRankYet(suggestIdToRankFromRequestIdRoadTrips.getText());
+        }
 
         Label rankLabel = new Label("Here is all the trip suggest id from the following trip request road trips:"
                 + System.lineSeparator() +  System.lineSeparator() +

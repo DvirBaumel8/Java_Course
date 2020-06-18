@@ -35,31 +35,28 @@ public class GraphBuilderUtil {
     }
 
     private void createEdges(Model model, CoordinatesManager cm) {
-        ArrowEdge arrowEdge;
-        String sourceStation;
-        String destStation;
-        int xSource;
-        int ySource;
-        int xDest;
-        int yDest;
+        List<Path> pathList = transPool.getMapDescriptor().getPaths().getPath();
+        List<Stop> stopStations = transPool.getMapDescriptor().getStops().getStop();
 
-        for (Path path : transPool.getMapDescriptor().getPaths().getPath()) {
-            sourceStation = path.getFrom();
-            destStation = path.getTo();
-            xSource = findCoordinateXToStation(sourceStation);
-            ySource = findCoordinateYToStation(sourceStation);
-            xDest = findCoordinateXToStation(destStation);
-            yDest = findCoordinateYToStation(destStation);
-            if (path.isOneWay()) {
-                arrowEdge = new ArrowEdge(cm.getOrCreate(xSource, ySource), cm.getOrCreate(xDest, yDest));
-                model.addEdge(arrowEdge);
+        for(Stop stop1 : stopStations) {
+            for(Stop stop2 : stopStations) {
+                for(Path path : pathList) {
+                    String from = path.getFrom();
+                    String to = path.getTo();
+                    boolean isOneWay = path.isOneWay();
+                    if(from.equals(stop1.getName()) && to.equals(stop2.getName())) {
+                        ArrowEdge edge = new ArrowEdge(cm.getOrCreate(stop1.getX(),stop1.getY())
+                                , cm.getOrCreate(stop2.getX(),stop2.getY()));
+                        edge.textProperty().set(String.valueOf(path.getLength()));
+                        model.addEdge(edge); // 1-3
+                        if(!isOneWay) {
+                            ArrowEdge edge2 = new ArrowEdge(cm.getOrCreate(stop2.getX(),stop2.getY())
+                                    , cm.getOrCreate(stop1.getX(),stop1.getY()));
+                            model.addEdge(edge2); // 1-3
+                        }
+                    }
+                }
             }
-            else {
-                arrowEdge = new ArrowEdge(cm.getOrCreate(xDest, yDest), cm.getOrCreate(xSource, ySource));
-                arrowEdge = new ArrowEdge(cm.getOrCreate(xSource, ySource), cm.getOrCreate(xDest, yDest));
-                model.addEdge(arrowEdge);
-            }
-            arrowEdge.textProperty().set(path.getFrom());
         }
     }
 
