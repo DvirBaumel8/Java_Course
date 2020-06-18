@@ -269,9 +269,9 @@ public class TripRequestController {
 
 
     public void setNeededTripRequestForMatchAccordion(String requestId) {
-        ObservableList<TitledPane> suggestTripList =  tripRequestAccordion.getPanes();
+        ObservableList<TitledPane> requestTripList =  tripRequestAccordion.getPanes();
 
-        suggestTripList.forEach((titledPane -> {
+        requestTripList.forEach((titledPane -> {
             String suggestTripText = titledPane.getText();
             for(int i = 0 ; i < suggestTripText.length() ; i ++) {
                 if(String.valueOf(suggestTripText.charAt(i)).equals(requestId)) {

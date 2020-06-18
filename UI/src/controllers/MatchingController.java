@@ -145,9 +145,4 @@ public class MatchingController {
             errorAlert.showAndWait();
         }
     }
-
-
-    public String getOptionalSuggestIdsForMatch() {
-        return "x";
-    }
 }

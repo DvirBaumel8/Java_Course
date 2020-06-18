@@ -147,7 +147,7 @@ public class TripSuggestController {
 
         ScrollPane scrollPaneRankSuggestIdByTripRequestWindow = new ScrollPane();
         List<String> tripSuggestIdsFromRequestId = null;
-        if(!suggestIdToRankFromRequestIdRoadTrips.getText().isEmpty()){
+        if(!requestIdToRankSuggestIdTextField.getText().isEmpty()){
             tripSuggestIdsFromRequestId = mainController.
                     getTripSuggestIdsFromTripRequestWhichNotRankYet(suggestIdToRankFromRequestIdRoadTrips.getText());
         }
