@@ -95,7 +95,7 @@ public class Main extends Application {
         appController.setMatchingComponentController(matchingController);
         //appController.setLiveMapComponentController(liveMapController);
 
-        Scene scene = new Scene(root, 1400, 900);
+        Scene scene = new Scene(root, 1400, 1000);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

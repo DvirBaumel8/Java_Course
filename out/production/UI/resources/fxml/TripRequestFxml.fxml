@@ -8,16 +8,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane maxHeight="-Infinity" minHeight="420" minWidth="100" prefHeight="607.0" prefWidth="162.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TripRequestController">
+<ScrollPane maxHeight="-Infinity" minHeight="420" minWidth="100" prefHeight="615.0" prefWidth="205.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TripRequestController">
    <content>
-      <VBox id="vbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="603.0" prefWidth="157.0" spacing="5.0" styleClass="vbox" stylesheets="@../../CSS/vbox.css">
+      <VBox id="vbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="605.0" prefWidth="200.0" spacing="5.0" styleClass="vbox" stylesheets="@../../CSS/vbox.css">
          <children>
-            <Label prefHeight="31.0" prefWidth="150.0" text="Trip Request List" underline="true">
+            <Label prefHeight="31.0" prefWidth="150.0" text="Trip Request List" translateX="20.0" underline="true">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Button alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#addTripRequestButtonActionListener" prefHeight="28.0" prefWidth="74.0" text="Add" textAlignment="JUSTIFY" textOverrun="CLIP" translateX="20.0" translateY="-14.0">
+            <Button alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#addTripRequestButtonActionListener" prefHeight="28.0" prefWidth="74.0" text="Add" textAlignment="JUSTIFY" textOverrun="CLIP" translateX="40.0" translateY="-14.0">
                <font>
                   <Font size="15.0" />
                </font>

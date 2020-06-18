@@ -1,8 +1,13 @@
 package RootWrapper;
 
 import com.fxgraph.graph.Graph;
+import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 
 public class RootWrapper {
     static BorderPane root = null;
@@ -27,6 +32,8 @@ public class RootWrapper {
         graph = graph;
         borderPaneLiveMapCenter = new ScrollPane();
         borderPaneLiveMapCenter.setContent(graph.getCanvas());
+        borderPaneLiveMapCenter.setBackground((new Background(new BackgroundFill(Color.LIGHTYELLOW,
+                CornerRadii.EMPTY, Insets.EMPTY))));
         RootWrapper.root.setCenter(borderPaneLiveMapCenter);
     }
 
