@@ -149,7 +149,7 @@ public class TripSuggestController {
         List<String> tripSuggestIdsFromRequestId = null;
         if(!requestIdToRankSuggestIdTextField.getText().isEmpty()){
             tripSuggestIdsFromRequestId = mainController.
-                    getTripSuggestIdsFromTripRequestWhichNotRankYet(suggestIdToRankFromRequestIdRoadTrips.getText());
+                    getTripSuggestIdsFromTripRequestWhichNotRankYet(requestIdToRankSuggestIdTextField.getText());
         }
 
         Label rankLabel = new Label("Here is all the trip suggest id from the following trip request road trips:"
@@ -201,6 +201,7 @@ public class TripSuggestController {
             String[] inputs = suggestIdToRankFromRequestIdRoadTrips.getText().split(",");
             errors = mainController.validateInputOfRatingDriverOfSuggestIDAndRating(inputs[0], inputs[1], inputs[2]);
             if (errors.isEmpty()) {
+                mainController.rankDrier(inputs);
                 mainController.getSuccessWindow("Ranking succeed");
                 this.setSuggestIdAccordionForRanking(inputs[0]);
             } else {
