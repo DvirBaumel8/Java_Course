@@ -45,11 +45,8 @@ public class HeaderController {
         this.xmlPathTextField = new TextField("full path to .xml");
     }
 
-    @FXML
-    void exitButtonActionListener() {
-        mainController.exitButtonAction();
-    }
 
+    //-------------------------------XML Flow UI---------------------------------------
     @FXML
     void loadXMLButtonActionListener() {
        getXMLWindow();
@@ -106,6 +103,8 @@ public class HeaderController {
         xmlStage.show();
     }
 
+
+    //-------------------------------Time Flow UI---------------------------------------
     @FXML
     void fiveMinButtonActionListener() {
         mainController.setDateString5Min(isForward);
@@ -150,5 +149,14 @@ public class HeaderController {
     public void setTimeLabel(String time) {
         timeLabel.setText("Time:"+time);
     }
+
+
+
+    //-------------------------------Exit Flow UI---------------------------------------
+    @FXML
+    void exitButtonActionListener() {
+        mainController.exitButtonAction();
+    }
+
 
 }

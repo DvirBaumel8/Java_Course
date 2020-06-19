@@ -2,40 +2,33 @@ package controllers;
 
 import Manager.EngineManager;
 import Manager.TransPoolManager;
-import RootWrapper.RootWrapper;
 import TripRequests.TripRequest;
 import TripSuggestUtil.TripSuggest;
 import com.fxgraph.graph.Graph;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 
 import java.util.*;
 
 public class AppController {
-    @FXML
-    private ScrollPane headerComponent;
+    @FXML private ScrollPane headerComponent;
 
-    @FXML
-    private HeaderController headerComponentController;
+    @FXML private HeaderController headerComponentController;
 
-    @FXML
-    private TripRequestController tripRequestController;
+    @FXML private TripRequestController tripRequestController;
 
-    @FXML
-    private TripSuggestController tripSuggestController;
+    @FXML private TripSuggestController tripSuggestController;
 
-    @FXML
-    private MatchingController matchingController;
+    @FXML private MatchingController matchingController;
 
-    @FXML
-    private LiveMapController liveMapController;
+    @FXML private LiveMapController liveMapController;
+
 
     private TransPoolManager transPoolManager;
 
     private EngineManager engine;
+
 
     @FXML
     public void initialize() {
@@ -75,15 +68,43 @@ public class AppController {
         this.matchingController.setMainController(this);
     }
 
+    //-------------------------------Exit Functions Main Controller -------------------------------------------
     public void exitButtonAction() {
         Platform.exit();
         System.exit(0);
     }
 
-    public void loadXMLAction() {
-        headerComponentController.loadXMLButtonActionListener();
+
+
+    //-------------------------------XML Functions Main Controller -------------------------------------------
+    public void loadInitTripSuggestFromXML() {
+        tripSuggestController.loadTripSuggestFromXML();
     }
 
+    public List<String> CheckPathForXML(String myPathToTheXMLFile) {
+        List<String> xmlErrors = new ArrayList<>();
+        try {
+            xmlErrors = engine.LoadXML(myPathToTheXMLFile, xmlErrors);
+            if(xmlErrors.isEmpty()) {
+                TransPoolManager.setIsXMLLoaded(true);
+                transPoolManager = transPoolManager.getTransPoolManagerInstance();
+                engine = transPoolManager.getEngineManager();
+            }
+        } catch (Exception e) {
+            xmlErrors.add(e.getMessage());
+        } finally {
+            //checkIfErrorsOccurredAndPrint(xmlErrors);
+        }
+        return xmlErrors;
+    }
+
+    public boolean isXMLLoaded() {
+        return this.transPoolManager.isXMLLoaded();
+    }
+
+
+
+    //-------------------------------TripRequest Functions Main Controller---------------------------------------
     public void addTripRequestAction(String[] inputTripRequestString) {
         StringBuilder errors = new StringBuilder();
         List<String> errorList = new LinkedList<>();
@@ -109,6 +130,9 @@ public class AppController {
         //tripRequestController.addTripRequestButtonActionListener();
     }
 
+
+
+    //-------------------------------TripSuggest Functions Main Controller---------------------------------------
     public void addTripSuggestAction(String[] inputTripSuggestString) {
         StringBuilder errors = new StringBuilder();
         List<String> errorsList = new LinkedList<>();
@@ -139,50 +163,13 @@ public class AppController {
         return this.transPoolManager.getEngineManager().getTripSuggestUtil().getAllSuggestedTrips();
     }
 
-
-    public void loadInitTripSuggestFromXML() {
-        tripSuggestController.loadTripSuggestFromXML();
+    public void resetTripSuggestAccordion() {
+        tripSuggestController.resetTripSuggestAccordion();
     }
 
-    public List<String> CheckPathForXML(String myPathToTheXMLFile) {
-        List<String> xmlErrors = new ArrayList<>();
-        try {
-            xmlErrors = engine.LoadXML(myPathToTheXMLFile, xmlErrors);
-            if(xmlErrors.isEmpty()) {
-                TransPoolManager.setIsXMLLoaded(true);
-                transPoolManager = transPoolManager.getTransPoolManagerInstance();
-                engine = transPoolManager.getEngineManager();
-            }
-        } catch (Exception e) {
-            xmlErrors.add(e.getMessage());
-        } finally {
-            //checkIfErrorsOccurredAndPrint(xmlErrors);
-        }
-        return xmlErrors;
-    }
 
-    public boolean isXMLLoaded() {
-        return this.transPoolManager.isXMLLoaded();
-    }
 
-    public String getAllStationsNames() {
-        return  this.transPoolManager.getEngineManager().getAllStationsName();
-    }
-
-    public void getAlertErrorWindow(List<String> message) {
-        StringBuilder stringBuilder = new StringBuilder();
-        message.forEach((mess) -> {
-            stringBuilder.append(mess + System.lineSeparator());
-        });
-        Alert errorAlert = new Alert(Alert.AlertType.ERROR, stringBuilder.toString());
-        errorAlert.showAndWait();
-    }
-
-    public void getSuccessWindow(String message) {
-        Alert successAlert = new Alert(Alert.AlertType.INFORMATION, message);
-        successAlert.showAndWait();
-    }
-
+    //--------------------------------Matching Functions Main Controller -----------------------------------------
     public List<String> getPotentialSuggestedTripsToMatch(String inputMatchingString) {
         List<String> validationsErrors = new LinkedList<>();
         try {
@@ -199,6 +186,17 @@ public class AppController {
         return validationsErrors;
     }
 
+    public String matchTripRequestObject(String input, String requestIDAndAmountToMatch) {
+        return engine.matchTripRequest(input, requestIDAndAmountToMatch);
+    }
+
+    public void setNeededTripRequestForMatchAccordion(String requestId) {
+        tripRequestController.setNeededTripRequestForMatchAccordion(requestId);
+    }
+
+
+
+    //--------------------------------Time Functions Main Controller -----------------------------------------
     public void setTime() {
         String timeStr = engine.getCurrentSystemTime().toString();
         headerComponentController.setTimeLabel(timeStr);
@@ -219,6 +217,7 @@ public class AppController {
     public void setDateString2Hours(boolean isForward) {
         moveTime(isForward, 4);
     }
+
     public void setDateString1Day(boolean isForward) {
         moveTime(isForward, 5);
     }
@@ -244,6 +243,9 @@ public class AppController {
         return engine.getCurrentSystemTime().toString();
     }
 
+
+
+    //--------------------------------Ranking Functions Main Controller -----------------------------------------
     public List<String> validateRequestIdForRank(String requestId) {
         return engine.validateRequestIDExistInMatchedRequestTrip(requestId);
     }
@@ -261,31 +263,6 @@ public class AppController {
         return engine.validateInputOfRatingDriverOfSuggestIDAndRating(tripSuggestId, rank, review);
     }
 
-    public String matchTripRequestObject(String input, String requestIDAndAmountToMatch) {
-        return engine.matchTripRequest(input, requestIDAndAmountToMatch);
-    }
-
-    public void resetTripSuggestAccordion() {
-            tripSuggestController.resetTripSuggestAccordion();
-    }
-
-    public void resetSystem() {
-    }
-
-    public void updateLiveMap() {
-
-    }
-
-    public void setLiveMapToRootCenter() {
-        Graph graph = engine.getGraph();
-        liveMapController = new LiveMapController();
-        liveMapController.setLiveMapToRootCenter(graph);
-    }
-
-    public void setNeededTripRequestForMatchAccordion(String requestId) {
-        tripRequestController.setNeededTripRequestForMatchAccordion(requestId);
-    }
-
     public void rankDriver(String[] inputs) {
         engine.rankDriver(inputs);
     }
@@ -298,19 +275,55 @@ public class AppController {
         return engine.getTripSuggestUtil().getSuggestedTripsDto();
     }
 
-    public String getAndSetAverageInTripSuggestMapDto(String currRank, String suggestId) {
-        return engine.getTripSuggestUtil().getAndSetAverageInTripSuggestMapDto(currRank, suggestId);
+    public void setAverageInTripSuggestMapDto(String currRank, String suggestId) {
+        engine.getTripSuggestUtil().setAverageInTripSuggestMapDto(currRank, suggestId);
     }
 
-    public String getAndUpdateNumOfRanksInTripSuggestMapDto(String suggestId) {
-        return engine.getTripSuggestUtil().getAndUpdateNumOfRanksInTripSuggestMapDto(suggestId);
+    public void setNumOfRanksInTripSuggestMapDto(String suggestId) {
+        engine.getTripSuggestUtil().setNumOfRanksInTripSuggestMapDto(suggestId);
     }
 
-    public String getAndSetAverageReviewsInTripSuggestMapDto(String newReview,  String suggestId) {
-        return engine.getTripSuggestUtil().getAndSetAverageReviewsInTripSuggestMapDto(newReview, suggestId);
+    public void setAverageReviewsInTripSuggestMapDto(String newReview,  String suggestId) {
+        engine.getTripSuggestUtil().setAverageReviewsInTripSuggestMapDto(newReview, suggestId);
     }
 
     public List<String>  getTripSuggestDtoObj(String suggestId) {
         return engine.getTripSuggestUtil().getTripSuggestDtoObj(suggestId);
+    }
+
+
+
+    //--------------------------------Live Map Functions Main Controller -----------------------------------------
+    public void updateLiveMap() {
+
+    }
+
+    public void setLiveMapToRootCenter() {
+        Graph graph = engine.getGraph();
+        liveMapController = new LiveMapController();
+        liveMapController.setLiveMapToRootCenter(graph);
+    }
+
+
+    //--------------------------------General Functions Main Controller -----------------------------------------
+    public String getAllStationsNames() {
+        return  this.transPoolManager.getEngineManager().getAllStationsName();
+    }
+
+    public void getAlertErrorWindow(List<String> message) {
+        StringBuilder stringBuilder = new StringBuilder();
+        message.forEach((mess) -> {
+            stringBuilder.append(mess + System.lineSeparator());
+        });
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR, stringBuilder.toString());
+        errorAlert.showAndWait();
+    }
+
+    public void getSuccessWindow(String message) {
+        Alert successAlert = new Alert(Alert.AlertType.INFORMATION, message);
+        successAlert.showAndWait();
+    }
+
+    public void resetSystem() {
     }
 }

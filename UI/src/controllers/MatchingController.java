@@ -13,12 +13,10 @@ public class MatchingController {
 
     private AppController mainController;
 
-    @FXML
-    private Button matchingButton;
+    @FXML private Button matchingButton;
 
     Stage mainMatchingStage = null;
     TextField matchingTextField = null;
-    String[] inputsMainMatchingStage = null;
 
     Stage potentialSuggestedTripsToMatchStage = null;
     TextField suggestedTripsToMatchTextField = null;
@@ -28,6 +26,8 @@ public class MatchingController {
         this.mainController = mainController;
     }
 
+
+    //-------------------------------Main Window Match Flow UI---------------------------------------
     @FXML
     void matchingButtonActionListener() {
         if (mainController.isXMLLoaded()) {
@@ -88,6 +88,9 @@ public class MatchingController {
         }
     }
 
+
+
+    //-------------------------------Second Window Match Flow UI---------------------------------------
     public void getPotentialSuggestedTripsToMatchWindow()  {
         potentialSuggestedTripsToMatchStage = new Stage();
         VBox potentialSuggestedTripsToMatchWindow = new VBox();
@@ -95,7 +98,6 @@ public class MatchingController {
 
         ScrollPane scrollPanePotentialSuggestedTripsToMatch = new ScrollPane();
         List<String> potentialSuggestedTripsToMatch = mainController.getPotentialSuggestedTripsToMatch(matchingTextField.getText());
-        String strToShow = potentialSuggestedTripsToMatch.toString();
 
         Label potentialSuggestedIdsToMatchLabel = new Label("Choose index to match from the following options:" + System.lineSeparator() +
                 "Note: if you see just [null] : " + System.lineSeparator() +

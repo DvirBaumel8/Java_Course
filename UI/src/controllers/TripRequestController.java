@@ -30,13 +30,13 @@ public class TripRequestController {
     @FXML
     private Button addTripRequestButton;
 
-    @FXML
-    Accordion tripRequestAccordion;
+    @FXML Accordion tripRequestAccordion;
 
     ArrayList<TextField> inputAddTripRequest = null;
     static final int INPUT_ADD_TRIP_REQUEST_SIZE = 6;
     String[] inputTripRequestString = new String[INPUT_ADD_TRIP_REQUEST_SIZE];
     Stage addTripRequestStage = null;
+
 
     public TripRequestController() {
         this.inputAddTripRequest = new ArrayList<>();
@@ -47,6 +47,8 @@ public class TripRequestController {
         this.mainController = mainController;
     }
 
+
+    //-------------------------------Add TripRequest Flow UI---------------------------------------
     @FXML
     void addTripRequestButtonActionListener() {
         if(mainController.isXMLLoaded()) {
@@ -269,6 +271,7 @@ public class TripRequestController {
 
 
 
+    //-------------------------------Set TripRequest For Match UI---------------------------------------
     public void setNeededTripRequestForMatchAccordion(String requestId) {
         ObservableList<TitledPane> requestTripList =  tripRequestAccordion.getPanes();
 

@@ -4,7 +4,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Background;
@@ -22,15 +21,14 @@ import java.util.Map;
 public class TripSuggestController {
     private AppController mainController;
 
-    @FXML
-    private Button addTripSuggestButton;
+    @FXML private Button addTripSuggestButton;
 
-    @FXML
-    private Accordion tripSuggestAccordion;
+    @FXML private Accordion tripSuggestAccordion;
 
 
     private ArrayList<TextField> inputAddTripSuggest = null;
-    static final int INPUT_ADD_TRIP_SUGGEST_SIZE = 9;
+    static final int INPUT_ADD_TRIP_SUGGEST_SIZE = 7;
+    static final int INPUT_ADD_TRIP_SUGGEST_SIZE_INCLUDE_RANKING = 9;
     private Stage addTripSuggestStage = null;
 
     private Stage rankMainStage = null;
@@ -48,6 +46,9 @@ public class TripSuggestController {
         this.inputAddTripSuggest = new ArrayList<>();
     }
 
+
+
+    //-------------------------------Add TripSuggest Flow UI---------------------------------------
     @FXML
     void addTripSuggestButtonActionListener() {
         if(mainController.isXMLLoaded()) {
@@ -60,226 +61,6 @@ public class TripSuggestController {
         }
     }
 
-
-    @FXML
-    void rankTripSuggestButtonActionListener() {
-        if(mainController.isXMLLoaded()) {
-            getRankTripSuggestMainWindow();
-        }
-        else {
-            List<String> errors = new LinkedList<>();
-            errors.add("XML doesnt load yet / No match available");
-            mainController.getAlertErrorWindow(errors);
-        }
-    }
-
-    void getRankTripSuggestMainWindow() {
-        rankMainStage = new Stage();
-        VBox rankMainWindowVBox = new VBox();
-        javafx.geometry.Insets margin = new javafx.geometry.Insets(5,5,5,5);
-        rankMainWindowVBox.setSpacing(10);
-        ScrollPane scrollRankMainWindow = new ScrollPane();
-
-        List<String> matchingTripRequests = mainController.getAllMatchingTripRequestForRank();
-
-        Label tripRequestIdsLabel = new Label("Here is all the trip request which have match:" + System.lineSeparator() + System.lineSeparator() +
-                matchingTripRequests.toString() +
-                System.lineSeparator() + System.lineSeparator() +
-                "Please copy request id from the following options," + System.lineSeparator() +
-                "Which you would like to rank his drivers:");
-        tripRequestIdsLabel.setTranslateY(20);
-        tripRequestIdsLabel.setTranslateX(10);
-        rankMainWindowVBox.getChildren().add(tripRequestIdsLabel);
-
-        requestIdToRankSuggestIdTextField = new TextField("request id Number");
-        requestIdToRankSuggestIdTextField.setPrefWidth(135);
-        requestIdToRankSuggestIdTextField.setMaxWidth(135);
-        requestIdToRankSuggestIdTextField.setTranslateY(5);
-        requestIdToRankSuggestIdTextField.setTranslateX(10);
-        rankMainWindowVBox.getChildren().add(requestIdToRankSuggestIdTextField);
-
-        Button displayAvailableSuggestIdToRankButton = new Button("Display available suggest id to rank");
-        displayAvailableSuggestIdToRankButton.setTranslateX(90);
-        displayAvailableSuggestIdToRankButton.setTranslateY(10);
-        displayAvailableSuggestIdToRankButton.setOnAction(this::validateAndActionRequestIdInputForRank);
-        rankMainWindowVBox.getChildren().add(displayAvailableSuggestIdToRankButton);
-
-        rankMainWindowVBox.setMargin(tripRequestIdsLabel, margin);
-        rankMainWindowVBox.setMargin(requestIdToRankSuggestIdTextField, margin);
-        rankMainWindowVBox.setMargin(displayAvailableSuggestIdToRankButton, margin);
-
-        scrollRankMainWindow.setContent(rankMainWindowVBox);
-
-        Scene scene = new Scene(scrollRankMainWindow, 450, 350);
-
-        rankMainStage.setTitle("Matching Action - choose request id");
-        rankMainStage.setScene(scene);
-        rankMainStage.show();
-    }
-
-    private void validateAndActionRequestIdInputForRank(ActionEvent event) {
-        String rankSuggestID = null;
-        List<String> errors = null;
-        try {
-            rankSuggestID = requestIdToRankSuggestIdTextField.getText();
-            errors = mainController.validateRequestIdForRank(rankSuggestID);
-            if  (errors.size() == 0) {
-                rankSuggestIdByRequestIdWindow();
-                rankMainStage.close();
-            }
-            else {
-                throw new Exception();
-            }
-        }
-        catch (Exception e) {
-            if(errors.isEmpty()) {
-                errors = new LinkedList<>();
-                errors.add("You didnt choose rankRequestID from the following options, please try again.");
-            }
-            mainController.getAlertErrorWindow(errors);
-        }
-    }
-
-    void rankSuggestIdByRequestIdWindow() throws Exception {
-        rankSuggestIdByTripRequestStage = new Stage();
-        VBox rankSuggestIdByTripRequestWindow = new VBox();
-        javafx.geometry.Insets margin = new javafx.geometry.Insets(5,5,5,5);
-        rankSuggestIdByTripRequestWindow.setSpacing(10);
-
-        ScrollPane scrollPaneRankSuggestIdByTripRequestWindow = new ScrollPane();
-        List<String> tripSuggestIdsFromRequestId = null;
-        if(!requestIdToRankSuggestIdTextField.getText().isEmpty()){
-            tripSuggestIdsFromRequestId = mainController.
-                    getTripSuggestIdsFromTripRequestWhichNotRankYet(requestIdToRankSuggestIdTextField.getText());
-        }
-
-        Label rankLabel = new Label("Here is all the trip suggest id from the following trip request road trips:"
-                + System.lineSeparator() +  System.lineSeparator() +
-                tripSuggestIdsFromRequestId.toString() +
-                System.lineSeparator() + System.lineSeparator() +
-                "Please follow the following steps to rank:" + System.lineSeparator() +
-                "Copy The input to the text field in the following way:" + System.lineSeparator() +
-                "SuggestId Number,Rank Number,Review (NO SPACES)" + System.lineSeparator() +
-                "SuggestId Number: for the trip suggest id list" + System.lineSeparator() +
-                "Rank Digit: between 1 to 5, 1 - Basa | 5 - Sababa" + System.lineSeparator() +
-                "Review: review on the driver");
-        rankLabel.setTranslateY(20);
-        rankLabel.setTranslateX(10);
-        rankSuggestIdByTripRequestWindow.getChildren().add(rankLabel);
-
-        suggestIdToRankFromRequestIdRoadTrips = new TextField("Suggest id Number, Rank Digit , Notes");
-        suggestIdToRankFromRequestIdRoadTrips.setMaxWidth(240);
-        suggestIdToRankFromRequestIdRoadTrips.setPrefWidth(240);
-        suggestIdToRankFromRequestIdRoadTrips.setTranslateY(5);
-        suggestIdToRankFromRequestIdRoadTrips.setTranslateX(10);
-        rankSuggestIdByTripRequestWindow.getChildren().add(suggestIdToRankFromRequestIdRoadTrips);
-
-        Button suggestIdToRankFromRequestIdButton= new Button("Rank suggest id by road trips");
-        suggestIdToRankFromRequestIdButton.setPrefWidth(210);
-        suggestIdToRankFromRequestIdButton.setMaxWidth(210);
-        suggestIdToRankFromRequestIdButton.setTranslateX(120);
-        suggestIdToRankFromRequestIdButton.setTranslateY(10);
-        suggestIdToRankFromRequestIdButton.setOnAction(this::rankSuggestIdByRequestIdRoadTripsAction);
-        rankSuggestIdByTripRequestWindow.getChildren().add(suggestIdToRankFromRequestIdButton);
-
-        rankSuggestIdByTripRequestWindow.setMargin(rankLabel, margin);
-        rankSuggestIdByTripRequestWindow.setMargin(suggestIdToRankFromRequestIdRoadTrips, margin);
-        rankSuggestIdByTripRequestWindow.setMargin(suggestIdToRankFromRequestIdButton, margin);
-
-        scrollPaneRankSuggestIdByTripRequestWindow.setContent(rankSuggestIdByTripRequestWindow);
-
-        Scene scene = new Scene(scrollPaneRankSuggestIdByTripRequestWindow, 480, 350);
-
-        rankSuggestIdByTripRequestStage.setTitle("Matching Action - choose suggest id");
-        rankSuggestIdByTripRequestStage.setScene(scene);
-        rankSuggestIdByTripRequestStage.show();
-    }
-
-    private void rankSuggestIdByRequestIdRoadTripsAction(ActionEvent event) {
-        List<String> errors = null;
-
-        try {
-            String[] inputs = suggestIdToRankFromRequestIdRoadTrips.getText().split(",");
-            errors = mainController.validateInputOfRatingDriverOfSuggestIDAndRating(inputs[0], inputs[1], inputs[2]);
-            if (errors.isEmpty()) {
-                mainController.rankDriver(inputs);
-                this.setRankFieldsAtSuggestIdAccordion(inputs);
-                mainController.getSuccessWindow("Ranking succeed");
-            } else {
-                mainController.getAlertErrorWindow(errors);
-            }
-        }
-            catch (Exception e) {
-                errors = new LinkedList<>();
-                errors.add(e.getMessage());
-                mainController.getAlertErrorWindow(errors);
-            }
-    }
-
-
-    public void setRankFieldsAtSuggestIdAccordion(String[] inputs) {
-        String tripSuggestId = inputs[0];
-        String currRank = inputs [1];
-        String currReview = inputs[2];
-
-        ObservableList<TitledPane> suggestTripList =  tripSuggestAccordion.getPanes();
-
-        suggestTripList.forEach((titledPane -> {
-            String suggestTripText = titledPane.getText();
-            for(int i = 0 ; i < suggestTripText.length() ; i ++) {
-                if(String.valueOf(suggestTripText.charAt(i)).equals(tripSuggestId)) {
-                    Map<String, List<String>> tripSuggestMapDto = mainController.getSuggestedTripsMapDto();
-                    tripSuggestMapDto.forEach((tripSuggestDtoId ,tripSuggestDtoObj)  -> {
-                        if(tripSuggestDtoId.equals(tripSuggestId)) {
-                            String numOfRanks = mainController.getAndUpdateNumOfRanksInTripSuggestMapDto(tripSuggestId);
-                            String averageRank = mainController.getAndSetAverageInTripSuggestMapDto(currRank, tripSuggestId);
-                            String reviews = mainController.getAndSetAverageReviewsInTripSuggestMapDto(currReview, tripSuggestId);
-                            List<String> tripSuggestDtoObjToUpdate = mainController.getTripSuggestDtoObj(tripSuggestId);
-                            StringBuilder newContent = new StringBuilder();
-                            for(int j = 0 ; j < INPUT_ADD_TRIP_SUGGEST_SIZE ; j++) {
-                                if (j == (INPUT_ADD_TRIP_SUGGEST_SIZE-1)) {
-                                    newContent.append(tripSuggestDtoObjToUpdate.get(j));
-                                }
-                                else {
-                                    newContent.append(tripSuggestDtoObjToUpdate.get(j) + System.lineSeparator());
-                                }
-                            }
-                            titledPane.setContent(new TextArea(newContent.toString()));
-
-                        }
-                    });
-/*
-                    StringBuilder sb = new StringBuilder(suggestTripText);
-                    int indexAccordion = Integer.parseInt(tripSuggestId) - 1;
-                    TitledPane titledPane2 = suggestTripList.get(indexAccordion);
-                    Node temp = titledPane2.getContent();
-
-                    TextArea newTripSuggestTextArea = (TextArea) temp;
-                    TitledPane title3 = new TitledPane(sb + "Matched",
-                            temp);
-                    tripSuggestAccordion.getPanes().set(indexAccordion,title3);
-                    // tripSuggestAccordion.getPanes().set(i,sb)
-
- */
-                }
-            }
-        }));
-    }
-
-    /*
-
-         Label rankLabel = new Label("Here is all the trip request which have match:"
-                + System.lineSeparator() +  System.lineSeparator() +
-                matchingTripSuggests.toString() +
-                System.lineSeparator() + System.lineSeparator() +
-                "In the following way:" + System.lineSeparator() +
-                "Separated numbers with , :" + System.lineSeparator() +
-                "Suggest ID, Rank number between 1 to 5 (1-Basa 5-Sababa)" + System.lineSeparator() +
-                "For example:" + System.lineSeparator() +
-                "1,4 (1 - suggest trip id, 4 - almost sababa)");
-
-     */
-
     private void addInputTripSuggestButtonAction(ActionEvent event) {
         String[] inputTripSuggestString = new String[INPUT_ADD_TRIP_SUGGEST_SIZE];
         int index = 0;
@@ -289,16 +70,6 @@ public class TripSuggestController {
         }
         mainController.addTripSuggestAction(inputTripSuggestString);
     }
-
-    public void loadTripSuggestFromXML() {
-        Map<Integer, TripSuggest> initTripSuggest = mainController.getTripSuggestMap();
-        if(!initTripSuggest.isEmpty()) {
-            initTripSuggest.forEach((tripSuggestID, tripSuggest) -> {
-                addNewTripSuggestAccordion(tripSuggest);
-            });
-        }
-    }
-
 
     void getAddTripSuggestWindow() {
         addTripSuggestStage = new Stage();
@@ -470,7 +241,7 @@ public class TripSuggestController {
         String scheduleTypeString = String.valueOf(newSuggest.getRecurrencesType());
 
 
-        String[] displayTripSuggestStrArr = new String[INPUT_ADD_TRIP_SUGGEST_SIZE];
+        String[] displayTripSuggestStrArr = new String[INPUT_ADD_TRIP_SUGGEST_SIZE_INCLUDE_RANKING];
         displayTripSuggestStrArr[0] = "-Suggest trip:" + newSuggest.getTripRoute().getPath();
         displayTripSuggestStrArr[1] = "-Starting day:" + newSuggest.getStartingDay();
         displayTripSuggestStrArr[2] = "-Starting time:" + newSuggest.getStartingTime().toString();
@@ -486,7 +257,7 @@ public class TripSuggestController {
         TextArea newTripSuggestTextArea =
                 new TextArea(displayTripSuggestStrArr[0] + System.lineSeparator() +
                         displayTripSuggestStrArr[1] + System.lineSeparator() +
-                        displayTripSuggestStrArr[1] + System.lineSeparator() +
+                        displayTripSuggestStrArr[2] + System.lineSeparator() +
                         displayTripSuggestStrArr[3] + System.lineSeparator() +
                         displayTripSuggestStrArr[4] + System.lineSeparator() +
                         displayTripSuggestStrArr[5] + System.lineSeparator() +
@@ -500,7 +271,7 @@ public class TripSuggestController {
         // title.setOnMouseClicked(event-> tripsAccordionOnAction());
         int sizeOfCurrentPanes = tripSuggestAccordion.getPanes().size();
         tripSuggestAccordion.getPanes().add(sizeOfCurrentPanes,title);
-       // liveMapComponentController.updateTripOnMap(trip);
+        // liveMapComponentController.updateTripOnMap(trip);
     }
 
     public void resetTripSuggestAccordion() {
@@ -508,6 +279,214 @@ public class TripSuggestController {
 
         for(int i = 0 ; i < sizeOfCurrentPanes ; i++) {
             this.tripSuggestAccordion.getPanes().remove(i);
+        }
+    }
+
+
+
+
+    //-------------------------------Rank TripSuggest Flow UI---------------------------------------
+    void getRankTripSuggestMainWindow() {
+        rankMainStage = new Stage();
+        VBox rankMainWindowVBox = new VBox();
+        javafx.geometry.Insets margin = new javafx.geometry.Insets(5,5,5,5);
+        rankMainWindowVBox.setSpacing(10);
+        ScrollPane scrollRankMainWindow = new ScrollPane();
+
+        List<String> matchingTripRequests = mainController.getAllMatchingTripRequestForRank();
+
+        Label tripRequestIdsLabel = new Label("Here is all the trip request which have match:" + System.lineSeparator() + System.lineSeparator() +
+                matchingTripRequests.toString() +
+                System.lineSeparator() + System.lineSeparator() +
+                "Please copy request id from the following options," + System.lineSeparator() +
+                "Which you would like to rank his drivers:");
+        tripRequestIdsLabel.setTranslateY(20);
+        tripRequestIdsLabel.setTranslateX(10);
+        rankMainWindowVBox.getChildren().add(tripRequestIdsLabel);
+
+        requestIdToRankSuggestIdTextField = new TextField("request id Number");
+        requestIdToRankSuggestIdTextField.setPrefWidth(135);
+        requestIdToRankSuggestIdTextField.setMaxWidth(135);
+        requestIdToRankSuggestIdTextField.setTranslateY(5);
+        requestIdToRankSuggestIdTextField.setTranslateX(10);
+        rankMainWindowVBox.getChildren().add(requestIdToRankSuggestIdTextField);
+
+        Button displayAvailableSuggestIdToRankButton = new Button("Display available suggest id to rank");
+        displayAvailableSuggestIdToRankButton.setTranslateX(90);
+        displayAvailableSuggestIdToRankButton.setTranslateY(10);
+        displayAvailableSuggestIdToRankButton.setOnAction(this::validateAndActionRequestIdInputForRank);
+        rankMainWindowVBox.getChildren().add(displayAvailableSuggestIdToRankButton);
+
+        rankMainWindowVBox.setMargin(tripRequestIdsLabel, margin);
+        rankMainWindowVBox.setMargin(requestIdToRankSuggestIdTextField, margin);
+        rankMainWindowVBox.setMargin(displayAvailableSuggestIdToRankButton, margin);
+
+        scrollRankMainWindow.setContent(rankMainWindowVBox);
+
+        Scene scene = new Scene(scrollRankMainWindow, 450, 350);
+
+        rankMainStage.setTitle("Matching Action - choose request id");
+        rankMainStage.setScene(scene);
+        rankMainStage.show();
+    }
+
+    private void validateAndActionRequestIdInputForRank(ActionEvent event) {
+        String rankSuggestID = null;
+        List<String> errors = null;
+        try {
+            rankSuggestID = requestIdToRankSuggestIdTextField.getText();
+            errors = mainController.validateRequestIdForRank(rankSuggestID);
+            if  (errors.size() == 0) {
+                rankSuggestIdByRequestIdWindow();
+                rankMainStage.close();
+            }
+            else {
+                throw new Exception();
+            }
+        }
+        catch (Exception e) {
+            if(errors.isEmpty()) {
+                errors = new LinkedList<>();
+                errors.add("You didnt choose rankRequestID from the following options, please try again.");
+            }
+            mainController.getAlertErrorWindow(errors);
+        }
+    }
+
+
+    @FXML
+    void rankTripSuggestButtonActionListener() {
+        if(mainController.isXMLLoaded()) {
+            getRankTripSuggestMainWindow();
+        }
+        else {
+            List<String> errors = new LinkedList<>();
+            errors.add("XML doesnt load yet / No match available");
+            mainController.getAlertErrorWindow(errors);
+        }
+    }
+
+    void rankSuggestIdByRequestIdWindow() throws Exception {
+        rankSuggestIdByTripRequestStage = new Stage();
+        VBox rankSuggestIdByTripRequestWindow = new VBox();
+        javafx.geometry.Insets margin = new javafx.geometry.Insets(5,5,5,5);
+        rankSuggestIdByTripRequestWindow.setSpacing(10);
+
+        ScrollPane scrollPaneRankSuggestIdByTripRequestWindow = new ScrollPane();
+        List<String> tripSuggestIdsFromRequestId = null;
+        if(!requestIdToRankSuggestIdTextField.getText().isEmpty()){
+            tripSuggestIdsFromRequestId = mainController.
+                    getTripSuggestIdsFromTripRequestWhichNotRankYet(requestIdToRankSuggestIdTextField.getText());
+        }
+
+        Label rankLabel = new Label("Here is all the trip suggest id from the following trip request road trips:"
+                + System.lineSeparator() +  System.lineSeparator() +
+                tripSuggestIdsFromRequestId.toString() +
+                System.lineSeparator() + System.lineSeparator() +
+                "Please follow the following steps to rank:" + System.lineSeparator() +
+                "Copy The input to the text field in the following way:" + System.lineSeparator() +
+                "SuggestId Number,Rank Number,Review (NO SPACES)" + System.lineSeparator() +
+                "SuggestId Number: for the trip suggest id list" + System.lineSeparator() +
+                "Rank Digit: between 1 to 5, 1 - Basa | 5 - Sababa" + System.lineSeparator() +
+                "Review: review on the driver");
+        rankLabel.setTranslateY(20);
+        rankLabel.setTranslateX(10);
+        rankSuggestIdByTripRequestWindow.getChildren().add(rankLabel);
+
+        suggestIdToRankFromRequestIdRoadTrips = new TextField("1,3,flowing driver");
+        suggestIdToRankFromRequestIdRoadTrips.setMaxWidth(240);
+        suggestIdToRankFromRequestIdRoadTrips.setPrefWidth(240);
+        suggestIdToRankFromRequestIdRoadTrips.setTranslateY(5);
+        suggestIdToRankFromRequestIdRoadTrips.setTranslateX(10);
+        rankSuggestIdByTripRequestWindow.getChildren().add(suggestIdToRankFromRequestIdRoadTrips);
+
+        Button suggestIdToRankFromRequestIdButton= new Button("Rank suggest id by road trips");
+        suggestIdToRankFromRequestIdButton.setPrefWidth(210);
+        suggestIdToRankFromRequestIdButton.setMaxWidth(210);
+        suggestIdToRankFromRequestIdButton.setTranslateX(120);
+        suggestIdToRankFromRequestIdButton.setTranslateY(10);
+        suggestIdToRankFromRequestIdButton.setOnAction(this::rankSuggestIdByRequestIdRoadTripsAction);
+        rankSuggestIdByTripRequestWindow.getChildren().add(suggestIdToRankFromRequestIdButton);
+
+        rankSuggestIdByTripRequestWindow.setMargin(rankLabel, margin);
+        rankSuggestIdByTripRequestWindow.setMargin(suggestIdToRankFromRequestIdRoadTrips, margin);
+        rankSuggestIdByTripRequestWindow.setMargin(suggestIdToRankFromRequestIdButton, margin);
+
+        scrollPaneRankSuggestIdByTripRequestWindow.setContent(rankSuggestIdByTripRequestWindow);
+
+        Scene scene = new Scene(scrollPaneRankSuggestIdByTripRequestWindow, 480, 350);
+
+        rankSuggestIdByTripRequestStage.setTitle("Matching Action - choose suggest id");
+        rankSuggestIdByTripRequestStage.setScene(scene);
+        rankSuggestIdByTripRequestStage.show();
+    }
+
+    private void rankSuggestIdByRequestIdRoadTripsAction(ActionEvent event) {
+        List<String> errors = null;
+
+        try {
+            String[] inputs = suggestIdToRankFromRequestIdRoadTrips.getText().split(",");
+            errors = mainController.validateInputOfRatingDriverOfSuggestIDAndRating(inputs[0], inputs[1], inputs[2]);
+            if (errors.isEmpty()) {
+                mainController.rankDriver(inputs);
+                this.setRankFieldsAtSuggestIdAccordion(inputs);
+                mainController.getSuccessWindow("Ranking succeed");
+            } else {
+                mainController.getAlertErrorWindow(errors);
+            }
+        }
+            catch (Exception e) {
+                errors = new LinkedList<>();
+                errors.add(e.getMessage());
+                mainController.getAlertErrorWindow(errors);
+            }
+    }
+
+
+    public void setRankFieldsAtSuggestIdAccordion(String[] inputs) {
+        String tripSuggestId = inputs[0];
+        String currRank = inputs [1];
+        String currReview = inputs[2];
+
+        ObservableList<TitledPane> suggestTripList =  tripSuggestAccordion.getPanes();
+
+        suggestTripList.forEach((titledPane -> {
+            String suggestTripText = titledPane.getText();
+            for(int i = 0 ; i < suggestTripText.length() ; i ++) {
+                if(String.valueOf(suggestTripText.charAt(i)).equals(tripSuggestId)) {
+                    Map<String, List<String>> tripSuggestMapDto = mainController.getSuggestedTripsMapDto();
+                    tripSuggestMapDto.forEach((tripSuggestDtoId ,tripSuggestDtoObj)  -> {
+                        if(tripSuggestDtoId.equals(tripSuggestId)) {
+                            mainController.setNumOfRanksInTripSuggestMapDto(tripSuggestId);
+                            mainController.setAverageInTripSuggestMapDto(currRank, tripSuggestId);
+                            mainController.setAverageReviewsInTripSuggestMapDto(currReview, tripSuggestId);
+                            List<String> tripSuggestDtoObjToUpdate = mainController.getTripSuggestDtoObj(tripSuggestId);
+                            StringBuilder newContent = new StringBuilder();
+                            for(int j = 0 ; j < INPUT_ADD_TRIP_SUGGEST_SIZE_INCLUDE_RANKING ; j++) {
+                                if (j == (INPUT_ADD_TRIP_SUGGEST_SIZE_INCLUDE_RANKING-1)) {
+                                    newContent.append(tripSuggestDtoObjToUpdate.get(j));
+                                }
+                                else {
+                                    newContent.append(tripSuggestDtoObjToUpdate.get(j) + System.lineSeparator());
+                                }
+                            }
+                            titledPane.setContent(new TextArea(newContent.toString()));
+                        }
+                    });
+                }
+            }
+        }));
+    }
+
+
+
+    //-------------------------------Add TripSuggest From Xml Flow UI---------------------------------------
+    public void loadTripSuggestFromXML() {
+        Map<Integer, TripSuggest> initTripSuggest = mainController.getTripSuggestMap();
+        if(!initTripSuggest.isEmpty()) {
+            initTripSuggest.forEach((tripSuggestID, tripSuggest) -> {
+                addNewTripSuggestAccordion(tripSuggest);
+            });
         }
     }
 }

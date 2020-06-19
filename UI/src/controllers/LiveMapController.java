@@ -1,6 +1,5 @@
 package controllers;
 
-
 import RootWrapper.RootWrapper;
 import com.fxgraph.graph.Graph;
 
@@ -8,7 +7,6 @@ public class LiveMapController {
     private AppController mainController;
 
     private static RootWrapper rootWrapper = null;
-
 
 
     public void setMainController(AppController mainController) {
@@ -27,8 +25,4 @@ public class LiveMapController {
         rootWrapper = new RootWrapper();
         rootWrapper.setRootCenter(graph);
     }
-
-
-
-
 }
