@@ -30,7 +30,7 @@ public class TripSuggestController {
 
 
     private ArrayList<TextField> inputAddTripSuggest = null;
-    static final int INPUT_ADD_TRIP_SUGGEST_SIZE = 7;
+    static final int INPUT_ADD_TRIP_SUGGEST_SIZE = 9;
     private Stage addTripSuggestStage = null;
 
     private Stage rankMainStage = null;
@@ -159,9 +159,9 @@ public class TripSuggestController {
                 System.lineSeparator() + System.lineSeparator() +
                 "Please follow the following steps to rank:" + System.lineSeparator() +
                 "Copy The input to the text field in the following way:" + System.lineSeparator() +
-                "SuggestId Number , Rank Number , Review" + System.lineSeparator() +
-                "Rank Digit: between 1 to 5, 1 - Basa | 5 - Sababa" + System.lineSeparator() +
+                "SuggestId Number,Rank Number,Review (NO SPACES)" + System.lineSeparator() +
                 "SuggestId Number: for the trip suggest id list" + System.lineSeparator() +
+                "Rank Digit: between 1 to 5, 1 - Basa | 5 - Sababa" + System.lineSeparator() +
                 "Review: review on the driver");
         rankLabel.setTranslateY(20);
         rankLabel.setTranslateX(10);
@@ -219,8 +219,8 @@ public class TripSuggestController {
 
     public void setRankFieldsAtSuggestIdAccordion(String[] inputs) {
         String tripSuggestId = inputs[0];
-        String rank = inputs [1];
-        String review = inputs[2];
+        String currRank = inputs [1];
+        String currReview = inputs[2];
 
         ObservableList<TitledPane> suggestTripList =  tripSuggestAccordion.getPanes();
 
@@ -228,6 +228,27 @@ public class TripSuggestController {
             String suggestTripText = titledPane.getText();
             for(int i = 0 ; i < suggestTripText.length() ; i ++) {
                 if(String.valueOf(suggestTripText.charAt(i)).equals(tripSuggestId)) {
+                    Map<String, List<String>> tripSuggestMapDto = mainController.getSuggestedTripsMapDto();
+                    tripSuggestMapDto.forEach((tripSuggestDtoId ,tripSuggestDtoObj)  -> {
+                        if(tripSuggestDtoId.equals(tripSuggestId)) {
+                            String numOfRanks = mainController.getAndUpdateNumOfRanksInTripSuggestMapDto(tripSuggestId);
+                            String averageRank = mainController.getAndSetAverageInTripSuggestMapDto(currRank, tripSuggestId);
+                            String reviews = mainController.getAndSetAverageReviewsInTripSuggestMapDto(currReview, tripSuggestId);
+                            List<String> tripSuggestDtoObjToUpdate = mainController.getTripSuggestDtoObj(tripSuggestId);
+                            StringBuilder newContent = new StringBuilder();
+                            for(int j = 0 ; j < INPUT_ADD_TRIP_SUGGEST_SIZE ; j++) {
+                                if (j == (INPUT_ADD_TRIP_SUGGEST_SIZE-1)) {
+                                    newContent.append(tripSuggestDtoObjToUpdate.get(j));
+                                }
+                                else {
+                                    newContent.append(tripSuggestDtoObjToUpdate.get(j) + System.lineSeparator());
+                                }
+                            }
+                            titledPane.setContent(new TextArea(newContent.toString()));
+
+                        }
+                    });
+/*
                     StringBuilder sb = new StringBuilder(suggestTripText);
                     int indexAccordion = Integer.parseInt(tripSuggestId) - 1;
                     TitledPane titledPane2 = suggestTripList.get(indexAccordion);
@@ -238,6 +259,8 @@ public class TripSuggestController {
                             temp);
                     tripSuggestAccordion.getPanes().set(indexAccordion,title3);
                     // tripSuggestAccordion.getPanes().set(i,sb)
+
+ */
                 }
             }
         }));
@@ -446,16 +469,31 @@ public class TripSuggestController {
     public void addNewTripSuggestAccordion(TripSuggest newSuggest) {
         String scheduleTypeString = String.valueOf(newSuggest.getRecurrencesType());
 
+
+        String[] displayTripSuggestStrArr = new String[INPUT_ADD_TRIP_SUGGEST_SIZE];
+        displayTripSuggestStrArr[0] = "-Suggest trip:" + newSuggest.getTripRoute().getPath();
+        displayTripSuggestStrArr[1] = "-Starting day:" + newSuggest.getStartingDay();
+        displayTripSuggestStrArr[2] = "-Starting time:" + newSuggest.getStartingTime().toString();
+        displayTripSuggestStrArr[3] = "-Schedule type:" + scheduleTypeString;
+        displayTripSuggestStrArr[4] = "-PPK:" + newSuggest.getPpk();
+        displayTripSuggestStrArr[5] = "-Pass capacity:" + newSuggest.getRemainingCapacity();
+        displayTripSuggestStrArr[6] = "-Average Rank:X";
+        displayTripSuggestStrArr[7] = "-Num of ranking:0";
+        displayTripSuggestStrArr[8] = "-Comments:";
+
+        mainController.addSuggestedTripsDto(displayTripSuggestStrArr);
+
         TextArea newTripSuggestTextArea =
-                new TextArea("-Suggest trip:" + newSuggest.getTripRoute().getPath()+ System.lineSeparator() +
-                        "-Starting day:" + newSuggest.getStartingDay() + System.lineSeparator() +
-                        "-Starting time:" + newSuggest.getStartingTime().toString() + System.lineSeparator() +
-                        "-Schedule type:" + scheduleTypeString + System.lineSeparator() +
-                        "-PPK:" + newSuggest.getPpk() + System.lineSeparator() +
-                        "-Pass capacity:" + newSuggest.getRemainingCapacity() + System.lineSeparator() +
-                        "-Average Rank:"  + System.lineSeparator() +
-                        "-Num of ranking:"  + System.lineSeparator() +
-                        "-Comments"  + System.lineSeparator());
+                new TextArea(displayTripSuggestStrArr[0] + System.lineSeparator() +
+                        displayTripSuggestStrArr[1] + System.lineSeparator() +
+                        displayTripSuggestStrArr[1] + System.lineSeparator() +
+                        displayTripSuggestStrArr[3] + System.lineSeparator() +
+                        displayTripSuggestStrArr[4] + System.lineSeparator() +
+                        displayTripSuggestStrArr[5] + System.lineSeparator() +
+                        displayTripSuggestStrArr[6]  + System.lineSeparator() +
+                        displayTripSuggestStrArr[7]  + System.lineSeparator() +
+                        displayTripSuggestStrArr[8]  + System.lineSeparator());
+
         newTripSuggestTextArea.setPrefRowCount(9);
         TitledPane title = new TitledPane(newSuggest.getTripOwnerName() + ", id:" + newSuggest.getSuggestID(),
                 newTripSuggestTextArea);

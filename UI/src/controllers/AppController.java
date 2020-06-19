@@ -290,5 +290,27 @@ public class AppController {
         engine.rankDriver(inputs);
     }
 
+    public void addSuggestedTripsDto(String[] displayTripSuggestStrArr) {
+        engine.getTripSuggestUtil().addSuggestedTripsDto(displayTripSuggestStrArr);
+    }
 
+    public Map<String, List<String>> getSuggestedTripsMapDto() {
+        return engine.getTripSuggestUtil().getSuggestedTripsDto();
+    }
+
+    public String getAndSetAverageInTripSuggestMapDto(String currRank, String suggestId) {
+        return engine.getTripSuggestUtil().getAndSetAverageInTripSuggestMapDto(currRank, suggestId);
+    }
+
+    public String getAndUpdateNumOfRanksInTripSuggestMapDto(String suggestId) {
+        return engine.getTripSuggestUtil().getAndUpdateNumOfRanksInTripSuggestMapDto(suggestId);
+    }
+
+    public String getAndSetAverageReviewsInTripSuggestMapDto(String newReview,  String suggestId) {
+        return engine.getTripSuggestUtil().getAndSetAverageReviewsInTripSuggestMapDto(newReview, suggestId);
+    }
+
+    public List<String>  getTripSuggestDtoObj(String suggestId) {
+        return engine.getTripSuggestUtil().getTripSuggestDtoObj(suggestId);
+    }
 }
