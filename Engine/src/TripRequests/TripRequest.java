@@ -29,6 +29,7 @@ public class TripRequest {
             this.arrivalTime = this.startTime = new Time(minutes, hours, day);
         }
         this.isStartTime = requestByStartTime;
+        isMatched = false;
     }
 
     public boolean getIsStartTime() {

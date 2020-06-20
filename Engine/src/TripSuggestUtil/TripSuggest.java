@@ -1,7 +1,9 @@
 package TripSuggestUtil;
 
 import Manager.EngineManager;
+import MatchingUtil.RoadTrip;
 import MatchingUtil.Station;
+import MatchingUtil.SubTrip;
 import Time.Time;
 import TripRequests.TripRequest;
 import XML.XMLLoading.jaxb.schema.generated.Route;
@@ -17,17 +19,18 @@ public class TripSuggest {
     private Route tripRoute;
     private RecurrencesTypes recurrencesType;
     private int ppk;
-    private int remainingCapacity;
+    private int staticCapacity;
+    private Map<Integer,Integer> capacityPerTime;
     private int tripPrice;
     private DriverRating driverRating;
     private List<Integer> passengers;
-    private List<StopStationDetails> stopStationsDetails;
     private int requiredFuel;
     private Time startingTime;
     private Time arrivalTime;
     private int startingDay;
     private Station[] stations;
-    Map<Time, Integer> capacityPerTime;
+    private boolean isActive;
+    private List<String> liveParticipantsTripName;
 
     public TripSuggest(String ownerName, Route route, int minutes, int hour, int day, int recurrencesType, int ppk, int driverCapacity) {
         this.TripOwnerName = ownerName;
@@ -37,17 +40,116 @@ public class TripSuggest {
         this.ppk = ppk;
         this.startingTime = new Time(minutes, hour, day);
         this.startingDay = day;
-        this.remainingCapacity = driverCapacity;
+        this.staticCapacity = driverCapacity;
         this.tripPrice = calculateTripPrice(ppk, route);
         this.passengers = new ArrayList<>();
-        this.stopStationsDetails = new ArrayList<>();
         this.requiredFuel = calcRequiredFuel(route);
         this.driverRating = new DriverRating();
         this.arrivalTime = calcArrivalHour(route.getPath());
+        this.capacityPerTime = new HashMap<>();
         calcStationsArrivalHour();
-        capacityPerTime = new HashMap<Time, Integer>();
-        Time time = new Time(00, 10, 2);
-        capacityPerTime.put(time, 1);
+        updateIsActive(EngineManager.getEngineManagerInstance().getCurrentSystemTime());
+        updateCapacityPerTime(EngineManager.getEngineManagerInstance().getCurrentSystemTime());
+        this.liveParticipantsTripName = new ArrayList<>();
+    }
+
+    public void updateCapacityPerTime(Time currTime) {
+        int totalCurrTimeMinutes = getTotalMinutesToTime(currTime);
+        if(capacityPerTime.containsKey(totalCurrTimeMinutes)) {
+            return;
+        }
+        else {
+
+        }
+        if(isActive) {
+            liveParticipantsTripName.clear();
+            //liveCapacity = staticCapacity;
+            List<TripRequest> matchedTripRequests = EngineManager.getEngineManagerInstance().getAllMatchedTripRequests();
+            RoadTrip roadTrip;
+            for(TripRequest request : matchedTripRequests) {
+                roadTrip = request.getMatchTrip();
+                for(SubTrip subTrip : roadTrip.getSubTrips()) {
+                    if(subTrip.getTrip().getSuggestID() == suggestID) {
+                        if(TripSuggestUtil.compareTimes(currTime, startingTime) == 1 && TripSuggestUtil.compareHours(currTime, arrivalTime) == 3) {
+                            //liveCapacity--;
+                            liveParticipantsTripName.add(request.getNameOfOwner());
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    private int getTotalMinutesToTime(Time currTime) {
+        int day = currTime.getDay();
+        int hours = currTime.getHours();
+        int minutes = currTime.getMinutes();
+
+        return (day * 24 * 60) + (hours * 60) + (minutes);
+    }
+
+    public static void main(String[] args) throws Exception {
+        Route route = new Route();
+        route.setPath("A,B,C");
+
+        List<String> errors = new ArrayList<>();
+        EngineManager.getEngineManagerInstance().LoadXML("/Users/db384r/Dev/Java/Test files/EX_2/ex2-small-empty.xml", errors);
+        TripSuggest tripSuggest = new TripSuggest("Dvir", route, 0,8,12, 4,30,3);
+        EngineManager.getEngineManagerInstance().addNewTripSuggest(tripSuggest);
+        TripRequest request = new TripRequest("Gal", "B", "C", 15, 8, 12, true);
+        EngineManager.getEngineManagerInstance().addNewTripRequest(request);
+        EngineManager.getEngineManagerInstance().findPotentialSuggestedTripsToMatch("1,1");
+        EngineManager.getEngineManagerInstance().matchTripRequest("1", "1,1");
+
+        for(int i =0; i < 18; i++) {
+            EngineManager.getEngineManagerInstance().moveTimeForward(5);
+        }
+        EngineManager.getEngineManagerInstance().moveTimeForward(4);
+        EngineManager.getEngineManagerInstance().moveTimeForward(4);
+        EngineManager.getEngineManagerInstance().moveTimeForward(4);
+        EngineManager.getEngineManagerInstance().moveTimeForward(4);
+        EngineManager.getEngineManagerInstance().moveTimeForward(1);
+        EngineManager.getEngineManagerInstance().moveTimeForward(1);
+        EngineManager.getEngineManagerInstance().moveTimeForward(1);
+        EngineManager.getEngineManagerInstance().moveTimeForward(1);
+        EngineManager.getEngineManagerInstance().moveTimeForward(1);
+        EngineManager.getEngineManagerInstance().moveTimeForward(1);
+        Map<TripSuggest, String> map = EngineManager.getEngineManagerInstance().getMapDetailsPerTime();
+
+        System.out.println("");
+    }
+
+    public void updateIsActive(Time currTime) {
+        if (recurrencesType.getValue() == 1) {
+            if (TripSuggestUtil.compareTimes(startingTime, currTime) == 2) {
+                isActive = true;
+                return;
+            } else if (TripSuggestUtil.compareTimes(currTime, startingTime) == 1 && (TripSuggestUtil.compareTimes(currTime, arrivalTime) == 3) || TripSuggestUtil.compareTimes(currTime, arrivalTime) == 2) {
+                isActive = true;
+                return;
+            }
+            isActive = false;
+        } else {
+            Time tripTempTime = startingTime;
+            int tempDay = tripTempTime.getDay();
+            int tripTotalMinutesT = (tempDay * 24 * 60) + (tripTempTime.getHours() * 60) + (tripTempTime.getMinutes());
+            int currTotalMinute = (currTime.getDay() * 24 * 60) + (currTime.getHours() * 60) + (currTime.getMinutes());
+
+            while (TripSuggestUtil.compareTimes(currTotalMinute, tripTotalMinutesT) == 1) {
+                tempDay += recurrencesType.getValue();
+                tripTotalMinutesT = (tempDay * 24 * 60) + (tripTempTime.getHours() * 60) + (tripTempTime.getMinutes());
+            }
+            Time timeWithRec = new Time(startingTime.getMinutes(), startingTime.getHours(), tempDay);
+            if (TripSuggestUtil.compareTimes(timeWithRec, currTime) == 2) {
+                isActive = true;
+                return;
+            } else if (TripSuggestUtil.compareTimes(currTime, startingTime) == 1 && (TripSuggestUtil.compareTimes(currTime, arrivalTime) == 3) || TripSuggestUtil.compareTimes(currTime, arrivalTime) == 2) {
+                isActive = true;
+                return;
+            }
+        }
+
     }
 
     private void calcStationsArrivalHour() {
@@ -140,8 +242,8 @@ public class TripSuggest {
         return tripRoute;
     }
 
-    public int getRemainingCapacity() {
-        return remainingCapacity;
+    public int getstaticCapacity() {
+        return staticCapacity;
     }
 
     public int getRequiredFuel() {
@@ -152,46 +254,11 @@ public class TripSuggest {
         return suggestID;
     }
 
-    public String getStationsDetailsAsString () {
-        StringBuilder str = new StringBuilder();
-        str.append("All stop stations for passengers:\n");
-        int index = 1;
-
-        for(StopStationDetails stopDetails : stopStationsDetails) {
-            str.append(String.format("%d:\n", index));
-            str.append(String.format("Station name - %s\n", stopDetails.getStationName()));
-            str.append(String.format("Passenger name - %s\n", stopDetails.getStopStationOwner()));
-            if(stopDetails.isUp()) {
-                str.append("Passenger is going up on this station\n\n");
-            }
-            else {
-                str.append("Passenger is going down on this station\n\n");
-            }
-            index++;
-        }
-
-        if (index == 1) {
-            str.setLength(0);
-            str.append("No passengers\n");
-        }
-
-        return str.toString();
-    }
-
-    public void addNewPassengerToTrip (TripRequest tripRequest) {
-        remainingCapacity--;
-        passengers.add(tripRequest.getRequestID());
-        StopStationDetails sourceStationDetails = new StopStationDetails(tripRequest.getSourceStation(), tripRequest.getNameOfOwner(), true);
-        StopStationDetails destinationStationDetails = new StopStationDetails(tripRequest.getDestinationStation(), tripRequest.getNameOfOwner(), false);
-        stopStationsDetails.add(sourceStationDetails);
-        stopStationsDetails.add(destinationStationDetails);
-    }
-
     public void setSuggestID(int suggestIDID) {
         this.suggestID = suggestIDID;
     }
 
-    public Map<Time, Integer> getCapacityPerTime() {
+    public Map<Integer,Integer> getCapacityPerTime() {
         return capacityPerTime;
     }
 
@@ -301,4 +368,9 @@ public class TripSuggest {
     public Station[] getTripStations() {
         return stations;
     }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
 }

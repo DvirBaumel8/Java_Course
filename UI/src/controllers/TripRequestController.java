@@ -167,11 +167,11 @@ public class TripRequestController {
 
         //-----------------------------------------------------
 
-        Label arrivalDayNumberLabel = new Label("- Arrival Day Number:");
-        arrivalDayNumberLabel.setTranslateX(15);
-        arrivalDayNumberLabel.setTextFill(Color.web("#0076a3"));
-        arrivalDayNumberLabel.setPrefWidth(400);
-        addTripRequestWindow.getChildren().add(arrivalDayNumberLabel);
+        Label startDayNumberLabel = new Label("- Start Day Number:");
+        startDayNumberLabel.setTranslateX(15);
+        startDayNumberLabel.setTextFill(Color.web("#0076a3"));
+        startDayNumberLabel.setPrefWidth(400);
+        addTripRequestWindow.getChildren().add(startDayNumberLabel);
 
         inputAddTripRequest.add(5, new TextField("2"));
         inputAddTripRequest.get(5).setTranslateX(15);
@@ -197,7 +197,7 @@ public class TripRequestController {
         addTripRequestWindow.setMargin(destinationStationLabel, generalMargin);
         addTripRequestWindow.setMargin(startOrArrivalTimeLabel, generalMargin);
         addTripRequestWindow.setMargin(timeTypeLabel, generalMargin);
-        addTripRequestWindow.setMargin(arrivalDayNumberLabel, generalMargin);
+        addTripRequestWindow.setMargin(startDayNumberLabel, generalMargin);
         addTripRequestWindow.setMargin(addInputTripRequestButton, generalMargin);
 
         addTripRequestWindow.setMargin(inputAddTripRequest.get(0), generalMargin);

@@ -4,6 +4,7 @@ import GraphBuilder.GraphBuilderUtil;
 import MatchingUtil.MatchUtil;
 import MatchingUtil.RoadTrip;
 import MatchingUtil.Station;
+import MatchingUtil.StationsUtil;
 import MatchingUtil.SubTrip;
 import Time.Time;
 import Time.TimeManager;
@@ -36,6 +37,7 @@ public class EngineManager {
     private static List<String> suggestTripOwners;
     private static Map<TripRequest, RoadTrip> matches;
     private static int requestIDCache;
+    private static StationsUtil stationsUtil;
 
     private List<String> menuOrderErrorMessage;
     private static List<RoadTrip> potentialCacheList;
@@ -60,6 +62,7 @@ public class EngineManager {
             matchUtil = new MatchUtil();
             potentialCacheList = new LinkedList<>();
             suggestTripOwners = new ArrayList<>();
+            stationsUtil = new StationsUtil();
         }
         return engineManagerInstance;
     }
@@ -158,6 +161,10 @@ public class EngineManager {
         return newRequest;
     }
 
+    public void addNewTripRequest(TripRequest request) {
+        tripRequestUtil.addRequestTrip(request);
+    }
+
     public TripSuggest addNewTripSuggest(String[] inputs) {
         int hour = Integer.parseInt(inputs[3].split(":")[0]);
         int minutes = Integer.parseInt(inputs[3].split(":")[1]);
@@ -182,6 +189,10 @@ public class EngineManager {
         tripSuggestUtil.addSuggestTrip(tripSuggest);
 
         return tripSuggest;
+    }
+
+    public void addNewTripSuggest(TripSuggest tripSuggest) {
+        tripSuggestUtil.addSuggestTrip(tripSuggest);
     }
 
     public TransPool getTransPool() {
@@ -383,25 +394,29 @@ public class EngineManager {
 
     public void moveTimeForward(int choose) {
         timeManager.moveTimeForward(choose);
+        updateSuggestedTrips();
+    }
+
+    private void updateSuggestedTrips() {
+        tripSuggestUtil.updateSuggestedTrips();
     }
 
     public void moveTimeBack(int choose) throws Exception {
         timeManager.moveTimeBack(choose);
+        updateSuggestedTrips();
     }
 
-    public Map<TripSuggest, String> getCurrentTripsSuggestAndStation() {
-        Map<TripSuggest, Station> mapToRet = new HashMap<>();
+    public Map<TripSuggest, String> getMapDetailsPerTime() {
+        Map<TripSuggest, String> mapToRet = new HashMap<>();
         Map<Integer, TripSuggest> suggestedTrips = tripSuggestUtil.getAllSuggestedTrips();
-        TripSuggest currTrip;
 
         for (Map.Entry<Integer, TripSuggest> entry : suggestedTrips.entrySet()) {
-            currTrip = entry.getValue();
-            if (checkIfTripActiveNow(currTrip)) {
-                Station currStation = findTripCurrentStation(currTrip);
-                mapToRet.put(currTrip, currStation);
+            if (entry.getValue().isActive()) {
+                Station currStation = findTripCurrentStation(entry.getValue());
+                mapToRet.put(entry.getValue(), currStation.getName());
             }
         }
-        return null;
+        return mapToRet;
     }
 
     public Time getCurrentSystemTime() {
@@ -438,70 +453,6 @@ public class EngineManager {
         }
 
         return null;
-    }
-
-
-    private boolean checkIfTripActiveNow(TripSuggest currTrip) {
-        Time time = timeManager.getCurrTime();
-        int day = time.getDay();
-        int hours = time.getHours();
-        int minutes = time.getMinutes();
-
-        if (checkIfTripActivateOnDAy(currTrip, day)) {
-            if (checkTripOnHour(currTrip, hours, minutes)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean checkTripOnHour(TripSuggest currTrip, int hoursSystem, int minutesSystem) {
-        Time startingTime = currTrip.getStartingTime();
-        int startingHour = startingTime.getHours();
-        int startingMinutes = startingTime.getMinutes();
-        Time arrivalTime = currTrip.getArrivalTime();
-        int arrivalHour = arrivalTime.getHours();
-        int arrivalMinutes = arrivalTime.getMinutes();
-
-        if (arrivalHour < hoursSystem) {
-            return false;
-        } else if (arrivalHour == hoursSystem) {
-            if (arrivalMinutes < minutesSystem) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            if (startingHour < hoursSystem) {
-                return true;
-            } else if (startingHour == hoursSystem) {
-                if (startingMinutes < minutesSystem) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-    }
-
-    private boolean checkIfTripActivateOnDAy(TripSuggest trip, int currentDaySystem) {
-        int tripDay = trip.getStartingDay();
-        TripSuggest.RecurrencesTypes recurrences = trip.getRecurrencesType();
-
-        if (recurrences.equals(TripSuggest.RecurrencesTypes.ONE_TIME_ONLY)) {
-            return trip.getStartingDay() == currentDaySystem;
-        } else {
-            while (tripDay <= currentDaySystem) {
-                if (tripDay == currentDaySystem) {
-                    return true;
-                } else {
-                    tripDay += trip.getRecurrencesType().getValue();
-                }
-            }
-            return false;
-        }
     }
 
     public List<String> getAllPlannedTripsOwnerNames() {
@@ -603,8 +554,7 @@ public class EngineManager {
     }
 
     //TripSuggestID, rate, description
-    public List<String> validateInputOfRatingDriverOfSuggestIDAndRating(String tripSuggestId,
-                                                                        String rateStr, String description) {
+    public List<String> validateInputOfRatingDriverOfSuggestIDAndRating(String tripSuggestId, String rateStr, String description) {
         List<String> errors = new ArrayList<>();
 
         int suggestID = 0;
@@ -655,20 +605,18 @@ public class EngineManager {
     }
 
     public int getXCoorOfStation(String sourceStation) {
-        for(Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
-            if(stop.getName().equals(sourceStation)) {
-                return stop.getX();
-            }
-        }
-        return -1;
+       return StationsUtil.getXCoorOfStation(sourceStation, transPool.getMapDescriptor().getStops().getStop());
     }
 
     public int getYCoorOfStation(String sourceStation) {
-        for(Stop stop : transPool.getMapDescriptor().getStops().getStop()) {
-            if(stop.getName().equals(sourceStation)) {
-                return stop.getY();
-            }
-        }
-        return -1;
+        return StationsUtil.getYCoorOfStation(sourceStation, transPool.getMapDescriptor().getStops().getStop());
+    }
+
+    public List<TripRequest> getAllMatchedTripRequests() {
+        return tripRequestUtil.getAllMatchedTripRequests();
+    }
+
+    public List<String> getAllUnmatchedRequests() {
+        return tripRequestUtil.getAllUnmatchedRequests();
     }
 }

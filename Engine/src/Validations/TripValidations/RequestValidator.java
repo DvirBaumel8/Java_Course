@@ -107,7 +107,7 @@ public class RequestValidator extends ActionValidator {
             matchingErrors.add(String.format("Please insert two numbers (Integer), try again"));
         }
         if(EngineManager.getEngineManagerInstance().getTripRequestByID(Integer.parseInt(inputs[0])).isMatched()) {
-            matchingErrors.add("You choose trip request that already mathced, try again.");
+            matchingErrors.add("You choose trip request that already matched, try again.");
         }
         return matchingErrors;
     }

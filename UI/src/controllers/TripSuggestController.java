@@ -132,13 +132,13 @@ public class TripSuggestController {
 
         //-----------------------------------------------------
 
-        Label arrivalDayNumberLabel = new Label("- Arrival Day Number:");
-        arrivalDayNumberLabel.setTextFill(Color.web("#0076a3"));
-        arrivalDayNumberLabel.setTranslateX(15);
-        arrivalDayNumberLabel.setPrefWidth(300);
-        addTripSuggestWindow.getChildren().add(arrivalDayNumberLabel);
+        Label startingDayNumber = new Label("- Starting Day Number:");
+        startingDayNumber.setTextFill(Color.web("#0076a3"));
+        startingDayNumber.setTranslateX(15);
+        startingDayNumber.setPrefWidth(300);
+        addTripSuggestWindow.getChildren().add(startingDayNumber);
 
-        arrivalDayNumberLabel.setTranslateX(15);
+        startingDayNumber.setTranslateX(15);
         inputAddTripSuggest.add(new TextField("3"));
         inputAddTripSuggest.get(2).setMaxWidth(250);
         inputAddTripSuggest.get(2).setTranslateX(15);
@@ -247,7 +247,7 @@ public class TripSuggestController {
         displayTripSuggestStrArr[2] = "-Starting time:" + newSuggest.getStartingTime().toString();
         displayTripSuggestStrArr[3] = "-Schedule type:" + scheduleTypeString;
         displayTripSuggestStrArr[4] = "-PPK:" + newSuggest.getPpk();
-        displayTripSuggestStrArr[5] = "-Pass capacity:" + newSuggest.getRemainingCapacity();
+        displayTripSuggestStrArr[5] = "-Pass capacity:" + newSuggest.getstaticCapacity();
         displayTripSuggestStrArr[6] = "-Average Rank:X";
         displayTripSuggestStrArr[7] = "-Num of ranking:0";
         displayTripSuggestStrArr[8] = "-Comments:";

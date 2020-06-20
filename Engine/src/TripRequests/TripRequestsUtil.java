@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 public class TripRequestsUtil {
-    private Map<TripRequest, Integer> requestTrips;
+    private Map<Integer, TripRequest> requestTrips;
 
-    private static final String validationSuccessMessage = "Trip request added successfully\n";
     private int nextRequestID;
 
     public TripRequestsUtil() {
@@ -16,26 +15,29 @@ public class TripRequestsUtil {
         this.nextRequestID = 1;
     }
 
-    public Map<TripRequest, Integer> getAllRequestTrips() {
+    public List<TripRequest> getAllMatchedTripRequests() {
+        List<TripRequest> matchedRequests = new ArrayList<>();
+
+        for(Map.Entry<Integer, TripRequest> entry : requestTrips.entrySet()) {
+            if(entry.getValue().isMatched()) {
+                matchedRequests.add(entry.getValue());
+            }
+        }
+        return matchedRequests;
+    }
+
+    public Map<Integer, TripRequest> getAllRequestTrips() {
         return requestTrips;
     }
 
     public void addRequestTrip(TripRequest requestTrip) {
         requestTrip.setRequestID(nextRequestID);
-        requestTrips.put(requestTrip, nextRequestID);
+        requestTrips.put(nextRequestID, requestTrip);
         nextRequestID++;
     }
 
-    public Integer getTripID(TripRequest trip) {
-        return requestTrips.get(trip);
-    }
-
-    public String getValidationSuccessMessage () {
-        return validationSuccessMessage;
-    }
-
     public boolean isRequestIDExist(Integer requestID) {
-        return requestTrips.containsValue(requestID);
+        return requestTrips.containsKey(requestID);
     }
 
     public boolean isRequestIDExistInMatchedRequestTrips(Integer requestID) {
@@ -50,9 +52,9 @@ public class TripRequestsUtil {
     }
 
     public TripRequest getTripRequestByID(int requestID) {
-        for(Map.Entry<TripRequest, Integer> trip : requestTrips.entrySet()) {
-            if(trip.getValue() == requestID) {
-                return trip.getKey();
+        for(Map.Entry<Integer, TripRequest> trip : requestTrips.entrySet()) {
+            if(trip.getKey() == requestID) {
+                return trip.getValue();
             }
         }
         return null;
@@ -61,9 +63,9 @@ public class TripRequestsUtil {
     public List<String> getAllMatchedTripRequestAsString() {
         List<String> retVal = new ArrayList<>();
 
-        for(Map.Entry<TripRequest, Integer> entry : requestTrips.entrySet()) {
-            if(entry.getKey().isMatched()) {
-                retVal.add(String.format("Trip ID - %d, Owner name - %s", entry.getKey().getRequestID(), entry.getKey().getNameOfOwner()));
+        for(Map.Entry<Integer, TripRequest> entry : requestTrips.entrySet()) {
+            if(entry.getValue().isMatched()) {
+                retVal.add(String.format("Trip ID - %d, Owner name - %s", entry.getValue().getRequestID(), entry.getValue().getNameOfOwner()));
             }
         }
         if(retVal.size() ==0) {
@@ -75,9 +77,20 @@ public class TripRequestsUtil {
     public List<TripRequest> getAllMatchedTripRequest() {
         List<TripRequest> retVal = new ArrayList<>();
 
-        for(Map.Entry<TripRequest, Integer> entry : requestTrips.entrySet()) {
-            if(entry.getKey().isMatched()) {
-                retVal.add(entry.getKey());
+        for(Map.Entry<Integer,TripRequest> entry : requestTrips.entrySet()) {
+            if(entry.getValue().isMatched()) {
+                retVal.add(entry.getValue());
+            }
+        }
+        return retVal;
+    }
+
+    public List<String> getAllUnmatchedRequests() {
+        List<String> retVal = new ArrayList<>();
+
+        for(Map.Entry<Integer,TripRequest> entry : requestTrips.entrySet()) {
+            if(!entry.getValue().isMatched()) {
+                retVal.add(String.format("Request ID: %s, Trip Owner Name: %s", entry.getValue().getRequestID(), entry.getValue().getNameOfOwner()));
             }
         }
         return retVal;
