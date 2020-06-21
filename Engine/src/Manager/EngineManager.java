@@ -322,7 +322,39 @@ public class EngineManager {
         }
 
         tripRequest.setMatchTrip(roadTrip);
+        updateSuggestsCapacityPerTimeMap(roadTrip);
         return roadTrip.getRoadStory();
+    }
+
+    private void updateSuggestsCapacityPerTimeMap(RoadTrip roadTrip) {
+        LinkedList<Station> stations;
+        Station[] stationsArr;
+        int totalMinutes;
+        for(SubTrip subTrip : roadTrip.getSubTrips()) {
+            stations = subTrip.getRoute();
+            stationsArr = new Station[stations.size() - 1];
+            copyLinkedListToArr(stations, stationsArr);
+            for(int i =0; i < stationsArr.length; i++) {
+                totalMinutes = calcTotalMinutes(stationsArr[i].getDay(), stationsArr[i].getHour(), stationsArr[i].getMinutes());
+                subTrip.getTrip().addNewItemToCapacityPerTimeMap(totalMinutes);
+            }
+        }
+
+    }
+
+    private int calcTotalMinutes(int day, int hour, int minutes) {
+        return (day * 24 * 60) + (hour * 60) + (minutes);
+    }
+
+    private void copyLinkedListToArr(LinkedList<Station> stations, Station[] stationsArr) {
+        int index = 0;
+        for(Station station : stations) {
+            if(stations.getLast().getName().equals(station.getName())) {
+                break;
+            }
+            stationsArr[index] = station;
+            index++;
+        }
     }
 
     private boolean validaRoadTripChoice(String inputStr) {
@@ -407,17 +439,18 @@ public class EngineManager {
         updateSuggestedTrips();
     }
 
-    public Map<TripSuggest, String> getMapDetailsPerTime() {
-        Map<TripSuggest, String> mapToRet = new HashMap<>();
+    public List<String> getListDetailsPerTime() {
+        //String of name, id, path, current station
+        List<String> retList = new ArrayList<>();
         Map<Integer, TripSuggest> suggestedTrips = tripSuggestUtil.getAllSuggestedTrips();
 
         for (Map.Entry<Integer, TripSuggest> entry : suggestedTrips.entrySet()) {
             if (entry.getValue().isActive()) {
                 Station currStation = findTripCurrentStation(entry.getValue());
-                mapToRet.put(entry.getValue(), currStation.getName());
+                retList.add(String.format("ID: %s, Owner name: %s, Route: %s, Current Station: %s", entry.getValue().getSuggestID(), entry.getValue().getTripOwnerName(), entry.getValue().getTripStations().toString(), currStation.getName()));
             }
         }
-        return mapToRet;
+        return retList;
     }
 
     public Time getCurrentSystemTime() {
