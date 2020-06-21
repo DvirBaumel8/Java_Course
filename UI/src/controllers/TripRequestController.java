@@ -76,7 +76,8 @@ public class TripRequestController {
         javafx.geometry.Insets margin = new javafx.geometry.Insets(12,12,12,12);
         javafx.geometry.Insets generalMargin = new javafx.geometry.Insets(0,4,0,4);
         addTripRequestWindow.setSpacing(10);
-
+        inputAddTripRequest = null;
+        this.inputAddTripRequest = new ArrayList<>();
         if(tripRequestAccordion.getPanes().size() > 0) {
             this.inputAddTripRequest = null;
             this.inputAddTripRequest = new ArrayList<>();

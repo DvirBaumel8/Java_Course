@@ -90,7 +90,8 @@ public class TripRequestsUtil {
 
         for(Map.Entry<Integer,TripRequest> entry : requestTrips.entrySet()) {
             if(!entry.getValue().isMatched()) {
-                retVal.add(String.format("Request ID: %s, Trip Owner Name: %s", entry.getValue().getRequestID(), entry.getValue().getNameOfOwner()));
+                retVal.add(String.format("Request ID: %s, Trip Owner Name: %s", entry.getValue().getRequestID(),
+                        entry.getValue().getNameOfOwner() + System.lineSeparator()));
             }
         }
         return retVal;

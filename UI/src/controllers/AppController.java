@@ -194,6 +194,9 @@ public class AppController {
         tripRequestController.setNeededTripRequestForMatchAccordion(requestId);
     }
 
+     public List<String> getAllUnmatchedRequests() {
+       return engine.getAllUnmatchedRequests();
+   }
 
 
     //--------------------------------Time Functions Main Controller -----------------------------------------
@@ -325,5 +328,12 @@ public class AppController {
     }
 
     public void resetSystem() {
+    }
+
+
+
+    //-------------------------------Current Suggest Trips HBox UI---------------------------------------
+    public void addHBoxCellForCurrentSuggestTripDisplay() {
+        matchingController.addHBoxCellForCurrentSuggestTripDisplay();
     }
 }

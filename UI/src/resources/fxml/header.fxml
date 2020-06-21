@@ -34,21 +34,21 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </Label>
-         <Label fx:id="setRunningButtonLabel" prefHeight="31.0" prefWidth="160.0" text="Set running method:" translateX="495.0" translateY="-111.0" underline="true">
+         <Label fx:id="setRunningButtonLabel" prefHeight="31.0" prefWidth="160.0" text="Set running method:" translateX="565.0" translateY="-111.0" underline="true">
             <font>
                <Font name="System Bold" size="16.0" />
             </font>
          </Label>
-         <Button fx:id="forwardPreviousButton" mnemonicParsing="false" onAction="#forwardPreviousButtonActionListener" prefHeight="29.0" prefWidth="121.0" text="Forward" translateX="651.0" translateY="-134.0" />
-         <Label fx:id="timeLabel" prefHeight="58.0" prefWidth="286.0" text="Time:" textFill="#0c2deb" translateX="200.0" translateY="-160.0">
+         <Button fx:id="forwardPreviousButton" mnemonicParsing="false" onAction="#forwardPreviousButtonActionListener" prefHeight="29.0" prefWidth="121.0" text="Forward" translateX="720.0" translateY="-134.0" />
+         <Label fx:id="timeLabel" prefHeight="58.0" prefWidth="286.0" text="Time:" textFill="#0c2deb" translateX="275.0" translateY="-160.0">
             <font>
                <Font name="System Bold Italic" size="20.0" />
             </font>
          </Label>
-         <Button fx:id="fiveMinButton" mnemonicParsing="false" onAction="#fiveMinButtonActionListener" prefHeight="24.0" prefWidth="49.0" text="5Min" translateX="820.0" translateY="-187.0" />
-         <Button fx:id="halfHourMinButton" mnemonicParsing="false" onAction="#halfHourMinButtonActionListener" prefWidth="57.0" text="30Min" translateX="876.0" translateY="-214.0" />
-         <Button fx:id="oneHourButton" mnemonicParsing="false" onAction="#oneHourButtonActionListener" text="1Hour" translateX="940.0" translateY="-241.0" />
-         <Button fx:id="twoHoursButton" mnemonicParsing="false" onAction="#twoHoursButtonActionListener" text="2Hours" translateX="1000.0" translateY="-268.0" />
+         <Button fx:id="fiveMinButton" mnemonicParsing="false" onAction="#fiveMinButtonActionListener" prefHeight="24.0" prefWidth="49.0" text="5Min" translateX="860.0" translateY="-187.0" />
+         <Button fx:id="halfHourMinButton" mnemonicParsing="false" onAction="#halfHourMinButtonActionListener" prefWidth="57.0" text="30Min" translateX="916.0" translateY="-214.0" />
+         <Button fx:id="oneHourButton" mnemonicParsing="false" onAction="#oneHourButtonActionListener" text="1Hour" translateX="980.0" translateY="-241.0" />
+         <Button fx:id="twoHoursButton" mnemonicParsing="false" onAction="#twoHoursButtonActionListener" text="2Hours" translateX="1040.0" translateY="-268.0" />
          <Button fx:id="oneDayButton" mnemonicParsing="false" onAction="#oneDayButtonActionListener" text="1Day" translateX="1150.0" translateY="-150.0" />
    </children>
 </VBox>

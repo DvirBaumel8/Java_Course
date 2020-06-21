@@ -2,11 +2,14 @@ package controllers;
 
 import RootWrapper.RootWrapper;
 import com.fxgraph.graph.Graph;
+import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
 
 public class LiveMapController {
     private AppController mainController;
 
     private static RootWrapper rootWrapper = null;
+
 
 
     public void setMainController(AppController mainController) {

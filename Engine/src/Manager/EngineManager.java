@@ -92,6 +92,7 @@ public class EngineManager {
 
     private void cleanEngine() {
         tripSuggestUtil.getAllSuggestedTrips().clear();
+        tripSuggestUtil.restSuggestedTripsId();
         tripRequestUtil.getAllRequestTrips().clear();
         timeManager.setCurrentTime(new Time(0, 0, 1));
         suggestTripOwners.clear();

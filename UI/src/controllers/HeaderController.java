@@ -9,6 +9,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.LinkedList;
 import java.util.List;
 
 public class HeaderController {
@@ -65,6 +67,7 @@ public class HeaderController {
                 mainController.setTime();
                 mainController.resetSystem();
                 mainController.updateLiveMap();
+                mainController.addHBoxCellForCurrentSuggestTripDisplay();
         }
         else {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR, "XML doesnt Load Successfully");
@@ -107,42 +110,84 @@ public class HeaderController {
     //-------------------------------Time Flow UI---------------------------------------
     @FXML
     void fiveMinButtonActionListener() {
-        mainController.setDateString5Min(isForward);
-        setTimeLabel(mainController.getCurrentTime());
+        if (mainController.isXMLLoaded()) {
+            mainController.setDateString5Min(isForward);
+            setTimeLabel(mainController.getCurrentTime());
+        }
+        else {
+            List<String> errors = new LinkedList<>();
+            errors.add("XML doesnt load yet - please load one");
+            mainController.getAlertErrorWindow(errors);
+        }
     }
 
     @FXML
     void halfHourMinButtonActionListener() {
-        mainController.setDateString30Min(isForward);
-        setTimeLabel(mainController.getCurrentTime());
+        if (mainController.isXMLLoaded()) {
+            mainController.setDateString30Min(isForward);
+            setTimeLabel(mainController.getCurrentTime());
+        }
+        else {
+            List<String> errors = new LinkedList<>();
+            errors.add("XML doesnt load yet - please load one");
+            mainController.getAlertErrorWindow(errors);
+        }
     }
 
     @FXML
     void oneHourButtonActionListener() {
-        mainController.setDateString1Hour(isForward);
-        setTimeLabel(mainController.getCurrentTime());
+        if (mainController.isXMLLoaded()) {
+            mainController.setDateString1Hour(isForward);
+            setTimeLabel(mainController.getCurrentTime());
+        }
+        else {
+            List<String> errors = new LinkedList<>();
+            errors.add("XML doesnt load yet - please load one");
+            mainController.getAlertErrorWindow(errors);
+        }
     }
 
     @FXML
     void twoHoursButtonActionListener() {
-        mainController.setDateString2Hours(isForward);
-        setTimeLabel(mainController.getCurrentTime());
+        if (mainController.isXMLLoaded()) {
+            mainController.setDateString2Hours(isForward);
+            setTimeLabel(mainController.getCurrentTime());
+        }
+        else {
+            List<String> errors = new LinkedList<>();
+            errors.add("XML doesnt load yet - please load one");
+            mainController.getAlertErrorWindow(errors);
+        }
     }
 
     @FXML
     void oneDayButtonActionListener() {
-        mainController.setDateString1Day(isForward);
-        setTimeLabel(mainController.getCurrentTime());
+        if (mainController.isXMLLoaded()) {
+            mainController.setDateString1Day(isForward);
+            setTimeLabel(mainController.getCurrentTime());
+        }
+        else {
+            List<String> errors = new LinkedList<>();
+            errors.add("XML doesnt load yet - please load one");
+            mainController.getAlertErrorWindow(errors);
+        }
     }
 
     @FXML
     void forwardPreviousButtonActionListener() {
-        isForward = !isForward;
-        if(isForward) {
-            forwardPreviousButton.setText("Forward");
+        if (mainController.isXMLLoaded()) {
+            isForward = !isForward;
+            if(isForward) {
+                forwardPreviousButton.setText("Forward");
+            }
+            else {
+                forwardPreviousButton.setText("Previous");
+            }
         }
         else {
-            forwardPreviousButton.setText("Previous");
+            List<String> errors = new LinkedList<>();
+            errors.add("XML doesnt load yet - please load one");
+            mainController.getAlertErrorWindow(errors);
         }
     }
 

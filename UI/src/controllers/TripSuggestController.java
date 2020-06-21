@@ -430,6 +430,7 @@ public class TripSuggestController {
             if (errors.isEmpty()) {
                 mainController.rankDriver(inputs);
                 this.setRankFieldsAtSuggestIdAccordion(inputs);
+                rankSuggestIdByTripRequestStage.close();
                 mainController.getSuccessWindow("Ranking succeed");
             } else {
                 mainController.getAlertErrorWindow(errors);

@@ -62,6 +62,10 @@ public class TripSuggestUtil {
         return suggestedTrips;
     }
 
+    public void restSuggestedTripsId() {
+        this.nextSuggestID = 1;
+    }
+
     int getTripScheduleTypeInt(String tripScheduleType) {
         int res = 0;
         switch (tripScheduleType) {

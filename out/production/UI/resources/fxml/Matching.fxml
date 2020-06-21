@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <ScrollPane minHeight="100" minWidth="200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MatchingController">
-   <content>
-      <ToolBar prefHeight="160.0" prefWidth="995.0" styleClass="matching" stylesheets="@../../CSS/matching.css">
+<content>
+    <ToolBar prefHeight="160.0" prefWidth="995.0" styleClass="matching" stylesheets="@../../CSS/matching.css">
         <items>
-          <Button fx:id="matchingButton" mnemonicParsing="false" onAction="#matchingButtonActionListener" prefHeight="70.0" prefWidth="300.0" text="Go Match" translateX="525.0" translateY="-15.0">
-               <font>
-                  <Font size="16.0" />
-               </font></Button>
+            <Button fx:id="matchingButton" mnemonicParsing="false" onAction="#matchingButtonActionListener" prefHeight="70.0" prefWidth="300.0" text="Go Match" translateX="100.0" translateY="-15.0">
+                <font>
+                    <Font size="16.0" />
+                </font></Button>
+            <Label prefHeight="29.0" prefWidth="177.0" text="Label" translateX="200.0" translateY="-60.0" />
+            <VBox fx:id="currSuggestTripsVBox" prefHeight="16.0" prefWidth="254.0" translateX="140.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="16.0" prefWidth="250.0" text="Button" />
+               </children>
+            </VBox>
         </items>
-      </ToolBar>
-   </content>
+    </ToolBar>
+</content>
 </ScrollPane>
