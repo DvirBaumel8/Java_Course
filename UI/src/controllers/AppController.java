@@ -207,22 +207,32 @@ public class AppController {
 
     public void setDateString5Min(boolean isForward) {
         moveTime(isForward, 1);
+      //  List<String> currentSuggestTripsDto = engine.getMapDetailsPerTime();
+    //    matchingController.updateVBoxForCurrentSuggestTripDisplay();
     }
 
     public void setDateString30Min(boolean isForward) {
         moveTime(isForward, 2);
+      //  List<String> currentSuggestTripsDto  = engine.getMapDetailsPerTime();
+     //   matchingController.updateVBoxForCurrentSuggestTripDisplay();
     }
 
     public void setDateString1Hour(boolean isForward) {
         moveTime(isForward, 3);
+      //  List<String> currentSuggestTripsDto  = engine.getMapDetailsPerTime();
+      //  matchingController.updateVBoxForCurrentSuggestTripDisplay();
     }
 
     public void setDateString2Hours(boolean isForward) {
         moveTime(isForward, 4);
+       // List<String> currentSuggestTripsDto  = engine.getMapDetailsPerTime();
+      //  matchingController.updateVBoxForCurrentSuggestTripDisplay();
     }
 
     public void setDateString1Day(boolean isForward) {
         moveTime(isForward, 5);
+        //List<String> currentSuggestTripsDto  = engine.getMapDetailsPerTime();
+       // matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
     }
 
     private void moveTime(boolean forward, int choose) {
@@ -238,7 +248,6 @@ public class AppController {
                 errorAlert.setContentText(ex.getMessage());
                 errorAlert.showAndWait();
             }
-
         }
     }
 

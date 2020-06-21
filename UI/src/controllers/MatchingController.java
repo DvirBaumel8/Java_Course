@@ -3,15 +3,15 @@ package controllers;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -196,24 +196,125 @@ public class MatchingController {
 
 
     //-------------------------------Current Suggest Trips HBox UI---------------------------------------
-    public void addHBoxCellForCurrentSuggestTripDisplay() {
-        addHBoxCell();
+
+    public void updateVBoxForCurrentSuggestTripDisplay(List<String> currentSuggestTripsDto) {
+        resetVBoxForCurrentSuggestTripDisplay();
+        currentSuggestTripsDto.forEach((currentSuggestTrip) -> {
+            String[] inputs = currentSuggestTrip.split(",");
+            String suggestName = inputs[0];
+            String suggestId = inputs[1];;
+            String currStation = inputs[2];
+            addCellToVBoxForCurrentSuggestTripDisplay(suggestName, suggestId, currStation);
+        });
+    }
+
+    public void addCellToVBoxForCurrentSuggestTripDisplay(String suggestName, String suggestId, String currStation) {
+        String currentSuggestTripDisplay = suggestName + " , " + suggestId + " , " + currStation;
+        Button newSuggestTripDisplayButton = new Button(currentSuggestTripDisplay;
+        newSuggestTripDisplayButton.setPrefWidth(250);
+        newSuggestTripDisplayButton.setMinWidth(250);
+        newSuggestTripDisplayButton.setPrefHeight(20);
+        newSuggestTripDisplayButton.setMaxHeight(20);
+        newSuggestTripDisplayButton.setStyle("-fx-font-size:10");
+        currSuggestTripsVBox.getChildren().add(newSuggestTripDisplayButton);
+    }
+
+    void resetVBoxForCurrentSuggestTripDisplay() {
+        int sizeOfCurrentPanes = currSuggestTripsVBox.getChildren().size();
+
+        for(int i = 0 ; i < sizeOfCurrentPanes ; i++) {
+            this.currSuggestTripsVBox.getChildren().remove(i);
+        }
     }
 
     public void addHBoxCell() {
         //BorderPane layout = new BorderPane();
 
-       // List<HBoxCell> list = new ArrayList<>();
+
+        // List<HBoxCell> list = new ArrayList<>();
         //for (int i = 0; i < 12; i++) {
           //  list.add(new HBoxCell("Item " + i, "Button " + i));
         //}
 
       //  ListView<HBoxCell> listView = new ListView<HBoxCell>();
 
-        //Button button1 = new Button("Click");
-        //currSuggestTripsVBox.getChildren().add(button1);
-        //Button button2 = new Button("Hey");
-        //currSuggestTripsVBox.getChildren().add(button2);
+        Button button1 = new Button("Click");
+        button1.setPrefWidth(250);
+        button1.setMinWidth(250);
+        button1.setPrefHeight(20);
+        button1.setMaxHeight(20);
+        button1.setStyle("-fx-font-size:10");
+        currSuggestTripsVBox.getChildren().add(button1);
+        Button button2 = new Button("Click");
+        button2.setPrefWidth(250);
+        button2.setMinWidth(250);
+        button2.setPrefHeight(20);
+        button2.setMaxHeight(20);
+        button2.setStyle("-fx-font-size:10");
+        Button button3 = new Button("Click");
+        button3.setPrefWidth(250);
+        button3.setMinWidth(250);
+        button3.setPrefHeight(20);
+        button3.setMaxHeight(20);
+        button3.setStyle("-fx-font-size:10");
+        Button button4 = new Button("Click");
+        button4.setPrefWidth(250);
+        button4.setMinWidth(250);
+        button4.setPrefHeight(20);
+        button4.setMaxHeight(20);
+        button4.setStyle("-fx-font-size:10");
+        Button button5 = new Button("Click");
+        button5.setPrefWidth(250);
+        button5.setMinWidth(250);
+        button5.setPrefHeight(20);
+        button5.setMaxHeight(20);
+        button5.setStyle("-fx-font-size:10");
+        Button button6 = new Button("Click");
+        button6.setPrefWidth(250);
+        button6.setMinWidth(250);
+        button6.setPrefHeight(20);
+        button6.setMaxHeight(20);
+        button6.setStyle("-fx-font-size:10");
+        Button button7 = new Button("Click");
+        button7.setPrefWidth(250);
+        button7.setMinWidth(250);
+        button7.setPrefHeight(20);
+        button7.setMaxHeight(20);
+        button7.setStyle("-fx-font-size:10");
+        Button button8 = new Button("Click");
+        button8.setPrefWidth(250);
+        button8.setMinWidth(250);
+        button8.setPrefHeight(20);
+        button8.setMaxHeight(20);
+        button8.setStyle("-fx-font-size:10");
+        Button button9 = new Button("Click");
+        button9.setPrefWidth(250);
+        button9.setMinWidth(250);
+        button9.setPrefHeight(20);
+        button9.setMaxHeight(20);
+        button9.setStyle("-fx-font-size:10");
+        Button button10 = new Button("Click");
+        button10.setPrefWidth(250);
+        button10.setMinWidth(250);
+        button10.setPrefHeight(20);
+        button10.setMaxHeight(20);
+        button10.setStyle("-fx-font-size:10");
+        Button button11 = new Button("Click");
+        button11.setPrefWidth(250);
+        button11.setMinWidth(250);
+        button11.setPrefHeight(20);
+        button11.setMaxHeight(20);
+        button11.setStyle("-fx-font-size:10");
+        currSuggestTripsVBox.getChildren().add(button3);
+        currSuggestTripsVBox.getChildren().add(button4);
+        currSuggestTripsVBox.getChildren().add(button5);
+        currSuggestTripsVBox.getChildren().add(button6);
+        currSuggestTripsVBox.getChildren().add(button7);
+        currSuggestTripsVBox.getChildren().add(button8);
+        currSuggestTripsVBox.getChildren().add(button9);
+        currSuggestTripsVBox.getChildren().add(button10);
+
+
 
     }
 }
