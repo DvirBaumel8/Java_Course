@@ -11,6 +11,9 @@ import javafx.scene.control.*;
 
 import java.util.*;
 
+import static RootWrapper.RootWrapper.getGraph;
+import static RootWrapper.RootWrapper.setGraph;
+
 public class AppController {
     @FXML private ScrollPane headerComponent;
 
@@ -207,32 +210,32 @@ public class AppController {
 
     public void setDateString5Min(boolean isForward) {
         moveTime(isForward, 1);
-      //  List<String> currentSuggestTripsDto = engine.getMapDetailsPerTime();
-    //    matchingController.updateVBoxForCurrentSuggestTripDisplay();
+        List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
+        matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
     }
 
     public void setDateString30Min(boolean isForward) {
         moveTime(isForward, 2);
-      //  List<String> currentSuggestTripsDto  = engine.getMapDetailsPerTime();
-     //   matchingController.updateVBoxForCurrentSuggestTripDisplay();
+        List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
+        matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
     }
 
     public void setDateString1Hour(boolean isForward) {
         moveTime(isForward, 3);
-      //  List<String> currentSuggestTripsDto  = engine.getMapDetailsPerTime();
-      //  matchingController.updateVBoxForCurrentSuggestTripDisplay();
+        List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
+        matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
     }
 
     public void setDateString2Hours(boolean isForward) {
         moveTime(isForward, 4);
-       // List<String> currentSuggestTripsDto  = engine.getMapDetailsPerTime();
-      //  matchingController.updateVBoxForCurrentSuggestTripDisplay();
+        List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
+        matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
     }
 
     public void setDateString1Day(boolean isForward) {
         moveTime(isForward, 5);
-        //List<String> currentSuggestTripsDto  = engine.getMapDetailsPerTime();
-       // matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
+        matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
     }
 
     private void moveTime(boolean forward, int choose) {
@@ -306,8 +309,9 @@ public class AppController {
 
 
     //--------------------------------Live Map Functions Main Controller -----------------------------------------
-    public void updateLiveMap() {
-
+    public void updateLiveMap(String currentTripSuggestButtonText) {
+        Graph graphToUpdate = engine.getGraphBuilderUtil().setAndGetGraphByCurrentTripSuggest(currentTripSuggestButtonText);
+        setGraph(graphToUpdate);
     }
 
     public void setLiveMapToRootCenter() {
@@ -337,12 +341,5 @@ public class AppController {
     }
 
     public void resetSystem() {
-    }
-
-
-
-    //-------------------------------Current Suggest Trips HBox UI---------------------------------------
-    public void addHBoxCellForCurrentSuggestTripDisplay() {
-        matchingController.addHBoxCellForCurrentSuggestTripDisplay();
     }
 }

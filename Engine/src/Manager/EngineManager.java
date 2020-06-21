@@ -152,6 +152,14 @@ public class EngineManager {
         return str.toString();
     }
 
+    public static GraphBuilderUtil getGraphBuilderUtil() {
+        return graphBuilderUtil;
+    }
+
+    public static void setGraphBuilderUtil(GraphBuilderUtil graphBuilderUtil) {
+        EngineManager.graphBuilderUtil = graphBuilderUtil;
+    }
+
     public TripRequest addNewTripRequest(String[] inputs) {
         TripRequest newRequest = null;
         int hour = Integer.parseInt(inputs[3].split(":")[0]);

@@ -210,11 +210,12 @@ public class MatchingController {
 
     public void addCellToVBoxForCurrentSuggestTripDisplay(String suggestName, String suggestId, String currStation) {
         String currentSuggestTripDisplay = suggestName + " , " + suggestId + " , " + currStation;
-        Button newSuggestTripDisplayButton = new Button(currentSuggestTripDisplay;
+        Button newSuggestTripDisplayButton = new Button(currentSuggestTripDisplay);
         newSuggestTripDisplayButton.setPrefWidth(250);
         newSuggestTripDisplayButton.setMinWidth(250);
         newSuggestTripDisplayButton.setPrefHeight(20);
         newSuggestTripDisplayButton.setMaxHeight(20);
+        newSuggestTripDisplayButton.setOnAction(this::currentSuggestTripsToDisplayAction);
         newSuggestTripDisplayButton.setStyle("-fx-font-size:10");
         currSuggestTripsVBox.getChildren().add(newSuggestTripDisplayButton);
     }
@@ -225,6 +226,17 @@ public class MatchingController {
         for(int i = 0 ; i < sizeOfCurrentPanes ; i++) {
             this.currSuggestTripsVBox.getChildren().remove(i);
         }
+    }
+
+    public void currentSuggestTripsToDisplayAction(ActionEvent event) {
+        ObservableList<Node> currentSuggestTripsToDisplay = currSuggestTripsVBox.getChildren();
+        event.getSource();
+
+        Object node = event.getSource();
+        Button clickedButton = (Button)node;
+        String buttonText = clickedButton.getText();
+
+        mainController.updateLiveMap(buttonText);
     }
 
     public void addHBoxCell() {
@@ -313,8 +325,5 @@ public class MatchingController {
         currSuggestTripsVBox.getChildren().add(button8);
         currSuggestTripsVBox.getChildren().add(button9);
         currSuggestTripsVBox.getChildren().add(button10);
-
-
-
     }
 }

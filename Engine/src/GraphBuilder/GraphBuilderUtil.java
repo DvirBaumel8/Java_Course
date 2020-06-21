@@ -30,6 +30,8 @@ import java.util.List;
 public class GraphBuilderUtil {
     private TransPool transPool;
 
+    private static Graph graph = null;
+
     public GraphBuilderUtil(TransPool transPool) {
         this.transPool = transPool;
     }
@@ -58,6 +60,10 @@ public class GraphBuilderUtil {
                 }
             }
         }
+    }
+
+    public Graph setAndGetGraphByCurrentTripSuggest(String currentTripSuggestDetails) {
+        return null;
     }
 
     private int findCoordinateYToStation(String sourceStation) {
@@ -111,7 +117,7 @@ public class GraphBuilderUtil {
     }
 
     public Graph createGraph(Time time, TransPool transPool) {
-        Graph graph = new Graph();
+         graph = new Graph();
         final Model model = graph.getModel();
         graph.beginUpdate();
         CoordinatesManager cm = createCoordinates(model);
