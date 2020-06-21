@@ -373,4 +373,15 @@ public class TripSuggest {
         return isActive;
     }
 
+    public void addNewItemToCapacityPerTimeMap(int totalMinutes) {
+        if(this.capacityPerTime.containsKey(totalMinutes)) {
+            Integer currCapacity = this.capacityPerTime.get(totalMinutes);
+            capacityPerTime.put(totalMinutes, capacityPerTime.get(totalMinutes) - 1);
+        }
+        else {
+            capacityPerTime.put(totalMinutes, staticCapacity - 1);
+        }
+
+    }
+
 }
