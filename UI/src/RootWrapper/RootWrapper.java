@@ -37,14 +37,6 @@ public class RootWrapper {
         RootWrapper.root.setCenter(borderPaneLiveMapCenter);
     }
 
-    public static ScrollPane getBorderPaneLiveMapCenter() {
-        return borderPaneLiveMapCenter;
-    }
-
-    public static void setBorderPaneLiveMapCenter(ScrollPane borderPaneLiveMapCenter) {
-        RootWrapper.borderPaneLiveMapCenter = borderPaneLiveMapCenter;
-    }
-
     public static Graph getGraph() {
         return graph;
     }

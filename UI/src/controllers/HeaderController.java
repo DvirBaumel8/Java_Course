@@ -67,7 +67,6 @@ public class HeaderController {
                 mainController.setTime();
                 mainController.resetSystem();
                 mainController.updateLiveMap();
-                mainController.addHBoxCellForCurrentSuggestTripDisplay();
         }
         else {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR, "XML doesnt Load Successfully");
