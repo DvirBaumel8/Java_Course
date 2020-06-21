@@ -115,7 +115,7 @@ public class TripSuggest {
         EngineManager.getEngineManagerInstance().moveTimeForward(1);
         EngineManager.getEngineManagerInstance().moveTimeForward(1);
         EngineManager.getEngineManagerInstance().moveTimeForward(1);
-        Map<TripSuggest, String> map = EngineManager.getEngineManagerInstance().getMapDetailsPerTime();
+       // Map<TripSuggest, String> map = EngineManager.getEngineManagerInstance().getMapDetailsPerTime();
 
         System.out.println("");
     }

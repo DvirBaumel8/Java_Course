@@ -88,9 +88,13 @@ public class SubTrip {
     }
 
     public void setEndStationInRoute(Station last, int closestDayFromAbove) {
+        stations.addLast(last);
+        tripDay = closestDayFromAbove;
     }
 
     public void setStartStationInRoute(Station first, int closestDayFromBelow) {
+        stations.addFirst(first);
+        tripDay = closestDayFromBelow;
     }
 
     public int getTripID() {
