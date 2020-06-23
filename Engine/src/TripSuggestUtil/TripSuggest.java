@@ -90,6 +90,7 @@ public class TripSuggest {
     }
 
     public static void main(String[] args) throws Exception {
+        /*
         Route route = new Route();
         route.setPath("A,B,C");
 
@@ -118,6 +119,8 @@ public class TripSuggest {
         Map<TripSuggest, String> map = EngineManager.getEngineManagerInstance().getMapDetailsPerTime();
 
         System.out.println("");
+
+         */
     }
 
     public void updateIsActive(Time currTime) {

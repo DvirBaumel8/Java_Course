@@ -66,7 +66,7 @@ public class HeaderController {
                 mainController.loadInitTripSuggestFromXML();
                 mainController.setTime();
                 mainController.resetSystem();
-                mainController.updateLiveMap();
+                //mainController.updateLiveMap();
         }
         else {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR, "XML doesnt Load Successfully");
