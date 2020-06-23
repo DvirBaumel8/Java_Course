@@ -49,13 +49,14 @@ public class MatchUtil {
         Station current = subTrips.getLast().getLastStation();
         if (request.getDestinationStation().equals(current.getName())) {
             res.add(copyLinkedList(subTrips));
+
         }
         else {
             LinkedList<SubTrip> matchingRides = findTripsForNextStations(subTrips);
             for (SubTrip subTrip : matchingRides) {
                 LinkedList<SubTrip> newRide = copyLinkedList(subTrips);
                 if (subTrip.getTrip().getSuggestID() == subTrips.getLast().getTrip().getSuggestID()) {
-                    newRide.getLast().setEndStationInRoute(subTrip.getRoute().getLast(), findClosestDayFromAbove(subTrip.getTrip(), subTrip.getTrip().getRecurrencesType().getValue(), subTrip.getFirstStation(), newRide.getLast().getLastStation().getDay(), newRide.getLast().getLastStation().getHour(), newRide.getLast().getLastStation().getMinutes()));
+                    newRide.getLast().setEndStationInRoute(subTrip.getRoute().getLast(), findClosestDayFromAbove(subTrip.getTrip(), subTrip.getTrip().getRecurrencesType().getValue(), subTrip.getRoute().getFirst(), newRide.getLast().getRoute().getLast().getDay(), newRide.getLast().getLastStation().getHour(), newRide.getLast().getLastStation().getMinutes()));
                     buildMatchingTripsByDeparture(copyLinkedList(newRide), request, res, numberOfTripsToOffer);
                     newRide.getLast().getRoute().removeLast();
                 } else {
@@ -78,18 +79,19 @@ public class MatchUtil {
 
     public LinkedList<SubTrip> findTripsForNextStations(LinkedList<SubTrip> ride) {
 
-        LinkedList<SubTrip> matchingRides = new LinkedList<>();
-        Station currentStation = ride.getLast().getLastStation();
+        LinkedList<SubTrip> subTrips = new LinkedList<>();
+        Station currentStation = ride.getLast().getRoute().getLast();
         int index;
         for (Map.Entry<Integer, TripSuggest> entry : EngineManager.getEngineManagerInstance().getAllSuggestedTripsMap().entrySet()) {
             for (index = 0; index < entry.getValue().getRide().length - 1; index++) {
                 if (entry.getValue().getRide()[index].getName().equals(currentStation.getName()) &&
                         isTripTimeBigger(currentStation, entry.getValue().getRide()[index], entry.getValue()) &&
-                        isTheStationExist(ride, entry.getValue().getRide()[index + 1]));
-                    matchingRides.add(new SubTrip(entry.getValue(), entry.getValue().getRide()[index], entry.getValue().getRide()[index + 1], findClosestDayFromAbove(entry.getValue(), entry.getValue().getRecurrencesType().getValue(), entry.getValue().getRide()[index], ride.getLast().getLastStation().getDay(), ride.getLast().getLastStation().getHour(), ride.getLast().getLastStation().getMinutes())));
+                        isTheStationExist(ride, entry.getValue().getRide()[index + 1])) {
+                    subTrips.add(new SubTrip(entry.getValue(), entry.getValue().getRide()[index], entry.getValue().getRide()[index + 1], findClosestDayFromAbove(entry.getValue(), entry.getValue().getRecurrencesType().getValue(), entry.getValue().getRide()[index], ride.getLast().getLastStation().getDay(), ride.getLast().getLastStation().getHour(), ride.getLast().getLastStation().getMinutes())));
+                }
             }
         }
-        return matchingRides;
+        return subTrips;
     }
 
     private boolean isTheStationExist(LinkedList<SubTrip> ride, Station station) {
