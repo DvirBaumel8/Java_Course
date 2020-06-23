@@ -88,13 +88,17 @@ public class SubTrip {
     }
 
     public void setEndStationInRoute(Station last, int closestDayFromAbove) {
-        stations.addLast(last);
-        tripDay = closestDayFromAbove;
+        Station station = new Station(last.getName());
+        Time time = new Time(last.getMinutes(), last.getHour(), last.getDay() + closestDayFromAbove);
+        station.setArrivalTime(time);
+        stations.addLast(station);
     }
 
     public void setStartStationInRoute(Station first, int closestDayFromBelow) {
-        stations.addFirst(first);
-        tripDay = closestDayFromBelow;
+        Station station = new Station(first.getName());
+        Time time = new Time(first.getMinutes(), first.getHour(), first.getDay() + closestDayFromBelow);
+        station.setArrivalTime(time);
+        stations.addFirst(station);
     }
 
     public int getTripID() {
@@ -129,4 +133,5 @@ public class SubTrip {
     public void setIsRanked(boolean val) {
         this.isRanked = val;
     }
+
 }

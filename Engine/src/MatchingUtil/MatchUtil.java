@@ -49,13 +49,14 @@ public class MatchUtil {
         Station current = subTrips.getLast().getLastStation();
         if (request.getDestinationStation().equals(current.getName())) {
             res.add(copyLinkedList(subTrips));
+
         }
         else {
             LinkedList<SubTrip> matchingRides = findTripsForNextStations(subTrips);
             for (SubTrip subTrip : matchingRides) {
                 LinkedList<SubTrip> newRide = copyLinkedList(subTrips);
                 if (subTrip.getTrip().getSuggestID() == subTrips.getLast().getTrip().getSuggestID()) {
-                    newRide.getLast().setEndStationInRoute(subTrip.getRoute().getLast(), findClosestDayFromAbove(subTrip.getTrip(), subTrip.getTrip().getRecurrencesType().getValue(), subTrip.getFirstStation(), newRide.getLast().getLastStation().getDay(), newRide.getLast().getLastStation().getHour(), newRide.getLast().getLastStation().getMinutes()));
+                    newRide.getLast().setEndStationInRoute(subTrip.getRoute().getLast(), findClosestDayFromAbove(subTrip.getTrip(), subTrip.getTrip().getRecurrencesType().getValue(), subTrip.getRoute().getFirst(), newRide.getLast().getRoute().getLast().getDay(), newRide.getLast().getLastStation().getHour(), newRide.getLast().getLastStation().getMinutes()));
                     buildMatchingTripsByDeparture(copyLinkedList(newRide), request, res, numberOfTripsToOffer);
                     newRide.getLast().getRoute().removeLast();
                 } else {
@@ -79,7 +80,7 @@ public class MatchUtil {
     public LinkedList<SubTrip> findTripsForNextStations(LinkedList<SubTrip> ride) {
 
         LinkedList<SubTrip> subTrips = new LinkedList<>();
-        Station currentStation = ride.getLast().getLastStation();
+        Station currentStation = ride.getLast().getRoute().getLast();
         int index;
         for (Map.Entry<Integer, TripSuggest> entry : EngineManager.getEngineManagerInstance().getAllSuggestedTripsMap().entrySet()) {
             for (index = 0; index < entry.getValue().getRide().length - 1; index++) {
