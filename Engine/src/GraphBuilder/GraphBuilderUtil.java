@@ -18,6 +18,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GraphBuilderUtil {
@@ -27,13 +28,15 @@ public class GraphBuilderUtil {
 
     private static CoordinatesManager coordinatesManager = null;
 
-    private static Model model= null;
+    private static StationManager stationManager = null;
+
+    private static Model model = null;
 
     public GraphBuilderUtil(TransPool transPool) {
         this.transPool = transPool;
     }
 
-    private void createEdges(Model model, CoordinatesManager cm) {
+    private void createEdges() {
         List<Path> pathList = transPool.getMapDescriptor().getPaths().getPath();
         List<Stop> stopStations = transPool.getMapDescriptor().getStops().getStop();
 
@@ -44,13 +47,14 @@ public class GraphBuilderUtil {
                     String to = path.getTo();
                     boolean isOneWay = path.isOneWay();
                     if(from.equals(stop1.getName()) && to.equals(stop2.getName())) {
-                        ArrowEdge edge = new ArrowEdge(cm.getOrCreate(stop1.getX(),stop1.getY())
-                                , cm.getOrCreate(stop2.getX(),stop2.getY()));
+                        ArrowEdge edge = new ArrowEdge(coordinatesManager.getOrCreate(stop1.getX(),stop1.getY())
+                                , coordinatesManager.getOrCreate(stop2.getX(),stop2.getY()));
                         edge.textProperty().set(String.valueOf(path.getLength()));
+
                         model.addEdge(edge); // 1-3
                         if(!isOneWay) {
-                            ArrowEdge edge2 = new ArrowEdge(cm.getOrCreate(stop2.getX(),stop2.getY())
-                                    , cm.getOrCreate(stop1.getX(),stop1.getY()));
+                            ArrowEdge edge2 = new ArrowEdge(coordinatesManager.getOrCreate(stop2.getX(),stop2.getY())
+                                    , coordinatesManager.getOrCreate(stop1.getX(),stop1.getY()));
                             model.addEdge(edge2); // 1-3
                         }
                     }
@@ -60,58 +64,58 @@ public class GraphBuilderUtil {
     }
 
     public Graph setAndGetGraphByCurrentTripSuggest(String currentTripSuggestDetails) {
-        Graph graphToSet = this.graph;
+        // mark path station in unique color plus mark the path in uniqe color
+
         String[] inputs = currentTripSuggestDetails.split(",");
-        String currUserStation = inputs[2];
-        String[] currRoute = inputs[3].split(",");
-        int routeSize = currRoute.length - 1;
-        List<Stop> stopStations = transPool.getMapDescriptor().getStops().getStop();
-        List<Path> pathList = transPool.getMapDescriptor().getPaths().getPath();
+        String suggestId = inputs[1];
+        String roadTrip = inputs[2];
+        String currUserStation = inputs[3];
+        suggestId = suggestId.substring(4);
+        roadTrip = roadTrip.substring(8);
+        currUserStation = currUserStation.substring(12);
+        String[] currRoute = roadTrip.split("-");
+        List<Stop> suggestRoadTripStations = getSuggestRoadTripStationsFromPathArr(currRoute);
+        Stop currStation = getStopObjectFromStationName(currUserStation, suggestRoadTripStations);
 
-        for(int index = 0 ; index <  routeSize ; index++) {
-            String from = currRoute[0];
-            String to = currRoute[1];
-            Stop fromStopObject = getStopObjectFromStationName(from, stopStations);
-            Stop toStopObject = getStopObjectFromStationName(to, stopStations);
-
-            Path path = getSpecificPath(pathList, from, to);
-
-            ArrowEdge edge = new ArrowEdge(coordinatesManager.getOrCreate(fromStopObject.getX(),fromStopObject.getY())
-                    , coordinatesManager.getOrCreate(toStopObject.getX(),toStopObject.getY()));
-            edge.textProperty().set(String.valueOf(path.getLength()));
-            model.addEdge(edge);
-
-            /*
-            if(from.equals(stop1.getName()) && to.equals(stop2.getName())) {
-                ArrowEdge edge = new ArrowEdge(cm.getOrCreate(stop1.getX(),stop1.getY())
-                        , cm.getOrCreate(stop2.getX(),stop2.getY()));
-                edge.textProperty().set(String.valueOf(path.getLength()));
-                model.addEdge(edge); // 1-3
-                if(!isOneWay) {
-                    ArrowEdge edge2 = new ArrowEdge(cm.getOrCreate(stop2.getX(),stop2.getY())
-                            , cm.getOrCreate(stop1.getX(),stop1.getY()));
-                    model.addEdge(edge2); // 1-3
-                }
-            }
- */
-        }
-
-
-
+        markSuggestTripStationsAndCurrStation(suggestRoadTripStations, currStation, suggestId);
+        graph.endUpdate();
+        graph.getCanvas().setMaxWidth(1030);
+        graph.getCanvas().setPrefWidth(1030);
+        graph.getCanvas().setPrefHeight(800);
+        graph.getCanvas().setMaxHeight(800);
+        graph.layout(new MapGridLayout(coordinatesManager, stationManager));
 
         return null;
     }
+
+    private List<Stop> getSuggestRoadTripStationsFromPathArr(String[] currRoute) {
+        List<Stop> suggestRoadTripStations = new LinkedList<>();
+        int index = 0;
+        List<Stop> transPoolStopList = transPool.getMapDescriptor().getStops().getStop();
+
+        for(int i = 0 ; i < transPoolStopList.size() ; i ++) {
+            if(transPoolStopList.get(i).getName().equals(currRoute[index])) {
+                suggestRoadTripStations.add(transPoolStopList.get(i));
+                index ++;
+            }
+        }
+
+        return suggestRoadTripStations;
+    }
+
+
 
     private Stop getStopObjectFromStationName(String stationName, List<Stop> stopStations) {
         Stop res = new Stop();
         res.setName(stationName);
 
-        stopStations.forEach((currStopOfTheRoute) -> {
-            if(stationName.equals(currStopOfTheRoute)) {
-                res.setX(currStopOfTheRoute.getX());
-                res.setY(currStopOfTheRoute.getY());
+        for(Stop stop : stopStations) {
+            String stopStr = stop.getName();
+            if(stopStr.equals(res)) {
+                res.setX(stop.getX());
+                res.setY(stop.getY());
             }
-        });
+        }
 
         return res;
     }
@@ -136,9 +140,9 @@ public class GraphBuilderUtil {
         return EngineManager.getEngineManagerInstance().getYCoorOfStation(sourceStation);
     }
 
-    private CoordinatesManager createCoordinates(Model model) {
+    private void createCoordinates() {
         coordinatesManager = new CoordinatesManager(CoordinateNode::new);
-        List<Stop> stopStations = transPool.getMapDescriptor().getStops().getStop();
+        //List<Stop> stopStations = transPool.getMapDescriptor().getStops().getStop();
         int mapLength = transPool.getMapDescriptor().getMapBoundries().getLength();
         int mapWidth = transPool.getMapDescriptor().getMapBoundries().getWidth();
 
@@ -148,20 +152,39 @@ public class GraphBuilderUtil {
             }
         }
 
-        return coordinatesManager;
     }
 
-    private StationManager createStations(Model model) {
-        StationManager sm = new StationManager(StationNode::new);
+    private void createStations() {
+        stationManager = new StationManager(StationNode::new);
         StationNode node;
 
         for(Stop station : transPool.getMapDescriptor().getStops().getStop()) {
-            node = sm.getOrCreate(station.getX(), station.getY());
+            node = stationManager.getOrCreate(station.getX(), station.getY());
             node.setName(station.getName());
             model.addCell(node);
         }
+    }
 
-        return sm;
+    private StationManager markSuggestTripStationsAndCurrStation(List<Stop> suggestRoadTripStations, Stop currStation,
+    String suggestId) {
+        StationNode node;
+        int index = 1;
+
+        for(Stop station : suggestRoadTripStations) {
+            if(currStation.equals(station.getName())) {
+                node = stationManager.getOrCreate(station.getX(), station.getY());
+                node.setName(station.getName() + suggestId +",This is curr station! number " + index + "at the road trip");
+                model.addCell(node);
+            }
+            else {
+                node = stationManager.getOrCreate(station.getX(), station.getY());
+                node.setName(station.getName() + suggestId + ",station number:" + index + "at the road trip" );
+                model.addCell(node);
+            }
+            index++;
+        }
+
+        return stationManager;
     }
 
     private void moveAllEdgesToTheFront(Graph graph) {
@@ -182,16 +205,15 @@ public class GraphBuilderUtil {
         graph = new Graph();
         model = graph.getModel();
         graph.beginUpdate();
-        coordinatesManager = createCoordinates(model);
-        StationManager sm = createStations(model);
-        createEdges(model, coordinatesManager);
+        createCoordinates();
+        createStations();
+        createEdges();
         graph.endUpdate();
         graph.getCanvas().setMaxWidth(1030);
         graph.getCanvas().setPrefWidth(1030);
         graph.getCanvas().setPrefHeight(800);
         graph.getCanvas().setMaxHeight(800);
-        graph.layout(new MapGridLayout(coordinatesManager, sm));
-        EventHandler<MouseEvent> mouseEventEventHandler =  graph.getViewportGestures().getOnMouseDraggedEventHandler();
+        graph.layout(new MapGridLayout(coordinatesManager, stationManager));
 
         //graph.getViewportGestures().setZoomSpeed(1);
         return graph;

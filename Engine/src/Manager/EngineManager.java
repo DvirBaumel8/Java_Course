@@ -455,7 +455,11 @@ public class EngineManager {
         for (Map.Entry<Integer, TripSuggest> entry : suggestedTrips.entrySet()) {
             if (entry.getValue().isActive()) {
                 Station currStation = findTripCurrentStation(entry.getValue());
-                retList.add(String.format("ID: %s, Owner name: %s, Route: %s, Current Station: %s", entry.getValue().getSuggestID(), entry.getValue().getTripOwnerName(), entry.getValue().getTripStations().toString(), currStation.getName()));
+
+                String roadTrip = tripSuggestUtil.getStringRoadTripOfSuggestedTrip(entry.getKey().toString());
+                retList.add(String.format("ID: %s, Owner name: %s, Route: %s, Curr Stat: %s",
+                        entry.getValue().getSuggestID(), entry.getValue().getTripOwnerName(),
+                        roadTrip, currStation.getName()));
             }
         }
         return retList;

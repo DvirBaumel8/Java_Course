@@ -2,6 +2,7 @@ package TripSuggestUtil;
 
 import Manager.EngineManager;
 import Time.Time;
+import XML.XMLLoading.jaxb.schema.generated.Route;
 import XML.XMLLoading.jaxb.schema.generated.TransPoolTrip;
 import javafx.beans.binding.StringBinding;
 
@@ -208,6 +209,15 @@ public class TripSuggestUtil {
             entry.getValue().updateIsActive(EngineManager.getEngineManagerInstance().getCurrentSystemTime());
             entry.getValue().updateCapacityPerTime(EngineManager.getEngineManagerInstance().getCurrentSystemTime());
         }
+    }
+
+    public String getStringRoadTripOfSuggestedTrip(String suggestId) {
+        TripSuggest currTripSuggest = this.suggestedTrips.get(Integer.parseInt(suggestId));
+        Route route = currTripSuggest.getTripRoute();
+        String res = route.getPath();
+        res = res.replace(',','-');
+        return res;
+
     }
 }
 

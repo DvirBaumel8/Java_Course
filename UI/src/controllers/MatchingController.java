@@ -201,18 +201,20 @@ public class MatchingController {
         resetVBoxForCurrentSuggestTripDisplay();
         currentSuggestTripsDto.forEach((currentSuggestTrip) -> {
             String[] inputs = currentSuggestTrip.split(",");
-            String suggestName = inputs[0];
-            String suggestId = inputs[1];;
-            String currStation = inputs[2];
-            addCellToVBoxForCurrentSuggestTripDisplay(suggestName, suggestId, currStation);
+            String suggestId = inputs[0];
+            String suggestName = inputs[1];;
+            String currRoadTrip = inputs[2];
+            String currStation = inputs[3];
+            addCellToVBoxForCurrentSuggestTripDisplay(suggestName, suggestId, currRoadTrip, currStation);
         });
     }
 
-    public void addCellToVBoxForCurrentSuggestTripDisplay(String suggestName, String suggestId, String currStation) {
-        String currentSuggestTripDisplay = suggestName + " , " + suggestId + " , " + currStation;
+    public void addCellToVBoxForCurrentSuggestTripDisplay(String suggestId, String suggestName, String currRoadTrip,
+                                                          String currStation) {
+        String currentSuggestTripDisplay = suggestId + "," + suggestName + "," + currRoadTrip + "," + currStation;
         Button newSuggestTripDisplayButton = new Button(currentSuggestTripDisplay);
-        newSuggestTripDisplayButton.setPrefWidth(250);
-        newSuggestTripDisplayButton.setMinWidth(250);
+        newSuggestTripDisplayButton.setPrefWidth(307);
+        newSuggestTripDisplayButton.setMinWidth(307);
         newSuggestTripDisplayButton.setPrefHeight(20);
         newSuggestTripDisplayButton.setMaxHeight(20);
         newSuggestTripDisplayButton.setOnAction(this::currentSuggestTripsToDisplayAction);
