@@ -320,6 +320,11 @@ public class AppController {
         liveMapController.setLiveMapToRootCenter(graph);
     }
 
+    public void updateCurrentSuggestTripsOnFirstLoad() {
+        List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
+        matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+    }
+
 
     //--------------------------------General Functions Main Controller -----------------------------------------
     public String getAllStationsNames() {
@@ -340,6 +345,4 @@ public class AppController {
         successAlert.showAndWait();
     }
 
-    public void resetSystem() {
-    }
 }
