@@ -49,8 +49,8 @@ public class TripSuggest {
         this.capacityPerTime = new HashMap<>();
         calcStationsArrivalHour();
         updateIsActive(EngineManager.getEngineManagerInstance().getCurrentSystemTime());
-        updateCapacityPerTime(EngineManager.getEngineManagerInstance().getCurrentSystemTime());
         this.liveParticipantsTripName = new ArrayList<>();
+        updateCapacityPerTime(EngineManager.getEngineManagerInstance().getCurrentSystemTime());
     }
 
     public void updateCapacityPerTime(Time currTime) {
