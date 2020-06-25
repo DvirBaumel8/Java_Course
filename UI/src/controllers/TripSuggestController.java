@@ -232,14 +232,12 @@ public class TripSuggestController {
 
     }
 
-
     public void closeAddNewTripSuggestStage() {
         addTripSuggestStage.close();
     }
 
     public void addNewTripSuggestAccordion(TripSuggest newSuggest) {
         String scheduleTypeString = String.valueOf(newSuggest.getRecurrencesType());
-
 
         String[] displayTripSuggestStrArr = new String[INPUT_ADD_TRIP_SUGGEST_SIZE_INCLUDE_RANKING];
         displayTripSuggestStrArr[0] = "-Suggest trip:" + newSuggest.getTripRoute().getPath();

@@ -146,6 +146,7 @@ public class AppController {
             if (isValidInput) {
                 newSuggest = this.transPoolManager.addNewTripSuggestSuccess(inputTripSuggestString);
                 tripSuggestController.addNewTripSuggestAccordion(newSuggest);
+                this.checkIfSuggestTripOccurNowAndAdd();
                 tripSuggestController.closeAddNewTripSuggestStage();
             }
             else {
@@ -208,34 +209,51 @@ public class AppController {
         headerComponentController.setTimeLabel(timeStr);
     }
 
+    public void checkIfSuggestTripOccurNowAndAdd() {
+        List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
+        if(!currentSuggestTripsDto.isEmpty()) {
+            matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        }
+    }
+
     public void setDateString5Min(boolean isForward) {
         moveTime(isForward, 1);
         List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
-        matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        if(!currentSuggestTripsDto.isEmpty()) {
+            matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        }
     }
 
     public void setDateString30Min(boolean isForward) {
         moveTime(isForward, 2);
         List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
-        matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        if(!currentSuggestTripsDto.isEmpty()) {
+            matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        }
     }
 
     public void setDateString1Hour(boolean isForward) {
         moveTime(isForward, 3);
         List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
-        matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        if(!currentSuggestTripsDto.isEmpty()) {
+            matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        }
     }
 
     public void setDateString2Hours(boolean isForward) {
         moveTime(isForward, 4);
         List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
-        matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        if(!currentSuggestTripsDto.isEmpty()) {
+            matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        }
     }
 
     public void setDateString1Day(boolean isForward) {
         moveTime(isForward, 5);
         List<String> currentSuggestTripsDto = engine.getListDetailsPerTime();
-        matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        if(!currentSuggestTripsDto.isEmpty()) {
+            matchingController.updateVBoxForCurrentSuggestTripDisplay(currentSuggestTripsDto);
+        }
     }
 
     private void moveTime(boolean forward, int choose) {
